@@ -65,9 +65,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .card-grade{font-size:11px;font-weight:700;color:var(--go);font-family:'JetBrains Mono',monospace}
 .card-qty{font-size:11px;color:var(--td)}
 
-.filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
+.filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;justify-content:center;align-items:center}
 .fbtn{padding:6px 16px;border-radius:20px;border:1px solid var(--bdr);background:var(--s);color:var(--td);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
 .fbtn:hover,.fbtn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+.slab-wrap{position:relative;display:inline-block}
+.slab-menu{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:6px;background:var(--s);border:1px solid var(--bdr2);border-radius:12px;padding:6px;z-index:10;white-space:nowrap}
+.slab-wrap.open .slab-menu{display:flex;gap:4px}
+.slab-menu .fbtn{font-size:11px;padding:4px 12px}
 
 .footer{text-align:center;padding:32px 16px;color:var(--td);font-size:12px;border-top:1px solid var(--bdr)}
 
@@ -108,11 +112,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     
     <button class="fbtn" onclick="filterCards('tier-4')">Inserts</button>
     
-    <button class="fbtn" onclick="filterCards('tier-5')">Autos / High End</button>
-    
-    <button class="fbtn" onclick="filterCards('slabs')">Slabs</button>
-    <button class="fbtn" onclick="filterCards('psa10')">PSA 10</button>
-    <button class="fbtn" onclick="filterCards('psa9')">PSA 9</button>
+    <div class="slab-wrap" id="slabWrap">
+      <button class="fbtn" onclick="toggleSlabMenu(event)">Slabs</button>
+      <div class="slab-menu">
+        <button class="fbtn" onclick="filterCards('slabs')">All Slabs</button>
+        <button class="fbtn" onclick="filterCards('psa10')">PSA 10</button>
+        <button class="fbtn" onclick="filterCards('psa9')">PSA 9</button>
+      </div>
+    </div>
   </div>
 
   
@@ -1322,10 +1329,28 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div class="footer">Bam Adebayo Rookie Card Collection</div>
 
 <script>
+function toggleSlabMenu(e) {
+  e.stopPropagation();
+  const wrap = document.getElementById('slabWrap');
+  wrap.classList.toggle('open');
+}
+document.addEventListener('click', () => {
+  document.getElementById('slabWrap').classList.remove('open');
+});
+
 function filterCards(f) {
-  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.slab-menu .fbtn').forEach(b => b.classList.remove('active'));
+  document.getElementById('slabWrap').classList.remove('open');
+
   const isGradeFilter = ['slabs','psa10','psa9'].includes(f);
+  if (isGradeFilter) {
+    event.target.classList.add('active');
+    document.querySelector('#slabWrap > .fbtn').classList.add('active');
+  } else {
+    event.target.classList.add('active');
+  }
+
   document.querySelectorAll('.tier-section').forEach(s => {
     if (f === 'all' || isGradeFilter) s.style.display = '';
     else s.style.display = s.dataset.tier === f.replace('tier-','') ? '' : 'none';
