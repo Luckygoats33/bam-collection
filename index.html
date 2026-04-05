@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#040409;--s:rgba(16,16,32,.65);--s2:rgba(20,20,44,.8);--bdr:rgba(255,255,255,.06);--bdr2:rgba(255,255,255,.12);
+  --bg:#000000;--s:rgba(12,12,24,.8);--s2:rgba(16,16,32,.9);--bdr:rgba(255,255,255,.06);--bdr2:rgba(255,255,255,.12);
   --t:#e8e8f0;--td:#6e6e8a;--tw:#fff;
   --ac:#7c5cff;--ac2:#a78bfa;--ac3:#c4b5fd;
   --g:#00e5a0;--gd:rgba(0,229,160,.1);
@@ -24,15 +24,9 @@
 html{scroll-behavior:smooth}
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;overflow-x:hidden}
 
-/* Animated mesh gradient background */
-.bg-mesh{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-.bg-mesh::before{content:'';position:absolute;width:120vmax;height:120vmax;top:-40%;left:-30%;background:conic-gradient(from 120deg at 50% 50%,rgba(124,92,255,.07),rgba(0,229,160,.05),rgba(56,189,248,.04),rgba(255,71,87,.03),rgba(124,92,255,.07));animation:meshSpin 30s linear infinite}
-.bg-mesh::after{content:'';position:absolute;width:80vmax;height:80vmax;bottom:-20%;right:-20%;background:radial-gradient(ellipse,rgba(124,92,255,.08),transparent 70%);animation:meshFloat 20s ease-in-out infinite alternate}
-@keyframes meshSpin{to{transform:rotate(360deg)}}
-@keyframes meshFloat{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-5%,5%) scale(1.1)}}
-
-/* Noise texture overlay */
-.bg-noise{position:fixed;inset:0;z-index:1;opacity:.03;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")}
+/* Background - pure black, subtle noise only */
+.bg-mesh{display:none}
+.bg-noise{position:fixed;inset:0;z-index:1;opacity:.02;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")}
 
 /* Hero */
 .hero{position:relative;z-index:2;padding:64px 20px 40px;text-align:center}
@@ -132,8 +126,9 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .modal-placeholder{width:100%;height:220px;background:linear-gradient(135deg,var(--s2),var(--bg));display:flex;align-items:center;justify-content:center;border-radius:20px 20px 0 0;color:var(--td);font-size:14px}
 .modal-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--bdr);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .2s;backdrop-filter:blur(8px)}
 .modal-close:hover{background:var(--r);border-color:var(--r);transform:scale(1.1)}
-.modal-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.4);border:1px solid var(--bdr);color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .3s;backdrop-filter:blur(8px)}
-.modal-nav:hover{background:var(--ac);border-color:var(--ac);transform:translateY(-50%) scale(1.1);box-shadow:0 0 20px rgba(124,92,255,.4)}
+.modal-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:4px;background:#1a0a2e;border:3px solid #ffd700;color:#ffd700;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .15s;font-family:'Press Start 2P',monospace;image-rendering:pixelated;box-shadow:0 4px 0 #000,inset 0 0 0 1px rgba(255,215,0,.2)}
+.modal-nav:hover{background:#98002e;transform:translateY(-50%) scale(1.05);box-shadow:0 2px 0 #000,inset 0 0 0 1px rgba(255,215,0,.3)}
+.modal-nav:active{transform:translateY(-48%) scale(.95);box-shadow:none}
 .modal-nav.prev{left:-56px}
 .modal-nav.next{right:-56px}
 .modal-counter{position:absolute;top:12px;left:12px;font-size:11px;font-weight:600;color:#fff;background:rgba(0,0,0,.4);padding:4px 12px;border-radius:20px;z-index:2;font-family:'JetBrains Mono',monospace;backdrop-filter:blur(8px);border:1px solid var(--bdr)}
@@ -2328,448 +2323,221 @@ openModal = function(el) {
   _origOpen(el);
 };
 
-// ============ CINEMATIC BAM INTRO ============
+// ============ 8-BIT BAM INTRO (~4 seconds) ============
 (function(){
   const canvas = document.getElementById('introCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  let W, H;
+  const PX = 3;
+  let W, H, gW, gH;
   let frame = 0;
-  let phase = 'number'; // number -> name -> stats -> collection
+  let phase = 'dunk'; // dunk -> title -> done
   let phaseStart = 0;
   let introRunning = true;
-  let shakeX = 0, shakeY = 0;
 
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; gW = Math.floor(W/PX); gH = Math.floor(H/PX); }
   resize();
   window.addEventListener('resize', resize);
 
-  const HEAT_RED = '#98002e';
-  const HEAT_BLACK = '#000';
-  const GOLD = '#ffd700';
-  const CYAN = '#00e5ff';
-  const PURPLE = '#7c5cff';
-
-  // Phase durations (frames at 60fps)
-  const DURATIONS = { number: 100, name: 80, stats: 150, collection: 90 };
-
-  function progress() {
-    return Math.min((frame - phaseStart) / DURATIONS[phase], 1);
-  }
+  // ~4 sec total: dunk 150 frames + title 90 frames = 240 @ 60fps
+  const DURATIONS = { dunk: 150, title: 90 };
+  function progress() { return Math.min((frame - phaseStart) / DURATIONS[phase], 1); }
   function goPhase(name) { phase = name; phaseStart = frame; }
 
-  // Easing
-  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
-  function easeElastic(t) {
-    if (t === 0 || t === 1) return t;
-    return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
+  function px(x,y,w,h,c) { ctx.fillStyle=c; ctx.fillRect(x*PX,y*PX,w*PX,h*PX); }
+  function pxText(text, x, y, color, size) {
+    ctx.fillStyle = color;
+    ctx.font = `${size}px "Press Start 2P", monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText(text, x, y);
   }
 
-  // Particles
-  let particles = [];
-  function spawnParticles(x, y, count, color) {
-    for (let i = 0; i < count; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = 2 + Math.random() * 8;
-      particles.push({
-        x, y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 3,
-        life: 1,
-        decay: 0.01 + Math.random() * 0.02,
-        size: 2 + Math.random() * 4,
-        color
-      });
+  const SKY = '#0a0a2e';
+  const COURT = '#c67e38';
+  const COURT_DARK = '#a86420';
+  const HEAT = '#98002e';
+  const GOLD = '#ffd700';
+  const WHITE = '#fff';
+
+  // Draw pixel player (bigger = more impressive)
+  function drawPlayer(cx, cy, scale, armUp) {
+    const s = scale;
+    // Head
+    px(cx-1*s, cy-12*s, 3*s, 4*s, '#c68642');
+    px(cx-1*s, cy-13*s, 3*s, 1*s, '#222');
+    // Body
+    px(cx-2*s, cy-8*s, 5*s, 5*s, HEAT);
+    // #13 on jersey
+    px(cx-1*s, cy-7*s, 1*s, 1*s, WHITE);
+    px(cx+1*s, cy-7*s, 1*s, 2*s, WHITE);
+    // Arms
+    if (armUp) {
+      px(cx+3*s, cy-12*s, 1*s, 5*s, '#c68642');
+      px(cx-3*s, cy-7*s, 1*s, 3*s, '#c68642');
+      // Ball in hand
+      px(cx+3*s, cy-14*s, 2*s, 2*s, '#e67e22');
+      px(cx+4*s, cy-13*s, 1*s, 1*s, '#c65800');
+    } else {
+      px(cx+3*s, cy-7*s, 1*s, 3*s, '#c68642');
+      px(cx-3*s, cy-7*s, 1*s, 3*s, '#c68642');
+    }
+    // Shorts
+    px(cx-2*s, cy-3*s, 5*s, 3*s, '#111');
+    // Legs
+    px(cx-2*s, cy, 2*s, 4*s, '#c68642');
+    px(cx+1*s, cy, 2*s, 4*s, '#c68642');
+    // Shoes
+    px(cx-2*s, cy+4*s, 2*s, 1*s, WHITE);
+    px(cx+1*s, cy+4*s, 2*s, 1*s, WHITE);
+  }
+
+  function drawCourt(courtY) {
+    px(0, courtY, gW, gH - courtY, COURT);
+    px(0, courtY, gW, 1, '#fff3');
+    // Court markings
+    px(Math.floor(gW/2)-10, courtY+3, 20, 1, COURT_DARK);
+    px(Math.floor(gW/2)-8, courtY+6, 16, 1, COURT_DARK);
+    // Rim + backboard
+    px(gW-10, courtY-22, 2, 14, '#888');
+    px(gW-16, courtY-16, 10, 2, '#ddd');
+    px(gW-14, courtY-14, 6, 5, '#fff9');
+    px(gW-13, courtY-9, 4, 1, '#ff4444');
+    // Net
+    for (let i = 0; i < 5; i++) {
+      px(gW-12+(i%2), courtY-8+i, 1, 1, '#eee');
+      px(gW-10+(i%2), courtY-8+i, 1, 1, '#eee');
     }
   }
-  function updateParticles() {
-    particles = particles.filter(p => p.life > 0);
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.15;
-      p.life -= p.decay;
-      ctx.globalAlpha = p.life;
-      ctx.fillStyle = p.color;
-      ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
-    });
-    ctx.globalAlpha = 1;
-  }
 
-  // Scanlines
-  function scanlines(opacity) {
-    for (let y = 0; y < H; y += 3) {
-      ctx.fillStyle = `rgba(0,0,0,${opacity})`;
-      ctx.fillRect(0, y, W, 1);
-    }
-  }
-
-  // Screen shake
-  function shake(intensity) {
-    shakeX = (Math.random() - 0.5) * intensity;
-    shakeY = (Math.random() - 0.5) * intensity;
+  function drawScoreboard(score) {
+    const sx = Math.floor(gW/2)-20, sy = 3;
+    px(sx, sy, 40, 12, '#1a0a2e');
+    px(sx, sy, 40, 1, GOLD); px(sx, sy+11, 40, 1, GOLD);
+    px(sx, sy, 1, 12, GOLD); px(sx+39, sy, 1, 12, GOLD);
+    px(sx+20, sy, 1, 12, '#ffd70066');
+    pxText('MIA', (sx+10)*PX, (sy+5)*PX, GOLD, 8);
+    pxText(String(score), (sx+10)*PX, (sy+10)*PX, WHITE, 9);
+    pxText('IND', (sx+30)*PX, (sy+5)*PX, '#666', 8);
+    pxText('68', (sx+30)*PX, (sy+10)*PX, '#888', 9);
   }
 
   function renderFrame() {
     if (!introRunning) return;
     frame++;
     const p = progress();
-    const cx = W / 2;
-    const cy = H / 2;
+    const cx = Math.floor(gW/2), courtY = Math.floor(gH*0.55);
 
-    ctx.save();
-    ctx.translate(shakeX, shakeY);
-    shakeX *= 0.85; shakeY *= 0.85;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
 
-    // Black bg
-    ctx.fillStyle = '#020206';
-    ctx.fillRect(-10, -10, W + 20, H + 20);
+    if (phase === 'dunk') {
+      // Sky
+      ctx.fillStyle = SKY;
+      ctx.fillRect(0, 0, W, courtY * PX);
 
-    if (phase === 'number') {
-      // Giant #13 slams in, then "83 POINTS" explodes
-      const slamP = Math.min(p / 0.35, 1);
-      const slam = easeElastic(slamP);
+      drawCourt(courtY);
 
-      // Radial glow behind
-      if (slamP > 0.3) {
-        const grd = ctx.createRadialGradient(cx, cy * 0.85, 0, cx, cy * 0.85, W * 0.5);
-        grd.addColorStop(0, `rgba(152,0,46,${0.15 * Math.min((slamP-0.3)*3,1)})`);
-        grd.addColorStop(1, 'transparent');
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, W, H);
-      }
+      // Player runs across court and dunks
+      const runEnd = 0.45;
+      const jumpStart = 0.45;
 
-      // #13 jersey number - MASSIVE
-      const numSize = Math.min(W * 0.35, 280);
-      const scale = slamP < 1 ? 3 - 2 * slam : 1;
-      ctx.save();
-      ctx.translate(cx, cy * 0.75);
-      ctx.scale(scale, scale);
-      ctx.font = `900 ${numSize}px 'Inter', sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = HEAT_RED;
-      ctx.globalAlpha = Math.min(slamP * 2, 1);
-      ctx.fillText('#13', 0, 0);
-      // White stroke
-      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-      ctx.lineWidth = 2;
-      ctx.strokeText('#13', 0, 0);
-      ctx.restore();
+      if (p < runEnd) {
+        // Running across — player gets BIGGER as he approaches
+        const runP = p / runEnd;
+        const playerX = Math.floor(-8 + runP * (gW - 8));
+        const bounce = Math.sin(frame * 0.4) * 2;
+        const sc = 1 + runP * 0.5; // scale up as he gets closer
+        drawPlayer(playerX, courtY - 1 + Math.floor(bounce), Math.ceil(sc), false);
+        // Dribbling ball
+        const ballBounce = Math.abs(Math.sin(frame * 0.25)) * 5;
+        px(playerX+3, courtY + Math.floor(ballBounce) - 3, 2, 2, '#e67e22');
 
-      // Screen shake on slam
-      if (slamP > 0.25 && slamP < 0.4) shake(12);
+        // Score counting up as he runs
+        const score = 75 + Math.floor(runP * 6);
+        drawScoreboard(score);
+      } else {
+        // DUNK SEQUENCE
+        const jumpP = (p - jumpStart) / (1 - jumpStart);
+        const jumpH = Math.sin(Math.min(jumpP * 1.3, 1) * Math.PI) * 28;
+        const dunkX = gW - 14;
+        const playerY = courtY - 1 - Math.floor(jumpH);
 
-      // After slam: "BAM ADEBAYO" underneath
-      if (p > 0.4) {
-        const nameP = easeOut(Math.min((p - 0.4) / 0.2, 1));
-        ctx.globalAlpha = nameP;
-        ctx.font = `300 ${Math.min(W * 0.04, 28)}px 'Inter', sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.letterSpacing = '12px';
-        ctx.fillStyle = '#fff';
-        ctx.fillText('B A M   A D E B A Y O', cx, cy * 0.75 + numSize * 0.45);
-        ctx.globalAlpha = 1;
-      }
+        drawPlayer(dunkX, playerY, 2, jumpP > 0.2 && jumpP < 0.7);
 
-      // "83 POINTS" explosion at end
-      if (p > 0.65) {
-        const pts = easeElastic(Math.min((p - 0.65) / 0.25, 1));
-        const ptsSize = Math.min(W * 0.2, 120);
-
-        // Fire particles
-        if (p > 0.66 && p < 0.72) {
-          spawnParticles(cx, cy * 1.3, 8, GOLD);
-          spawnParticles(cx - 80, cy * 1.3, 4, HEAT_RED);
-          spawnParticles(cx + 80, cy * 1.3, 4, '#ff4444');
-          shake(20);
+        // Flash on slam
+        if (jumpP > 0.45 && jumpP < 0.55) {
+          ctx.fillStyle = `rgba(255,255,255,${0.8 - (jumpP-0.45)*8})`;
+          ctx.fillRect(0, 0, W, H);
         }
 
-        // Glow behind 83
-        const grd2 = ctx.createRadialGradient(cx, cy * 1.3, 0, cx, cy * 1.3, ptsSize * 1.5);
-        grd2.addColorStop(0, `rgba(255,215,0,${0.2 * pts})`);
-        grd2.addColorStop(1, 'transparent');
-        ctx.fillStyle = grd2;
-        ctx.fillRect(0, 0, W, H);
-
-        ctx.globalAlpha = pts;
-        ctx.font = `900 ${ptsSize * (3 - 2 * pts)}px 'Inter', sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.fillStyle = GOLD;
-        ctx.fillText('83', cx, cy * 1.3);
-        ctx.font = `700 ${Math.min(W * 0.035, 22)}px 'Inter', sans-serif`;
-        ctx.fillStyle = '#fff';
-        ctx.fillText('P O I N T S', cx, cy * 1.3 + ptsSize * 0.35);
-        ctx.globalAlpha = 1;
-      }
-
-      updateParticles();
-      scanlines(0.06);
-      if (p >= 1) goPhase('name');
-    }
-
-    else if (phase === 'name') {
-      // White flash transition then "FRANCHISE RECORD"
-      if (p < 0.1) {
-        ctx.fillStyle = `rgba(255,255,255,${1 - p * 10})`;
-        ctx.fillRect(0, 0, W, H);
-      }
-
-      // Heat gradient background
-      const grd = ctx.createLinearGradient(0, 0, W, H);
-      grd.addColorStop(0, '#0a0005');
-      grd.addColorStop(0.5, '#1a0010');
-      grd.addColorStop(1, '#050005');
-      ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, W, H);
-
-      const fadeIn = easeOut(Math.min(p / 0.3, 1));
-      ctx.globalAlpha = fadeIn;
-
-      // "FRANCHISE RECORD" top
-      ctx.font = `600 ${Math.min(W * 0.025, 16)}px 'Inter', sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.fillStyle = GOLD;
-      ctx.fillText('M I A M I   H E A T   F R A N C H I S E   R E C O R D', cx, H * 0.18);
-
-      // Decorative line
-      ctx.strokeStyle = GOLD;
-      ctx.lineWidth = 1;
-      ctx.globalAlpha = fadeIn * 0.4;
-      ctx.beginPath();
-      ctx.moveTo(cx - W * 0.25, H * 0.22);
-      ctx.lineTo(cx + W * 0.25, H * 0.22);
-      ctx.stroke();
-      ctx.globalAlpha = fadeIn;
-
-      // "JANUARY 2, 2025" date
-      if (p > 0.15) {
-        const dp = easeOut(Math.min((p - 0.15) / 0.2, 1));
-        ctx.globalAlpha = dp;
-        ctx.font = `300 ${Math.min(W * 0.018, 13)}px 'Inter', sans-serif`;
-        ctx.fillStyle = '#888';
-        ctx.fillText('JANUARY 2, 2025  |  vs. INDIANA PACERS', cx, H * 0.27);
-      }
-
-      // Big stat line
-      const statData = [
-        { label: 'PTS', val: '83', color: GOLD, size: 0.12 },
-        { label: 'FG', val: '28-46', color: '#fff', size: 0.04 },
-        { label: '3PT', val: '10-18', color: CYAN, size: 0.04 },
-        { label: 'FT', val: '17-17', color: '#00e5a0', size: 0.04 },
-      ];
-
-      // Central big 83
-      if (p > 0.2) {
-        const sp = easeOut(Math.min((p - 0.2) / 0.25, 1));
-        ctx.globalAlpha = sp;
-        ctx.font = `900 ${Math.min(W * 0.22, 160)}px 'Inter', sans-serif`;
-        ctx.fillStyle = GOLD;
-        ctx.textAlign = 'center';
-        ctx.fillText('83', cx, cy * 0.95);
-        ctx.font = `400 ${Math.min(W * 0.03, 20)}px 'Inter', sans-serif`;
-        ctx.fillStyle = 'rgba(255,215,0,0.6)';
-        ctx.fillText('POINTS', cx, cy * 0.95 + Math.min(W * 0.08, 50));
-      }
-
-      // Sub-stats row
-      const subStats = [
-        ['FG', '28-46', '#fff'],
-        ['3PT', '10-18', CYAN],
-        ['FT', '17-17', '#00e5a0'],
-        ['REB', '6', '#ff8c42'],
-        ['AST', '3', PURPLE],
-      ];
-      const spacing = Math.min(W * 0.15, 120);
-      const startX = cx - spacing * 2;
-
-      subStats.forEach((s, i) => {
-        const delay = 0.4 + i * 0.06;
-        if (p > delay) {
-          const sp = easeOut(Math.min((p - delay) / 0.15, 1));
-          ctx.globalAlpha = sp;
-          const sx = startX + i * spacing;
-          ctx.font = `700 ${Math.min(W * 0.025, 18)}px 'JetBrains Mono', monospace`;
-          ctx.fillStyle = s[2];
-          ctx.textAlign = 'center';
-          ctx.fillText(s[1], sx, H * 0.72);
-          ctx.font = `400 ${Math.min(W * 0.013, 10)}px 'Inter', sans-serif`;
-          ctx.fillStyle = '#666';
-          ctx.fillText(s[0], sx, H * 0.76);
-        }
-      });
-
-      ctx.globalAlpha = 1;
-      scanlines(0.04);
-      if (p >= 1) goPhase('stats');
-    }
-
-    else if (phase === 'stats') {
-      // Transition: Heat court floor swoosh
-      ctx.fillStyle = '#030308';
-      ctx.fillRect(0, 0, W, H);
-
-      // Animated diagonal stripes (Heat-themed)
-      if (p < 0.3) {
-        const stripeP = p / 0.3;
-        for (let i = 0; i < 8; i++) {
-          const x = W * (i / 8 - 0.5 + stripeP);
+        // Screen shake
+        if (jumpP > 0.4 && jumpP < 0.6) {
           ctx.save();
-          ctx.globalAlpha = 0.04;
-          ctx.fillStyle = HEAT_RED;
-          ctx.translate(x, 0);
-          ctx.transform(1, 0, -0.5, 1, 0, 0);
-          ctx.fillRect(0, 0, W * 0.06, H);
-          ctx.restore();
+          ctx.translate((Math.random()-.5)*8, (Math.random()-.5)*8);
         }
+
+        const score = jumpP > 0.5 ? 83 : jumpP > 0.3 ? 82 : 81;
+        drawScoreboard(score);
+
+        // "83 PTS!!" text after dunk lands
+        if (jumpP > 0.6) {
+          const tp = Math.min((jumpP - 0.6) / 0.2, 1);
+          const sz = Math.min(W * 0.12, 72);
+          pxText('83', W/2, H*0.25, GOLD, sz * (2 - tp));
+          if (tp > 0.3) pxText('POINTS', W/2, H*0.25 + sz*0.5, WHITE, Math.min(W*0.03, 18));
+          if (tp > 0.6) pxText('FRANCHISE RECORD', W/2, H*0.25 + sz*0.8, GOLD, Math.min(W*0.02, 12));
+        }
+
+        if (jumpP > 0.4 && jumpP < 0.6) ctx.restore();
       }
 
-      // "BAM ADEBAYO" title - big and bold
-      const titleP = easeOut(Math.min(p / 0.25, 1));
-      ctx.globalAlpha = titleP;
+      // Scanlines
+      for (let y = 0; y < H; y += 4) {
+        ctx.fillStyle = 'rgba(0,0,0,0.12)';
+        ctx.fillRect(0, y, W, 2);
+      }
 
-      // Glow
-      const grd = ctx.createRadialGradient(cx, cy * 0.4, 0, cx, cy * 0.4, W * 0.4);
-      grd.addColorStop(0, 'rgba(124,92,255,0.06)');
-      grd.addColorStop(1, 'transparent');
-      ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, W, H);
+      if (p >= 1) goPhase('title');
+    }
 
-      const titleSize = Math.min(W * 0.1, 72);
-      ctx.font = `900 ${titleSize}px 'Inter', sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#fff';
-      ctx.fillText('BAM ADEBAYO', cx, H * 0.22);
+    else if (phase === 'title') {
+      // Quick retro title card
+      if (p < 0.1) {
+        ctx.fillStyle = `rgba(255,255,255,${(1-p/0.1)*0.5})`;
+        ctx.fillRect(0, 0, W, H);
+      }
 
-      // "#13 | MIAMI HEAT | CENTER"
+      // Retro grid floor
+      ctx.strokeStyle = '#1a1a3e';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < W; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, H*0.7); ctx.lineTo(x + (x-W/2)*0.3, H); ctx.stroke();
+      }
+      for (let y = H*0.7; y < H; y += 20) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      }
+
+      const fadeIn = Math.min(p / 0.15, 1);
+      ctx.globalAlpha = fadeIn;
+
+      pxText('BAM ADEBAYO', W/2, H*0.3, WHITE, Math.min(W*0.06, 36));
       if (p > 0.1) {
-        ctx.globalAlpha = easeOut(Math.min((p - 0.1) / 0.15, 1));
-        ctx.font = `300 ${Math.min(W * 0.02, 14)}px 'Inter', sans-serif`;
-        ctx.fillStyle = HEAT_RED;
-        ctx.fillText('#13  |  MIAMI HEAT  |  CENTER', cx, H * 0.22 + titleSize * 0.6);
+        ctx.globalAlpha = Math.min((p-0.1)/0.15, 1);
+        pxText('ROOKIE CARD', W/2, H*0.45, '#7c5cff', Math.min(W*0.035, 22));
+        pxText('COLLECTION', W/2, H*0.55, '#7c5cff', Math.min(W*0.035, 22));
       }
-
-      // Career highlights cascade
-      const highlights = [
-        { text: '6x ALL-STAR', color: GOLD, delay: 0.2 },
-        { text: '2020 NBA CHAMPION', color: '#fff', delay: 0.28 },
-        { text: 'ALL-NBA SECOND TEAM', color: CYAN, delay: 0.36 },
-        { text: 'ALL-DEFENSIVE TEAM', color: '#00e5a0', delay: 0.44 },
-        { text: '83-POINT FRANCHISE RECORD', color: GOLD, delay: 0.52 },
-      ];
-
-      const hlSize = Math.min(W * 0.028, 20);
-      highlights.forEach((h, i) => {
-        if (p > h.delay) {
-          const hp = easeOut(Math.min((p - h.delay) / 0.12, 1));
-          ctx.globalAlpha = hp;
-          const slideX = (1 - hp) * 60;
-          ctx.font = `700 ${hlSize}px 'Inter', sans-serif`;
-          ctx.fillStyle = h.color;
-          ctx.textAlign = 'center';
-          ctx.fillText(h.text, cx + slideX, H * 0.42 + i * (hlSize * 2.2));
-
-          // Accent dot
-          ctx.fillStyle = h.color;
-          ctx.globalAlpha = hp * 0.4;
-          ctx.fillRect(cx - W * 0.2, H * 0.42 + i * (hlSize * 2.2) - hlSize * 0.35, 3, 3);
-        }
-      });
-
-      // Bottom decorative Heat stripe
-      if (p > 0.7) {
-        const sp = easeOut(Math.min((p - 0.7) / 0.15, 1));
-        ctx.globalAlpha = sp * 0.15;
-        ctx.fillStyle = HEAT_RED;
-        const stripeW = W * sp;
-        ctx.fillRect(cx - stripeW / 2, H * 0.88, stripeW, 4);
-        ctx.globalAlpha = sp;
-        ctx.font = `400 ${Math.min(W * 0.014, 11)}px 'Inter', sans-serif`;
-        ctx.fillStyle = '#555';
-        ctx.fillText('UNIVERSITY OF KENTUCKY  |  DRAFTED #14 OVERALL, 2017', cx, H * 0.93);
+      if (p > 0.3) {
+        ctx.globalAlpha = Math.min((p-0.3)/0.2, 1);
+        pxText('49 CARDS', W/2, H*0.7, GOLD, Math.min(W*0.02, 14));
       }
 
       ctx.globalAlpha = 1;
-      scanlines(0.03);
-      if (p >= 1) goPhase('collection');
+      // Scanlines
+      for (let y = 0; y < H; y += 3) { ctx.fillStyle = 'rgba(0,0,0,0.06)'; ctx.fillRect(0, y, W, 1); }
+
+      if (p >= 1) { introRunning = false; skipIntro(); }
     }
 
-    else if (phase === 'collection') {
-      // Final: "ROOKIE CARD COLLECTION" reveal
-      ctx.fillStyle = '#040409';
-      ctx.fillRect(0, 0, W, H);
-
-      // Animated gradient burst
-      const burstP = easeOut(Math.min(p / 0.4, 1));
-      const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, W * 0.6 * burstP);
-      grd.addColorStop(0, 'rgba(124,92,255,0.08)');
-      grd.addColorStop(0.5, 'rgba(0,229,160,0.03)');
-      grd.addColorStop(1, 'transparent');
-      ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, W, H);
-
-      // "BAM ADEBAYO"
-      if (p > 0.05) {
-        const tp = easeOut(Math.min((p - 0.05) / 0.2, 1));
-        ctx.globalAlpha = tp;
-        ctx.font = `900 ${Math.min(W * 0.09, 64)}px 'Inter', sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#fff';
-        ctx.fillText('BAM ADEBAYO', cx, cy * 0.7);
-      }
-
-      // "ROOKIE CARD COLLECTION"
-      if (p > 0.2) {
-        const rp = easeOut(Math.min((p - 0.2) / 0.2, 1));
-        ctx.globalAlpha = rp;
-        ctx.font = `300 ${Math.min(W * 0.03, 20)}px 'Inter', sans-serif`;
-        ctx.fillStyle = PURPLE;
-        ctx.fillText('R O O K I E   C A R D   C O L L E C T I O N', cx, cy * 0.7 + Math.min(W * 0.06, 44));
-      }
-
-      // Card count + pieces
-      if (p > 0.45) {
-        const cp = easeOut(Math.min((p - 0.45) / 0.2, 1));
-        ctx.globalAlpha = cp;
-        ctx.font = `700 ${Math.min(W * 0.05, 36)}px 'JetBrains Mono', monospace`;
-        ctx.fillStyle = GOLD;
-        const countTarget = 49;
-        const piecesTarget = 79;
-        const countNow = Math.round(countTarget * cp);
-        const piecesNow = Math.round(piecesTarget * cp);
-        ctx.fillText(`${countNow} cards`, cx - W * 0.12, cy * 1.25);
-        ctx.fillText(`${piecesNow} pieces`, cx + W * 0.12, cy * 1.25);
-
-        ctx.font = `400 ${Math.min(W * 0.014, 11)}px 'Inter', sans-serif`;
-        ctx.fillStyle = '#555';
-        ctx.fillText('UNIQUE', cx - W * 0.12, cy * 1.25 + 24);
-        ctx.fillText('TOTAL', cx + W * 0.12, cy * 1.25 + 24);
-      }
-
-      // "ENTERING COLLECTION" blink
-      if (p > 0.75) {
-        if (Math.floor(frame / 20) % 2 === 0) {
-          ctx.globalAlpha = 0.8;
-          ctx.font = `400 ${Math.min(W * 0.016, 12)}px 'Inter', sans-serif`;
-          ctx.fillStyle = '#666';
-          ctx.fillText('ENTERING COLLECTION...', cx, H * 0.88);
-        }
-      }
-
-      ctx.globalAlpha = 1;
-      scanlines(0.03);
-
-      if (p >= 1) {
-        setTimeout(skipIntro, 400);
-        introRunning = false;
-      }
-    }
-
-    updateParticles();
-    ctx.restore();
     if (introRunning) requestAnimationFrame(renderFrame);
   }
 
@@ -2782,20 +2550,14 @@ openModal = function(el) {
     overlay.classList.add('fade-out');
     document.body.classList.remove('intro-active');
     document.querySelectorAll('.bg-mesh,.bg-noise,.hero,.wrap,.footer').forEach(el => {
-      el.style.transition = 'opacity .8s ease';
+      el.style.transition = 'opacity .5s ease';
       el.style.opacity = '1';
     });
-    setTimeout(() => {
-      overlay.style.display = 'none';
-      animateCounters();
-    }, 800);
+    setTimeout(() => { overlay.style.display = 'none'; animateCounters(); }, 500);
   };
 
   document.getElementById('introOverlay').addEventListener('click', skipIntro);
-  document.addEventListener('keydown', function introKey(e) {
-    skipIntro();
-    document.removeEventListener('keydown', introKey);
-  });
+  document.addEventListener('keydown', function ik(e) { skipIntro(); document.removeEventListener('keydown', ik); });
 })();
 </script>
 </body>
