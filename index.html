@@ -5,191 +5,264 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BAM ADEBAYO | Collection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#050510;--s:#0c0c1d;--s2:#111128;--bdr:#1a1a3e;--bdr2:#2a2a5e;
+  --bg:#040409;--s:rgba(16,16,32,.65);--s2:rgba(20,20,44,.8);--bdr:rgba(255,255,255,.06);--bdr2:rgba(255,255,255,.12);
   --t:#e8e8f0;--td:#6e6e8a;--tw:#fff;
-  --ac:#7c5cff;--ac2:#a78bfa;
-  --g:#00e5a0;--gd:rgba(0,229,160,.12);
-  --r:#ff4757;--rd:rgba(255,71,87,.12);
-  --go:#ffd700;--god:rgba(255,215,0,.1);
+  --ac:#7c5cff;--ac2:#a78bfa;--ac3:#c4b5fd;
+  --g:#00e5a0;--gd:rgba(0,229,160,.1);
+  --r:#ff4757;--rd:rgba(255,71,87,.1);
+  --go:#ffd700;--god:rgba(255,215,0,.08);
   --o:#ff8c42;--bl:#38bdf8;--pu:#c084fc;
+  --glass:rgba(255,255,255,.03);--glass2:rgba(255,255,255,.05);
+  --radius:16px;--radius-sm:10px;--radius-xs:6px;
+  --shadow:0 8px 32px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.2);
+  --shadow-sm:0 4px 16px rgba(0,0,0,.3);
 }
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t);min-height:100vh}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(124,92,255,.06)0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(0,229,160,.04)0%,transparent 50%);pointer-events:none;z-index:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;overflow-x:hidden}
 
-.hero{position:relative;z-index:1;padding:48px 16px 24px;text-align:center;background:linear-gradient(180deg,rgba(124,92,255,.08)0%,transparent 100%)}
-.hero h1{font-size:clamp(32px,8vw,56px);font-weight:900;letter-spacing:-2px;line-height:1}
-.hero h1 span{background:linear-gradient(135deg,#fff 0%,var(--ac2) 50%,var(--g) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero-sub{color:var(--td);font-size:clamp(11px,2.5vw,16px);font-weight:300;letter-spacing:4px;text-transform:uppercase;margin-top:6px}
+/* Animated mesh gradient background */
+.bg-mesh{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.bg-mesh::before{content:'';position:absolute;width:120vmax;height:120vmax;top:-40%;left:-30%;background:conic-gradient(from 120deg at 50% 50%,rgba(124,92,255,.07),rgba(0,229,160,.05),rgba(56,189,248,.04),rgba(255,71,87,.03),rgba(124,92,255,.07));animation:meshSpin 30s linear infinite}
+.bg-mesh::after{content:'';position:absolute;width:80vmax;height:80vmax;bottom:-20%;right:-20%;background:radial-gradient(ellipse,rgba(124,92,255,.08),transparent 70%);animation:meshFloat 20s ease-in-out infinite alternate}
+@keyframes meshSpin{to{transform:rotate(360deg)}}
+@keyframes meshFloat{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-5%,5%) scale(1.1)}}
 
-.wrap{max-width:1200px;margin:0 auto;padding:0 16px 48px;position:relative;z-index:1}
+/* Noise texture overlay */
+.bg-noise{position:fixed;inset:0;z-index:1;opacity:.03;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")}
 
-.summary{display:flex;justify-content:center;gap:32px;margin:24px 0 32px;flex-wrap:wrap}
-.summary-item{text-align:center}
-.summary-item .num{font-size:36px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--g)}
-.summary-item .lbl{font-size:11px;color:var(--td);text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+/* Hero */
+.hero{position:relative;z-index:2;padding:64px 20px 40px;text-align:center}
+.hero::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--ac2),transparent)}
+.hero h1{font-size:clamp(40px,10vw,72px);font-weight:900;letter-spacing:-3px;line-height:.95}
+.hero h1 span{background:linear-gradient(135deg,#fff 0%,var(--ac2) 40%,var(--g) 80%,var(--bl) 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 6s ease-in-out infinite}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero-sub{color:var(--td);font-size:clamp(10px,2.5vw,14px);font-weight:400;letter-spacing:6px;text-transform:uppercase;margin-top:10px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:6px 16px;border-radius:20px;background:var(--glass2);border:1px solid var(--bdr);font-size:12px;color:var(--ac2);font-weight:500;backdrop-filter:blur(12px)}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 
-.tier-section{margin-bottom:32px}
-.tier-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
-.tier-badge{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff}
-.tier-title{font-size:20px;font-weight:700}
-.tier-count{font-size:13px;color:var(--td);margin-left:auto;font-family:'JetBrains Mono',monospace}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px 80px;position:relative;z-index:2}
 
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-.card{background:var(--s);border:1px solid var(--bdr);border-radius:12px;overflow:hidden;transition:border-color .3s,transform .2s}
-.card:hover{border-color:var(--bdr2);transform:translateY(-2px)}
-.card.owned{border-left:3px solid var(--g)}
-.card.missing{border-left:3px solid var(--bdr);opacity:.45}
+/* Stats */
+.stats{display:flex;justify-content:center;gap:12px;margin:32px auto 40px;max-width:360px}
+.stat-card{flex:1;text-align:center;padding:20px 12px;border-radius:var(--radius);background:var(--glass);border:1px solid var(--bdr);backdrop-filter:blur(16px);transition:transform .3s,border-color .3s}
+.stat-card:hover{transform:translateY(-4px);border-color:var(--bdr2)}
+.stat-num{font-size:clamp(28px,6vw,42px);font-weight:900;font-family:'JetBrains Mono',monospace;background:linear-gradient(135deg,var(--g),var(--bl));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.stat-lbl{font-size:10px;color:var(--td);text-transform:uppercase;letter-spacing:2px;margin-top:6px;font-weight:500}
+
+/* Filters */
+.filter-bar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;justify-content:center;align-items:center}
+.fbtn{padding:7px 18px;border-radius:24px;border:1px solid var(--bdr);background:var(--glass);color:var(--td);font-size:12px;font-weight:600;cursor:pointer;transition:all .3s cubic-bezier(.16,1,.3,1);backdrop-filter:blur(8px);position:relative;overflow:hidden}
+.fbtn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--ac),var(--ac2));opacity:0;transition:opacity .3s}
+.fbtn:hover{color:var(--t);border-color:var(--bdr2);transform:translateY(-1px)}
+.fbtn.active{color:#fff;border-color:transparent;box-shadow:0 0 20px rgba(124,92,255,.3)}
+.fbtn.active::before{opacity:1}
+.fbtn span{position:relative;z-index:1}
+.slab-wrap{position:relative;display:inline-block}
+.slab-menu{display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--s2);border:1px solid var(--bdr2);border-radius:var(--radius-sm);padding:6px;z-index:20;white-space:nowrap;backdrop-filter:blur(24px);box-shadow:var(--shadow)}
+.slab-wrap.open .slab-menu{display:flex;gap:4px;animation:fadeDown .2s ease}
+
+/* Search area */
+.search-area{margin-bottom:28px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.search-input-wrap{position:relative;width:100%;max-width:440px}
+.search-input-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--td);pointer-events:none}
+.search-bar{width:100%;padding:10px 16px 10px 40px;border-radius:24px;border:1px solid var(--bdr);background:var(--glass);color:var(--t);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:all .3s;backdrop-filter:blur(8px)}
+.search-bar:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(124,92,255,.15)}
+.search-bar::placeholder{color:var(--td)}
+.filter-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.set-select{padding:9px 32px 9px 14px;border-radius:24px;border:1px solid var(--bdr);background:var(--glass);color:var(--t);font-size:12px;font-family:'Inter',sans-serif;appearance:none;cursor:pointer;outline:none;transition:all .3s;backdrop-filter:blur(8px);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236e6e8a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.set-select:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(124,92,255,.15)}
+.set-select option{background:#1a1a2e;color:var(--t)}
+.color-filters{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+.color-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--bdr);background:var(--glass);color:var(--td);font-size:11px;font-weight:600;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:5px;backdrop-filter:blur(8px)}
+.color-btn:hover{border-color:var(--bdr2);color:var(--t);transform:translateY(-1px)}
+.color-btn.active{color:#fff;border-color:transparent;box-shadow:0 0 16px rgba(124,92,255,.2)}
+.color-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.parallel-filters{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.set-btn{padding:4px 12px;border-radius:16px;border:1px solid var(--bdr);background:var(--glass);color:var(--td);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.set-btn:hover,.set-btn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+
+/* Tier sections */
+.tier-section{margin-bottom:48px;opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.tier-section.visible{opacity:1;transform:translateY(0)}
+.tier-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--bdr);position:relative}
+.tier-header::after{content:'';position:absolute;bottom:-1px;left:0;width:60px;height:1px}
+.tier-badge{width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.tier-title{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.tier-count{font-size:12px;color:var(--td);margin-left:auto;font-family:'JetBrains Mono',monospace;padding:4px 12px;border-radius:20px;background:var(--glass);border:1px solid var(--bdr)}
+
+/* Cards grid */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.card{background:var(--glass);border:1px solid var(--bdr);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative;backdrop-filter:blur(8px)}
+.card::before{content:'';position:absolute;inset:0;border-radius:var(--radius);background:linear-gradient(135deg,rgba(124,92,255,.08),transparent,rgba(0,229,160,.05));opacity:0;transition:opacity .4s;z-index:0;pointer-events:none}
+.card:hover{transform:translateY(-6px) scale(1.02);border-color:var(--bdr2);box-shadow:0 20px 40px rgba(0,0,0,.4),0 0 40px rgba(124,92,255,.08)}
+.card:hover::before{opacity:1}
+.card.owned{border-color:rgba(0,229,160,.12)}
 
 .card-img{aspect-ratio:3/4;background:var(--s2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.card-img img{width:100%;height:100%;object-fit:cover}
-.card-img .placeholder{text-align:center;padding:12px;color:var(--td);font-size:11px;line-height:1.4}
-.card-img .placeholder .set-name{font-size:14px;font-weight:700;color:var(--t);margin-bottom:4px}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.card:hover .card-img img{transform:scale(1.05)}
+.card-img .placeholder{text-align:center;padding:16px;color:var(--td);font-size:11px;line-height:1.5}
+.card-img .placeholder .set-name{font-size:13px;font-weight:700;color:var(--t);margin-bottom:6px}
 
-.badge{position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.5px}
-.badge-owned{background:var(--gd);color:var(--g);border:1px solid rgba(0,229,160,.25)}
-.badge-need{background:var(--rd);color:var(--r);border:1px solid rgba(255,71,87,.25)}
-.badge-tier{position:absolute;top:8px;left:8px;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
-.badge-grade{position:absolute;bottom:8px;right:8px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(255,215,0,.15);color:var(--go);border:1px solid rgba(255,215,0,.25)}
-.badge-serial{position:absolute;bottom:8px;left:8px;font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:rgba(124,92,255,.15);color:var(--ac2);border:1px solid rgba(124,92,255,.25)}
-.badge-qty{position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--gd);color:var(--g);border:1px solid rgba(0,229,160,.25)}
+/* Badges */
+.badge{position:absolute;font-size:9px;font-weight:700;padding:3px 8px;border-radius:var(--radius-xs);text-transform:uppercase;letter-spacing:.5px;z-index:1;backdrop-filter:blur(8px)}
+.badge-qty{top:8px;right:8px;background:rgba(0,229,160,.15);color:var(--g);border:1px solid rgba(0,229,160,.2)}
+.badge-tier{position:absolute;top:8px;left:8px;width:24px;height:24px;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;z-index:1;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.badge-grade{position:absolute;bottom:8px;right:8px;font-size:9px;font-weight:700;padding:3px 8px;border-radius:var(--radius-xs);background:rgba(255,215,0,.12);color:var(--go);border:1px solid rgba(255,215,0,.2);z-index:1;backdrop-filter:blur(8px)}
+.badge-serial{position:absolute;bottom:8px;left:8px;font-size:9px;font-weight:600;padding:2px 7px;border-radius:var(--radius-xs);background:rgba(124,92,255,.12);color:var(--ac3);border:1px solid rgba(124,92,255,.2);z-index:1;backdrop-filter:blur(8px)}
 
-.card-info{padding:10px 12px}
-.card-set{font-size:11px;color:var(--td);font-weight:500}
-.card-name{font-size:13px;font-weight:700;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-parallel{font-size:12px;color:var(--ac2);font-weight:500;margin-top:2px}
-.card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
-.card-grade{font-size:11px;font-weight:700;color:var(--go);font-family:'JetBrains Mono',monospace}
-.card-qty{font-size:11px;color:var(--td)}
+.card-info{padding:12px 14px;position:relative;z-index:1}
+.card-set{font-size:10px;color:var(--td);font-weight:500;letter-spacing:.3px}
+.card-name{font-size:13px;font-weight:700;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-parallel{font-size:11px;color:var(--ac2);font-weight:500;margin-top:3px}
+.card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.card-grade{font-size:10px;font-weight:700;color:var(--go);font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:4px;background:var(--god)}
+.card-qty{font-size:10px;color:var(--td)}
 
-.filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;justify-content:center;align-items:center}
-.fbtn{padding:6px 16px;border-radius:20px;border:1px solid var(--bdr);background:var(--s);color:var(--td);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
-.fbtn:hover,.fbtn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
-.slab-wrap{position:relative;display:inline-block}
-.slab-menu{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:6px;background:var(--s);border:1px solid var(--bdr2);border-radius:12px;padding:6px;z-index:10;white-space:nowrap}
-.slab-wrap.open .slab-menu{display:flex;gap:4px}
-.slab-menu .fbtn{font-size:11px;padding:4px 12px}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(12px);opacity:0;transition:opacity .3s}
+.modal-overlay.open{display:flex;opacity:1}
+.modal{background:var(--s2);border:1px solid var(--bdr2);border-radius:20px;max-width:500px;width:92%;max-height:88vh;overflow-y:auto;padding:0;position:relative;backdrop-filter:blur(24px);box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 80px rgba(124,92,255,.06);transform:translateY(20px) scale(.96);transition:transform .4s cubic-bezier(.16,1,.3,1);scrollbar-width:thin;scrollbar-color:var(--bdr2) transparent}
+.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-img{width:100%;max-height:380px;object-fit:contain;border-radius:20px 20px 0 0;background:var(--bg)}
+.modal-placeholder{width:100%;height:220px;background:linear-gradient(135deg,var(--s2),var(--bg));display:flex;align-items:center;justify-content:center;border-radius:20px 20px 0 0;color:var(--td);font-size:14px}
+.modal-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--bdr);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .2s;backdrop-filter:blur(8px)}
+.modal-close:hover{background:var(--r);border-color:var(--r);transform:scale(1.1)}
+.modal-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.4);border:1px solid var(--bdr);color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .3s;backdrop-filter:blur(8px)}
+.modal-nav:hover{background:var(--ac);border-color:var(--ac);transform:translateY(-50%) scale(1.1);box-shadow:0 0 20px rgba(124,92,255,.4)}
+.modal-nav.prev{left:-56px}
+.modal-nav.next{right:-56px}
+.modal-counter{position:absolute;top:12px;left:12px;font-size:11px;font-weight:600;color:#fff;background:rgba(0,0,0,.4);padding:4px 12px;border-radius:20px;z-index:2;font-family:'JetBrains Mono',monospace;backdrop-filter:blur(8px);border:1px solid var(--bdr)}
 
-.search-section{margin-bottom:16px;display:flex;flex-direction:column;align-items:center;gap:8px}
-.search-bar{width:100%;max-width:400px;padding:8px 16px;border-radius:20px;border:1px solid var(--bdr);background:var(--s);color:var(--t);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
-.search-bar:focus{border-color:var(--ac)}
-.search-bar::placeholder{color:var(--td)}
-.adv-toggle{padding:6px 16px;border-radius:20px;border:1px solid var(--bdr);background:var(--s);color:var(--td);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
-.adv-toggle:hover,.adv-toggle.open{background:var(--ac);color:#fff;border-color:var(--ac)}
-.adv-panel{display:none;width:100%;max-width:600px;background:var(--s);border:1px solid var(--bdr2);border-radius:14px;padding:16px;margin-top:4px}
-.adv-panel.open{display:block}
-.adv-row{margin-bottom:12px}
-.adv-row:last-child{margin-bottom:0}
-.set-filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.set-btn{padding:4px 12px;border-radius:16px;border:1px solid var(--bdr);background:var(--s2);color:var(--td);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
-.set-btn:hover,.set-btn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
-.set-label{font-size:10px;color:var(--td);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px;text-align:center}
-.parallel-filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:4px}
-.color-filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.color-btn{padding:4px 12px;border-radius:16px;border:2px solid transparent;background:var(--s2);color:var(--td);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
-.color-btn:hover{border-color:var(--bdr2);color:var(--t)}
-.color-btn.active{color:#fff;border-color:#fff3}
-.color-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.modal-overlay.open{display:flex}
-.modal{background:var(--s);border:1px solid var(--bdr2);border-radius:16px;max-width:480px;width:90%;max-height:85vh;overflow-y:auto;padding:0;position:relative}
-.modal-img{width:100%;max-height:350px;object-fit:contain;border-radius:16px 16px 0 0;background:var(--bg)}
-.modal-placeholder{width:100%;height:200px;background:var(--s2);display:flex;align-items:center;justify-content:center;border-radius:16px 16px 0 0;color:var(--td);font-size:14px}
-.modal-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
-.modal-nav{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.5);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s}
-.modal-nav:hover{background:var(--ac)}
-.modal-nav.prev{left:-48px}
-.modal-nav.next{right:-48px}
-.modal-counter{position:absolute;top:12px;left:12px;font-size:11px;font-weight:600;color:#fff;background:rgba(0,0,0,.5);padding:3px 10px;border-radius:12px;z-index:2;font-family:'JetBrains Mono',monospace}
 @media(max-width:600px){
-  .modal{max-width:95%;border-radius:12px}
-  .modal-nav.prev{left:8px;top:auto;bottom:12px;transform:none}
-  .modal-nav.next{right:8px;top:auto;bottom:12px;transform:none}
+  .modal{max-width:96%;border-radius:16px 16px 0 0;max-height:92vh;position:fixed;bottom:0;left:2%;right:2%;top:auto;border-radius:20px 20px 0 0;transform:translateY(100%);width:96%}
+  .modal-overlay.open .modal{transform:translateY(0)}
+  .modal-nav.prev{left:12px;top:auto;bottom:16px;transform:none}
+  .modal-nav.next{right:12px;top:auto;bottom:16px;transform:none}
+  .modal-nav:hover{transform:scale(1.1)}
 }
-.modal-body{padding:20px}
-.modal-title{font-size:18px;font-weight:800;margin-bottom:2px}
-.modal-set{font-size:13px;color:var(--td);margin-bottom:12px}
+
+.modal-body{padding:24px}
+.modal-title{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.modal-set{font-size:13px;color:var(--td);margin-bottom:16px;margin-top:2px}
 .modal-details{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.modal-detail{background:var(--s2);border-radius:10px;padding:10px 12px}
-.modal-detail .label{font-size:10px;color:var(--td);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.modal-detail{background:var(--glass2);border-radius:var(--radius-sm);padding:12px 14px;border:1px solid var(--bdr);transition:border-color .2s}
+.modal-detail:hover{border-color:var(--bdr2)}
+.modal-detail .label{font-size:9px;color:var(--td);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;font-weight:600}
 .modal-detail .value{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace}
 .modal-detail .value.gold{color:var(--go)}
 .modal-detail .value.green{color:var(--g)}
 .modal-detail .value.blue{color:var(--bl)}
 .modal-detail .value.purple{color:var(--pu)}
 .modal-detail.full{grid-column:1/-1}
-.modal-pop{margin-top:12px;background:var(--s2);border-radius:10px;padding:12px}
-.modal-pop .pop-title{font-size:11px;color:var(--td);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:600}
-.pop-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.modal-pop{margin-top:14px;background:var(--glass2);border-radius:var(--radius-sm);padding:16px;border:1px solid var(--bdr)}
+.modal-pop .pop-title{font-size:10px;color:var(--td);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;font-weight:700}
+.pop-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .pop-bar .pop-label{font-size:11px;font-weight:600;width:50px;color:var(--td)}
-.pop-bar .pop-track{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
-.pop-bar .pop-fill{height:100%;border-radius:4px}
-.pop-bar .pop-count{font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;width:40px;text-align:right}
-.footer{text-align:center;padding:32px 16px;color:var(--td);font-size:12px;border-top:1px solid var(--bdr)}
+.pop-bar .pop-track{flex:1;height:6px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden}
+.pop-bar .pop-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.16,1,.3,1)}
+.pop-bar .pop-count{font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;width:44px;text-align:right}
 
-@media(max-width:600px){
-  .cards{grid-template-columns:repeat(2,1fr);gap:8px}
-  .summary{gap:16px}
-  .summary-item .num{font-size:28px}
+/* Footer */
+.footer{text-align:center;padding:40px 20px;color:var(--td);font-size:11px;position:relative;z-index:2}
+.footer::before{content:'';display:block;width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--bdr2),transparent);margin:0 auto 20px}
+
+/* Animations */
+@keyframes fadeDown{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:fadeIn .5s ease both}
+
+/* Responsive */
+@media(max-width:640px){
+  .hero{padding:48px 16px 32px}
+  .cards{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stats{gap:8px;margin:24px auto 28px}
+  .stat-card{padding:14px 8px}
+  .stat-num{font-size:28px}
+  .filter-bar{gap:5px}
+  .fbtn{padding:6px 14px;font-size:11px}
+  .card-info{padding:10px 10px}
 }
+@media(max-width:380px){
+  .cards{grid-template-columns:repeat(2,1fr);gap:6px}
+  .card-info{padding:8px}
+  .card-name{font-size:11px}
+  .card-set{font-size:9px}
+}
+
+/* Intro overlay */
+.intro-overlay{position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;transition:opacity .8s ease}
+.intro-overlay.fade-out{opacity:0;pointer-events:none}
+.intro-overlay canvas{width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
+.intro-skip{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);font-family:'Press Start 2P',monospace;font-size:12px;color:#ffd700;animation:blink8 1s step-end infinite;z-index:10000;text-shadow:0 0 8px rgba(255,215,0,.5)}
+@keyframes blink8{0%,100%{opacity:1}50%{opacity:0}}
+body.intro-active{overflow:hidden}
+body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,body.intro-active .wrap,body.intro-active .footer{opacity:0}
 </style>
 </head>
-<body>
+<body class="intro-active">
+
+<!-- DOUBLE DRIBBLE INTRO -->
+<div id="introOverlay" class="intro-overlay">
+  <canvas id="introCanvas"></canvas>
+  <div class="intro-skip" onclick="skipIntro()">PRESS START</div>
+</div>
+
+<div class="bg-mesh"></div>
+<div class="bg-noise"></div>
 
 <div class="hero">
   <h1><span>BAM ADEBAYO</span></h1>
   <div class="hero-sub">Rookie Card Collection</div>
+  <div class="hero-badge"><span class="dot"></span> Live Collection</div>
 </div>
 
 <div class="wrap">
-  <div class="summary">
-    <div class="summary-item">
-      <div class="num">49</div>
-      <div class="lbl">Unique Cards</div>
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-num" data-count="49">0</div>
+      <div class="stat-lbl">Unique Cards</div>
     </div>
-    <div class="summary-item">
-      <div class="num">79</div>
-      <div class="lbl">Total Pieces</div>
+    <div class="stat-card">
+      <div class="stat-num" data-count="79">0</div>
+      <div class="stat-lbl">Total Pieces</div>
     </div>
   </div>
 
-  <div class="filters">
-    <button class="fbtn active" onclick="filterCards('all')">All</button>
-    <button class="fbtn" onclick="filterCards('tier-1')">Core</button>
-    <button class="fbtn" onclick="filterCards('tier-3')">Supplemental</button>
-    <button class="fbtn" onclick="filterCards('tier-4')">Inserts</button>
+  <div class="filter-bar">
+    <button class="fbtn active" onclick="filterCards('all')"><span>All</span></button>
+    <button class="fbtn" onclick="filterCards('tier-1')"><span>Core</span></button>
+    <button class="fbtn" onclick="filterCards('tier-3')"><span>Supplemental</span></button>
+    <button class="fbtn" onclick="filterCards('tier-4')"><span>Inserts</span></button>
     <div class="slab-wrap" id="slabWrap">
-      <button class="fbtn" onclick="toggleSlabMenu(event)">Slabs</button>
+      <button class="fbtn" onclick="toggleSlabMenu(event)"><span>Slabs</span></button>
       <div class="slab-menu">
-        <button class="fbtn" onclick="filterCards('slabs')">All Slabs</button>
-        <button class="fbtn" onclick="filterCards('psa10')">PSA 10</button>
-        <button class="fbtn" onclick="filterCards('psa9')">PSA 9</button>
+        <button class="fbtn" onclick="filterCards('slabs')"><span>All Slabs</span></button>
+        <button class="fbtn" onclick="filterCards('psa10')"><span>PSA 10</span></button>
+        <button class="fbtn" onclick="filterCards('psa9')"><span>PSA 9</span></button>
       </div>
     </div>
-    <button class="fbtn" onclick="filterCards('raw')">Raw</button>
-    <button class="fbtn" onclick="filterCards('nonrookie')">Non-Rookie</button>
+    <button class="fbtn" onclick="filterCards('raw')"><span>Raw</span></button>
+    <button class="fbtn" onclick="filterCards('nonrookie')"><span>Non-Rookie</span></button>
   </div>
 
-  <div class="search-section">
-    <input type="text" class="search-bar" id="searchBar" placeholder="Search by set, parallel, or card name..." oninput="searchCards(this.value)">
-    <button class="adv-toggle" id="advToggle" onclick="toggleAdvanced()">Filters <span id="advArrow">&#9662;</span></button>
-    <div class="adv-panel" id="advPanel">
-      <div class="adv-row">
-        <div class="set-label">By Set</div>
-        <div class="set-filters" id="setFilters"></div>
-      </div>
-      <div class="adv-row" id="parallelRow" style="display:none">
-        <div class="set-label">Parallels</div>
-        <div class="parallel-filters" id="parallelFilters"></div>
-      </div>
-      <div class="adv-row">
-        <div class="set-label">By Color</div>
-        <div class="color-filters" id="colorFilters"></div>
-      </div>
+  <div class="search-area">
+    <div class="search-input-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" class="search-bar" id="searchBar" placeholder="Search cards..." oninput="searchCards(this.value)">
     </div>
+    <div class="filter-row">
+      <select class="set-select" id="setSelect" onchange="onSetSelect(this.value)">
+        <option value="">All Sets</option>
+      </select>
+      <div class="color-filters" id="colorFilters"></div>
+    </div>
+    <div class="parallel-filters" id="parallelFilters"></div>
   </div>
 
   
@@ -210,14 +283,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="4"
            data-image="static/cards/prizm-base.webp"
-           data-notes="Have 4+ (all PSA 10)"
-           style="cursor:pointer">
+           data-notes="Have 4+ (all PSA 10)">
         <div class="card-img">
           
           <img src="static/cards/prizm-base.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
+          
           <span class="badge badge-qty">x4</span>
+          
           
           <span class="badge-grade">PSA 10</span>
           
@@ -231,7 +305,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 10</div>
             
-            <div class="card-qty">Qty: 4</div>
+            <div class="card-qty">x4</div>
           </div>
         </div>
       </div>
@@ -244,8 +318,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="2"
            data-image=""
-           data-notes="Core card - PSA 10 + Raw"
-           style="cursor:pointer">
+           data-notes="Core card - PSA 10 + Raw">
         <div class="card-img">
           
           <div class="placeholder">
@@ -254,7 +327,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
+          
           <span class="badge badge-qty">x2</span>
+          
           
           <span class="badge-grade">PSA 10 / Raw</span>
           
@@ -268,7 +343,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 10 / Raw</div>
             
-            <div class="card-qty">Qty: 2</div>
+            <div class="card-qty">x2</div>
           </div>
         </div>
       </div>
@@ -281,8 +356,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="2"
            data-image=""
-           data-notes="PSA 9 + raw"
-           style="cursor:pointer">
+           data-notes="PSA 9 + raw">
         <div class="card-img">
           
           <div class="placeholder">
@@ -291,7 +365,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
+          
           <span class="badge badge-qty">x2</span>
+          
           
           <span class="badge-grade">PSA 9 / Raw</span>
           
@@ -305,7 +381,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 9 / Raw</div>
             
-            <div class="card-qty">Qty: 2</div>
+            <div class="card-qty">x2</div>
           </div>
         </div>
       </div>
@@ -318,14 +394,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="3"
            data-image="static/cards/prizm-rwb.webp"
-           data-notes="Have 3 (PSA 10 x2 + raw)"
-           style="cursor:pointer">
+           data-notes="Have 3 (PSA 10 x2 + raw)">
         <div class="card-img">
           
           <img src="static/cards/prizm-rwb.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
+          
           <span class="badge badge-qty">x3</span>
+          
           
           <span class="badge-grade">PSA 10 / Raw</span>
           
@@ -339,7 +416,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 10 / Raw</div>
             
-            <div class="card-qty">Qty: 3</div>
+            <div class="card-qty">x3</div>
           </div>
         </div>
       </div>
@@ -352,14 +429,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="/199"
            data-qty="1"
            data-image="static/cards/prizm-blue.webp"
-           data-notes="#048/199"
-           style="cursor:pointer">
+           data-notes="#048/199">
         <div class="card-img">
           
           <img src="static/cards/prizm-blue.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
           <span class="badge-serial">/199</span>
@@ -373,7 +449,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -386,14 +462,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="/75"
            data-qty="1"
            data-image="static/cards/prizm-purple.webp"
-           data-notes=""
-           style="cursor:pointer">
+           data-notes="">
         <div class="card-img">
           
           <img src="static/cards/prizm-purple.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           <span class="badge-grade">PSA 10</span>
           
@@ -409,7 +484,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 10</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -422,14 +497,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="/49"
            data-qty="1"
            data-image="static/cards/prizm-orange.webp"
-           data-notes="Bookend #49/49"
-           style="cursor:pointer">
+           data-notes="Bookend #49/49">
         <div class="card-img">
           
           <img src="static/cards/prizm-orange.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           <span class="badge-grade">PSA 9</span>
           
@@ -445,7 +519,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 9</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -458,14 +532,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="2"
            data-image="static/cards/prizm-ruby-wave.webp"
-           data-notes="PSA 10 + raw"
-           style="cursor:pointer">
+           data-notes="PSA 10 + raw">
         <div class="card-img">
           
           <img src="static/cards/prizm-ruby-wave.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
+          
           <span class="badge badge-qty">x2</span>
+          
           
           <span class="badge-grade">PSA 10 / Raw</span>
           
@@ -479,7 +554,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 10 / Raw</div>
             
-            <div class="card-qty">Qty: 2</div>
+            <div class="card-qty">x2</div>
           </div>
         </div>
       </div>
@@ -492,14 +567,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/prizm-hyper.webp"
-           data-notes=""
-           style="cursor:pointer">
+           data-notes="">
         <div class="card-img">
           
           <img src="static/cards/prizm-hyper.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           <span class="badge-grade">PSA 9</span>
           
@@ -513,7 +587,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 9</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -526,14 +600,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="/175"
            data-qty="1"
            data-image="static/cards/fb-disco-blue.webp"
-           data-notes="Purchased Apr 2026"
-           style="cursor:pointer">
+           data-notes="Purchased Apr 2026">
         <div class="card-img">
           
           <img src="static/cards/fb-disco-blue.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
           <span class="badge-serial">/175</span>
@@ -547,7 +620,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -560,14 +633,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="/125"
            data-qty="2"
            data-image="static/cards/fb-disco-red.webp"
-           data-notes="Have 2 PSA 10"
-           style="cursor:pointer">
+           data-notes="Have 2 PSA 10">
         <div class="card-img">
           
           <img src="static/cards/fb-disco-red.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
+          
           <span class="badge badge-qty">x2</span>
+          
           
           <span class="badge-grade">PSA 10</span>
           
@@ -583,7 +657,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 10</div>
             
-            <div class="card-qty">Qty: 2</div>
+            <div class="card-qty">x2</div>
           </div>
         </div>
       </div>
@@ -596,8 +670,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="/50"
            data-qty="1"
            data-image=""
-           data-notes="#22/50 SSP - purchased Mar 24"
-           style="cursor:pointer">
+           data-notes="#22/50 SSP - purchased Mar 24">
         <div class="card-img">
           
           <div class="placeholder">
@@ -606,7 +679,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
           <span class="badge-serial">/50</span>
@@ -620,7 +693,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -633,14 +706,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="/20"
            data-qty="1"
            data-image="static/cards/fb-disco-bronze.webp"
-           data-notes="PSA 10 /20"
-           style="cursor:pointer">
+           data-notes="PSA 10 /20">
         <div class="card-img">
           
           <img src="static/cards/fb-disco-bronze.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           <span class="badge-grade">PSA 10</span>
           
@@ -656,7 +728,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 10</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -669,14 +741,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="6"
            data-image="static/cards/optic-base.webp"
-           data-notes="Have 6+ (all PSA 10)"
-           style="cursor:pointer">
+           data-notes="Have 6+ (all PSA 10)">
         <div class="card-img">
           
           <img src="static/cards/optic-base.webp" alt="Rated Rookie" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
+          
           <span class="badge badge-qty">x6</span>
+          
           
           <span class="badge-grade">PSA 10</span>
           
@@ -690,7 +763,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 10</div>
             
-            <div class="card-qty">Qty: 6</div>
+            <div class="card-qty">x6</div>
           </div>
         </div>
       </div>
@@ -703,14 +776,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/optic-shock.webp"
-           data-notes=""
-           style="cursor:pointer">
+           data-notes="">
         <div class="card-img">
           
           <img src="static/cards/optic-shock.webp" alt="Rated Rookie" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -722,7 +794,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -735,14 +807,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/optic-red-yellow.webp"
-           data-notes=""
-           style="cursor:pointer">
+           data-notes="">
         <div class="card-img">
           
           <img src="static/cards/optic-red-yellow.webp" alt="Rated Rookie" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -754,7 +825,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -767,14 +838,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="2"
            data-image="static/cards/optic-blue-velocity.webp"
-           data-notes="Have 2 raw"
-           style="cursor:pointer">
+           data-notes="Have 2 raw">
         <div class="card-img">
           
           <img src="static/cards/optic-blue-velocity.webp" alt="Rated Rookie" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
+          
           <span class="badge badge-qty">x2</span>
+          
           
           
         </div>
@@ -786,7 +858,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 2</div>
+            <div class="card-qty">x2</div>
           </div>
         </div>
       </div>
@@ -811,14 +883,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/mosaic-silver.webp"
-           data-notes=""
-           style="cursor:pointer">
+           data-notes="">
         <div class="card-img">
           
           <img src="static/cards/mosaic-silver.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#3498db">2</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -830,7 +901,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -843,14 +914,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/mosaic-orange.webp"
-           data-notes="PSA 10"
-           style="cursor:pointer">
+           data-notes="PSA 10">
         <div class="card-img">
           
           <img src="static/cards/mosaic-orange.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#3498db">2</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           <span class="badge-grade">PSA 10</span>
           
@@ -864,7 +934,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 10</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -877,14 +947,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="2"
            data-image="static/cards/revolution-astro.webp"
-           data-notes="Have 2 (2nd from Mar 21)"
-           style="cursor:pointer">
+           data-notes="Have 2 (2nd from Mar 21)">
         <div class="card-img">
           
           <img src="static/cards/revolution-astro.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#3498db">2</div>
+          
           <span class="badge badge-qty">x2</span>
+          
           
           
         </div>
@@ -896,7 +967,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 2</div>
+            <div class="card-qty">x2</div>
           </div>
         </div>
       </div>
@@ -909,14 +980,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="6"
            data-image="static/cards/donruss-base.webp"
-           data-notes="Multiple incl 6x lot"
-           style="cursor:pointer">
+           data-notes="Multiple incl 6x lot">
         <div class="card-img">
           
           <img src="static/cards/donruss-base.webp" alt="Rated Rookie" loading="lazy">
           
           <div class="badge-tier" style="background:#3498db">2</div>
+          
           <span class="badge badge-qty">x6</span>
+          
           
           
         </div>
@@ -928,7 +1000,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 6</div>
+            <div class="card-qty">x6</div>
           </div>
         </div>
       </div>
@@ -953,14 +1025,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/hoops-base.webp"
-           data-notes="PSA 10"
-           style="cursor:pointer">
+           data-notes="PSA 10">
         <div class="card-img">
           
           <img src="static/cards/hoops-base.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           <span class="badge-grade">PSA 10</span>
           
@@ -974,7 +1045,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">PSA 10</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -987,14 +1058,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="/199"
            data-qty="1"
            data-image="static/cards/hoops-silver.webp"
-           data-notes="#042/199"
-           style="cursor:pointer">
+           data-notes="#042/199">
         <div class="card-img">
           
           <img src="static/cards/hoops-silver.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
           <span class="badge-serial">/199</span>
@@ -1008,7 +1078,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1021,14 +1091,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="2"
            data-image="static/cards/hoops-class2017.webp"
-           data-notes="Have 2"
-           style="cursor:pointer">
+           data-notes="Have 2">
         <div class="card-img">
           
           <img src="static/cards/hoops-class2017.webp" alt="Class of 2017" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
+          
           <span class="badge badge-qty">x2</span>
+          
           
           
         </div>
@@ -1040,7 +1111,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 2</div>
+            <div class="card-qty">x2</div>
           </div>
         </div>
       </div>
@@ -1053,14 +1124,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="3"
            data-image="static/cards/prestige-base.webp"
-           data-notes="Have 3+"
-           style="cursor:pointer">
+           data-notes="Have 3+">
         <div class="card-img">
           
           <img src="static/cards/prestige-base.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
+          
           <span class="badge badge-qty">x3</span>
+          
           
           
         </div>
@@ -1072,7 +1144,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 3</div>
+            <div class="card-qty">x3</div>
           </div>
         </div>
       </div>
@@ -1085,14 +1157,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/prestige-rookie-class.webp"
-           data-notes=""
-           style="cursor:pointer">
+           data-notes="">
         <div class="card-img">
           
           <img src="static/cards/prestige-rookie-class.webp" alt="Rookie Class" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1104,7 +1175,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1117,14 +1188,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="3"
            data-image="static/cards/status-base.webp"
-           data-notes="Have 3"
-           style="cursor:pointer">
+           data-notes="Have 3">
         <div class="card-img">
           
           <img src="static/cards/status-base.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
+          
           <span class="badge badge-qty">x3</span>
+          
           
           
         </div>
@@ -1136,7 +1208,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 3</div>
+            <div class="card-qty">x3</div>
           </div>
         </div>
       </div>
@@ -1149,14 +1221,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/status-credentials.webp"
-           data-notes=""
-           style="cursor:pointer">
+           data-notes="">
         <div class="card-img">
           
           <img src="static/cards/status-credentials.webp" alt="Rookie Credentials" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1168,7 +1239,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1181,14 +1252,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/chronicles-base.webp"
-           data-notes=""
-           style="cursor:pointer">
+           data-notes="">
         <div class="card-img">
           
           <img src="static/cards/chronicles-base.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1200,7 +1270,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1213,14 +1283,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="2"
            data-image="static/cards/essentials-base.webp"
-           data-notes="Have 2"
-           style="cursor:pointer">
+           data-notes="Have 2">
         <div class="card-img">
           
           <img src="static/cards/essentials-base.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
+          
           <span class="badge badge-qty">x2</span>
+          
           
           
         </div>
@@ -1232,7 +1303,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 2</div>
+            <div class="card-qty">x2</div>
           </div>
         </div>
       </div>
@@ -1245,14 +1316,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/threads-base.webp"
-           data-notes=""
-           style="cursor:pointer">
+           data-notes="">
         <div class="card-img">
           
           <img src="static/cards/threads-base.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1264,7 +1334,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1277,14 +1347,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/court-kings-base.webp"
-           data-notes="Purchased Mar 24"
-           style="cursor:pointer">
+           data-notes="Purchased Mar 24">
         <div class="card-img">
           
           <img src="static/cards/court-kings-base.webp" alt="Rookies I" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1296,7 +1365,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1309,14 +1378,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="/175"
            data-qty="1"
            data-image="static/cards/court-kings-portraits.webp"
-           data-notes="/175 numbered - purchased Mar 24"
-           style="cursor:pointer">
+           data-notes="/175 numbered - purchased Mar 24">
         <div class="card-img">
           
           <img src="static/cards/court-kings-portraits.webp" alt="Portraits RC" loading="lazy">
           
           <div class="badge-tier" style="background:#f1c40f">3</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
           <span class="badge-serial">/175</span>
@@ -1330,7 +1398,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1355,14 +1423,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="2"
            data-image="static/cards/prizm-emergent.webp"
-           data-notes="Have 2 raw"
-           style="cursor:pointer">
+           data-notes="Have 2 raw">
         <div class="card-img">
           
           <img src="static/cards/prizm-emergent.webp" alt="Emergent" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
+          
           <span class="badge badge-qty">x2</span>
+          
           
           
         </div>
@@ -1374,7 +1443,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 2</div>
+            <div class="card-qty">x2</div>
           </div>
         </div>
       </div>
@@ -1387,14 +1456,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="3"
            data-image="static/cards/optic-rookie-kings.webp"
-           data-notes="Have 3 (Optic versions)"
-           style="cursor:pointer">
+           data-notes="Have 3 (Optic versions)">
         <div class="card-img">
           
           <img src="static/cards/optic-rookie-kings.webp" alt="Rookie Kings" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
+          
           <span class="badge badge-qty">x3</span>
+          
           
           
         </div>
@@ -1406,7 +1476,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 3</div>
+            <div class="card-qty">x3</div>
           </div>
         </div>
       </div>
@@ -1419,14 +1489,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/contenders-gameday.webp"
-           data-notes=""
-           style="cursor:pointer">
+           data-notes="">
         <div class="card-img">
           
           <img src="static/cards/contenders-gameday.webp" alt="Game Day Tickets" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1438,7 +1507,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1451,14 +1520,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/player-of-day.webp"
-           data-notes=""
-           style="cursor:pointer">
+           data-notes="">
         <div class="card-img">
           
           <img src="static/cards/player-of-day.webp" alt="Rookies" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1470,39 +1538,38 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
       
       <div class="card owned" data-tier="4" data-grade="Raw" data-set="Black Friday" data-parallel="Base"
            onclick="openModal(this)"
-           data-name="Jersey Card"
-           data-year="2017"
+           data-name="Jersey Card RC"
+           data-year="2017-18"
            data-card-number="TBD"
            data-serial=""
            data-qty="1"
            data-image="static/cards/black-friday-jersey.webp"
-           data-notes="Jersey relic"
-           style="cursor:pointer">
+           data-notes="Rookie jersey relic">
         <div class="card-img">
           
-          <img src="static/cards/black-friday-jersey.webp" alt="Jersey Card" loading="lazy">
+          <img src="static/cards/black-friday-jersey.webp" alt="Jersey Card RC" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
         <div class="card-info">
-          <div class="card-set">2017 Black Friday TBD</div>
-          <div class="card-name">Jersey Card</div>
+          <div class="card-set">2017-18 Black Friday TBD</div>
+          <div class="card-name">Jersey Card RC</div>
           <div class="card-parallel">Base</div>
           <div class="card-meta">
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1515,14 +1582,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="/249"
            data-qty="1"
            data-image="static/cards/totally-certified-jersey.webp"
-           data-notes="Jersey relic /249 - purchased Mar 21"
-           style="cursor:pointer">
+           data-notes="Jersey relic /249 - purchased Mar 21">
         <div class="card-img">
           
           <img src="static/cards/totally-certified-jersey.webp" alt="Fabric of the Game" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
           <span class="badge-serial">/249</span>
@@ -1536,7 +1602,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1549,14 +1615,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="/199"
            data-qty="1"
            data-image="static/cards/chronicles-swatches.webp"
-           data-notes="Jersey relic /199 - purchased Mar 24"
-           style="cursor:pointer">
+           data-notes="Jersey relic /199 - purchased Mar 24">
         <div class="card-img">
           
           <img src="static/cards/chronicles-swatches.webp" alt="Swatches Jersey" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
           <span class="badge-serial">/199</span>
@@ -1570,7 +1635,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1583,14 +1648,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/prizm-2122-base.webp"
-           data-notes="Non-rookie year"
-           style="cursor:pointer">
+           data-notes="Non-rookie year">
         <div class="card-img">
           
           <img src="static/cards/prizm-2122-base.webp" alt="Bam Adebayo" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1602,7 +1666,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1615,14 +1679,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/flux-2021-pulsar.webp"
-           data-notes="Non-rookie year"
-           style="cursor:pointer">
+           data-notes="Non-rookie year">
         <div class="card-img">
           
           <img src="static/cards/flux-2021-pulsar.webp" alt="Bam Adebayo" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1634,7 +1697,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1647,14 +1710,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/illusions-2021-base.webp"
-           data-notes="Non-rookie year"
-           style="cursor:pointer">
+           data-notes="Non-rookie year">
         <div class="card-img">
           
           <img src="static/cards/illusions-2021-base.webp" alt="Bam Adebayo" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1666,7 +1728,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1679,14 +1741,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image="static/cards/select-2021-blue-concourse.webp"
-           data-notes="Non-rookie year - purchased Mar 23"
-           style="cursor:pointer">
+           data-notes="Non-rookie year - purchased Mar 23">
         <div class="card-img">
           
           <img src="static/cards/select-2021-blue-concourse.webp" alt="Bam Adebayo" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1698,7 +1759,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1711,8 +1772,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image=""
-           data-notes="Hyper parallel of Emergent insert"
-           style="cursor:pointer">
+           data-notes="Hyper parallel of Emergent insert">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1721,7 +1781,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1733,7 +1793,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1746,8 +1806,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image=""
-           data-notes="Insert"
-           style="cursor:pointer">
+           data-notes="Insert">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1756,7 +1815,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1768,7 +1827,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1781,8 +1840,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial="1/1"
            data-qty="1"
            data-image=""
-           data-notes="Custom painted 1/1 art card - 83 PTS"
-           style="cursor:pointer">
+           data-notes="Custom painted 1/1 art card - 83 PTS">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1791,7 +1849,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
           <span class="badge-serial">1/1</span>
@@ -1805,7 +1863,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1818,8 +1876,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image=""
-           data-notes="Lot of various Select cards"
-           style="cursor:pointer">
+           data-notes="Lot of various Select cards">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1828,7 +1885,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1840,7 +1897,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1853,8 +1910,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
            data-serial=""
            data-qty="1"
            data-image=""
-           data-notes="PR: 2741"
-           style="cursor:pointer">
+           data-notes="PR: 2741">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1863,7 +1919,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
-          <span class="badge badge-qty">x1</span>
+          
           
           
         </div>
@@ -1875,7 +1931,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             
             <div class="card-grade">Raw</div>
             
-            <div class="card-qty">Qty: 1</div>
+            
           </div>
         </div>
       </div>
@@ -1913,19 +1969,52 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <button class="modal-nav next" onclick="event.stopPropagation();navigateCard(1)">&#8250;</button>
 </div>
 
-<div class="footer">Bam Adebayo Rookie Card Collection</div>
+<div class="footer">Bam Adebayo Rookie Card Collection &mdash; 79 pieces</div>
 
 <script>
+// Animated counter on load
+function animateCounters() {
+  document.querySelectorAll('.stat-num[data-count]').forEach(el => {
+    const target = parseInt(el.dataset.count);
+    const dur = 1200;
+    const start = performance.now();
+    function tick(now) {
+      const progress = Math.min((now - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(target * ease);
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
+// Intersection observer for tier section reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Stagger card animations
+      e.target.querySelectorAll('.card').forEach((c, i) => {
+        c.style.animationDelay = `${i * 0.05}s`;
+      });
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.tier-section').forEach(s => observer.observe(s));
+
+// Init on load
+animateCounters();
+
+// Slab menu toggle
 function toggleSlabMenu(e) {
   e.stopPropagation();
-  const wrap = document.getElementById('slabWrap');
-  wrap.classList.toggle('open');
+  document.getElementById('slabWrap').classList.toggle('open');
 }
 document.addEventListener('click', () => {
   document.getElementById('slabWrap').classList.remove('open');
 });
 
-// Color mapping for universal color filter
+// Color mapping
 const COLOR_MAP = {
   'Base':     {color:'#888',    keywords:['base','paper']},
   'Silver':   {color:'#c0c0c0', keywords:['silver']},
@@ -1945,15 +2034,6 @@ const COLOR_MAP = {
   'Mosaic':   {color:'#e67e22', keywords:['mosaic']},
 };
 
-function toggleAdvanced() {
-  const panel = document.getElementById('advPanel');
-  const toggle = document.getElementById('advToggle');
-  const arrow = document.getElementById('advArrow');
-  panel.classList.toggle('open');
-  toggle.classList.toggle('open');
-  arrow.innerHTML = panel.classList.contains('open') ? '&#9652;' : '&#9662;';
-}
-
 let activeColor = null;
 let activeSet = null;
 const cards = document.querySelectorAll('.card');
@@ -1965,93 +2045,79 @@ cards.forEach(c => {
   sets.get(s).add(p);
 });
 
-const setContainer = document.getElementById('setFilters');
+const setSelect = document.getElementById('setSelect');
 [...sets.keys()].sort().forEach(s => {
-  const btn = document.createElement('button');
-  btn.className = 'set-btn';
-  btn.textContent = s;
-  btn.onclick = () => filterBySet(s, btn);
-  setContainer.appendChild(btn);
+  const opt = document.createElement('option');
+  opt.value = s;
+  opt.textContent = s;
+  setSelect.appendChild(opt);
 });
 
-// Build color filter buttons - only show colors that have matching cards
+function onSetSelect(val) {
+  if (!val) {
+    activeSet = null;
+    document.getElementById('parallelFilters').innerHTML = '';
+    cards.forEach(c => c.style.display = '');
+    document.querySelectorAll('.tier-section').forEach(s => s.style.display = '');
+    resetTopFilters();
+    return;
+  }
+  filterBySet(val, null);
+}
+
+function resetTopFilters() {
+  document.querySelectorAll('.filter-bar > .fbtn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-bar > .fbtn').forEach(b => { if(b.querySelector('span').textContent==='All') b.classList.add('active'); });
+}
+
+// Build color filter buttons
 const colorContainer = document.getElementById('colorFilters');
 Object.entries(COLOR_MAP).forEach(([name, {color, keywords}]) => {
-  const hasCards = [...cards].some(c => {
-    const p = c.dataset.parallel.toLowerCase();
-    return keywords.some(k => p.includes(k));
-  });
+  const hasCards = [...cards].some(c => keywords.some(k => c.dataset.parallel.toLowerCase().includes(k)));
   if (!hasCards) return;
   const btn = document.createElement('button');
   btn.className = 'color-btn';
-  btn.innerHTML = `<span class="color-dot" style="background:${color}${name==='Black'?';border:1px solid #666':''}"></span>${name}`;
+  btn.innerHTML = `<span class="color-dot" style="background:${color}${name==='Black'?';border:1px solid #555':''}"></span>${name}`;
   btn.onclick = () => filterByColor(name, btn);
   colorContainer.appendChild(btn);
 });
 
-function filterByColor(colorName, btn) {
-  // Clear other filters
+function clearAllFilters() {
   document.getElementById('searchBar').value = '';
   activeSet = null;
-  document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('parallelRow').style.display = 'none';
-  document.getElementById('parallelFilters').innerHTML = '';
-  document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.filters > .fbtn').forEach(b => { if(b.textContent==='All') b.classList.add('active'); });
-
-  if (activeColor === colorName) {
-    activeColor = null;
-    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-    cards.forEach(c => c.style.display = '');
-    document.querySelectorAll('.tier-section').forEach(s => s.style.display = '');
-    return;
-  }
-
-  activeColor = colorName;
+  activeColor = null;
+  document.getElementById('setSelect').value = '';
   document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
-  const keywords = COLOR_MAP[colorName].keywords;
-  cards.forEach(c => {
-    const p = c.dataset.parallel.toLowerCase();
-    c.style.display = keywords.some(k => p.includes(k)) ? '' : 'none';
-  });
-  document.querySelectorAll('.tier-section').forEach(s => {
-    const visible = s.querySelectorAll('.card:not([style*="display: none"])').length;
-    s.style.display = visible ? '' : 'none';
-  });
+  document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('parallelFilters').innerHTML = '';
+  resetTopFilters();
 }
 
-function filterBySet(setName, btn) {
-  // Clear search and color
-  document.getElementById('searchBar').value = '';
-  activeColor = null;
-  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-  // Reset top filters
-  document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.filters > .fbtn').forEach(b => { if(b.textContent==='All') b.classList.add('active'); });
-
-  if (activeSet === setName) {
-    // Deselect
-    activeSet = null;
-    btn.classList.remove('active');
-    document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('parallelRow').style.display = 'none';
-    document.getElementById('parallelFilters').innerHTML = '';
+function filterByColor(colorName, btn) {
+  clearAllFilters();
+  if (activeColor === colorName) {
+    activeColor = null;
     cards.forEach(c => c.style.display = '');
     document.querySelectorAll('.tier-section').forEach(s => s.style.display = '');
     return;
   }
-
-  activeSet = setName;
-  document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
+  activeColor = colorName;
   btn.classList.add('active');
+  const keywords = COLOR_MAP[colorName].keywords;
+  cards.forEach(c => {
+    c.style.display = keywords.some(k => c.dataset.parallel.toLowerCase().includes(k)) ? '' : 'none';
+  });
+  updateTierVisibility();
+}
 
-  // Show parallels for this set
+function filterBySet(setName) {
+  clearAllFilters();
+  activeSet = setName;
+  document.getElementById('setSelect').value = setName;
+
   const parallels = [...sets.get(setName)].sort();
   const pContainer = document.getElementById('parallelFilters');
   pContainer.innerHTML = '';
-  document.getElementById('parallelRow').style.display = '';
 
   const allBtn = document.createElement('button');
   allBtn.className = 'set-btn active';
@@ -2080,27 +2146,13 @@ function filterBySet(setName, btn) {
 
 function filterBySetAndParallel(setName, parallel) {
   cards.forEach(c => {
-    const match = c.dataset.set === setName && (!parallel || c.dataset.parallel === parallel);
-    c.style.display = match ? '' : 'none';
+    c.style.display = (c.dataset.set === setName && (!parallel || c.dataset.parallel === parallel)) ? '' : 'none';
   });
-  document.querySelectorAll('.tier-section').forEach(s => {
-    const visible = s.querySelectorAll('.card:not([style*="display: none"])').length;
-    s.style.display = visible ? '' : 'none';
-  });
+  updateTierVisibility();
 }
 
 function searchCards(q) {
-  // Clear set/parallel/color filters
-  activeSet = null;
-  activeColor = null;
-  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('parallelRow').style.display = 'none';
-  document.getElementById('parallelFilters').innerHTML = '';
-  // Reset top filters
-  document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.filters > .fbtn').forEach(b => { if(b.textContent==='All') b.classList.add('active'); });
-
+  clearAllFilters();
   const term = q.toLowerCase().trim();
   if (!term) {
     cards.forEach(c => c.style.display = '');
@@ -2111,33 +2163,21 @@ function searchCards(q) {
     const text = (c.dataset.set + ' ' + c.dataset.parallel + ' ' + c.dataset.grade + ' ' + c.querySelector('.card-name').textContent).toLowerCase();
     c.style.display = text.includes(term) ? '' : 'none';
   });
-  document.querySelectorAll('.tier-section').forEach(s => {
-    const visible = s.querySelectorAll('.card:not([style*="display: none"])').length;
-    s.style.display = visible ? '' : 'none';
-  });
+  updateTierVisibility();
 }
 
 function filterCards(f) {
-  // Clear search, set, and color filters
-  document.getElementById('searchBar').value = '';
-  activeSet = null;
-  activeColor = null;
-  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('parallelRow').style.display = 'none';
-  document.getElementById('parallelFilters').innerHTML = '';
-
-  document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
+  clearAllFilters();
   document.querySelectorAll('.slab-menu .fbtn').forEach(b => b.classList.remove('active'));
   document.getElementById('slabWrap').classList.remove('open');
 
   const isGradeFilter = ['slabs','psa10','psa9','raw'].includes(f);
   const isSpecial = isGradeFilter || f === 'nonrookie';
   if (isGradeFilter && f !== 'raw') {
-    event.target.classList.add('active');
+    event.target.closest('.fbtn').classList.add('active');
     document.querySelector('#slabWrap > .fbtn').classList.add('active');
   } else {
-    event.target.classList.add('active');
+    event.target.closest('.fbtn').classList.add('active');
   }
 
   document.querySelectorAll('.tier-section').forEach(s => {
@@ -2154,16 +2194,21 @@ function filterCards(f) {
       else if (f === 'raw') c.style.display = (g === 'Raw' || !g) ? '' : 'none';
       else if (f === 'nonrookie') c.style.display = yr !== '2017-18' ? '' : 'none';
     });
-    document.querySelectorAll('.tier-section').forEach(s => {
-      const visible = s.querySelectorAll('.card:not([style*="display: none"])').length;
-      s.style.display = visible ? '' : 'none';
-    });
+    updateTierVisibility();
+  } else if (f !== 'all') {
+    // Show all cards within visible tiers
   } else {
     cards.forEach(c => c.style.display = '');
   }
 }
 
-// PSA population data for 2017-18 Prizm Bam Adebayo RC parallels
+function updateTierVisibility() {
+  document.querySelectorAll('.tier-section').forEach(s => {
+    s.style.display = s.querySelectorAll('.card:not([style*="display: none"])').length ? '' : 'none';
+  });
+}
+
+// PSA population data
 const POP_DATA = {
   'Prizm|Base':          {total: 16547, psa10: 7823, psa9: 5412, psa8: 2104, other: 1208},
   'Prizm|Silver':        {total: 3241, psa10: 1687, psa9: 978, psa8: 362, other: 214},
@@ -2187,7 +2232,6 @@ const POP_DATA = {
   'NBA Hoops|Base':      {total: 2345, psa10: 987, psa9: 812, psa8: 345, other: 201},
 };
 
-// Known print runs for numbered parallels
 const PRINT_RUNS = {
   '/199': 199, '/175': 175, '/125': 125, '/99': 99, '/75': 75,
   '/50': 50, '/49': 49, '/25': 25, '/20': 20, '/10': 10,
@@ -2198,81 +2242,53 @@ function openModal(el) {
   const d = el.dataset;
   const modal = document.getElementById('cardModal');
   const imgWrap = document.getElementById('modalImgWrap');
-  const title = document.getElementById('modalTitle');
-  const setDiv = document.getElementById('modalSet');
-  const details = document.getElementById('modalDetails');
-  const popDiv = document.getElementById('modalPop');
 
-  // Image
   if (d.image) {
     imgWrap.innerHTML = `<img class="modal-img" src="${d.image}" alt="${d.name}">`;
   } else {
-    imgWrap.innerHTML = `<div class="modal-placeholder">${d.set} — ${d.parallel}</div>`;
+    imgWrap.innerHTML = `<div class="modal-placeholder">${d.set} &mdash; ${d.parallel}</div>`;
   }
 
-  // Title & set
-  title.textContent = d.name;
-  setDiv.textContent = `${d.year} ${d.set} ${d.cardNumber}`;
+  document.getElementById('modalTitle').textContent = d.name;
+  document.getElementById('modalSet').textContent = `${d.year} ${d.set} ${d.cardNumber}`;
 
-  // Details grid
   let html = '';
   html += `<div class="modal-detail"><div class="label">Parallel</div><div class="value purple">${d.parallel}</div></div>`;
   html += `<div class="modal-detail"><div class="label">Grade</div><div class="value gold">${d.grade || 'Raw'}</div></div>`;
   html += `<div class="modal-detail"><div class="label">Qty Owned</div><div class="value green">${d.qty}</div></div>`;
-
   if (d.serial) {
-    const printRun = PRINT_RUNS[d.serial];
-    html += `<div class="modal-detail"><div class="label">Print Run</div><div class="value blue">${d.serial}${printRun ? ` (${printRun} exist)` : ''}</div></div>`;
+    const pr = PRINT_RUNS[d.serial];
+    html += `<div class="modal-detail"><div class="label">Print Run</div><div class="value blue">${d.serial}${pr ? ` (${pr} exist)` : ''}</div></div>`;
   } else {
     html += `<div class="modal-detail"><div class="label">Print Run</div><div class="value">Unlimited</div></div>`;
   }
-
-  details.innerHTML = html;
+  document.getElementById('modalDetails').innerHTML = html;
 
   // Population data
+  const popDiv = document.getElementById('modalPop');
   const popKey = `${d.set}|${d.parallel}`;
   const pop = POP_DATA[popKey];
   if (pop) {
-    const maxVal = Math.max(pop.psa10, pop.psa9, pop.psa8, pop.other);
     popDiv.innerHTML = `
       <div class="pop-title">PSA Population Report</div>
-      <div class="pop-bar">
-        <div class="pop-label">PSA 10</div>
-        <div class="pop-track"><div class="pop-fill" style="width:${pop.psa10/pop.total*100}%;background:#ffd700"></div></div>
-        <div class="pop-count" style="color:#ffd700">${pop.psa10.toLocaleString()}</div>
-      </div>
-      <div class="pop-bar">
-        <div class="pop-label">PSA 9</div>
-        <div class="pop-track"><div class="pop-fill" style="width:${pop.psa9/pop.total*100}%;background:#c0c0c0"></div></div>
-        <div class="pop-count" style="color:#c0c0c0">${pop.psa9.toLocaleString()}</div>
-      </div>
-      <div class="pop-bar">
-        <div class="pop-label">PSA 8</div>
-        <div class="pop-track"><div class="pop-fill" style="width:${pop.psa8/pop.total*100}%;background:#cd7f32"></div></div>
-        <div class="pop-count" style="color:#cd7f32">${pop.psa8.toLocaleString()}</div>
-      </div>
-      <div class="pop-bar">
-        <div class="pop-label">Other</div>
-        <div class="pop-track"><div class="pop-fill" style="width:${pop.other/pop.total*100}%;background:#6e6e8a"></div></div>
-        <div class="pop-count">${pop.other.toLocaleString()}</div>
-      </div>
-      <div style="text-align:right;margin-top:6px;font-size:10px;color:var(--td)">Total graded: ${pop.total.toLocaleString()}</div>
+      <div class="pop-bar"><div class="pop-label">PSA 10</div><div class="pop-track"><div class="pop-fill" style="width:${pop.psa10/pop.total*100}%;background:#ffd700"></div></div><div class="pop-count" style="color:#ffd700">${pop.psa10.toLocaleString()}</div></div>
+      <div class="pop-bar"><div class="pop-label">PSA 9</div><div class="pop-track"><div class="pop-fill" style="width:${pop.psa9/pop.total*100}%;background:#c0c0c0"></div></div><div class="pop-count" style="color:#c0c0c0">${pop.psa9.toLocaleString()}</div></div>
+      <div class="pop-bar"><div class="pop-label">PSA 8</div><div class="pop-track"><div class="pop-fill" style="width:${pop.psa8/pop.total*100}%;background:#cd7f32"></div></div><div class="pop-count" style="color:#cd7f32">${pop.psa8.toLocaleString()}</div></div>
+      <div class="pop-bar"><div class="pop-label">Other</div><div class="pop-track"><div class="pop-fill" style="width:${pop.other/pop.total*100}%;background:#6e6e8a"></div></div><div class="pop-count">${pop.other.toLocaleString()}</div></div>
+      <div style="text-align:right;margin-top:8px;font-size:10px;color:var(--td)">Total graded: ${pop.total.toLocaleString()}</div>
     `;
     popDiv.style.display = '';
   } else if (d.serial) {
-    const printRun = PRINT_RUNS[d.serial];
+    const pr = PRINT_RUNS[d.serial];
     popDiv.innerHTML = `
       <div class="pop-title">Scarcity</div>
-      <div style="font-size:13px;color:var(--t)">
-        ${printRun ? `Only <strong style="color:var(--go)">${printRun}</strong> copies exist worldwide` : `<strong style="color:var(--go)">SSP</strong> — Short Supply Print`}
-      </div>
+      <div style="font-size:13px;color:var(--t)">${pr ? `Only <strong style="color:var(--go)">${pr}</strong> copies exist worldwide` : `<strong style="color:var(--go)">SSP</strong> — Short Supply Print`}</div>
     `;
     popDiv.style.display = '';
   } else {
     popDiv.style.display = 'none';
   }
 
-  // Update counter
   const visible = getVisibleCards();
   const idx = visible.indexOf(el);
   document.getElementById('modalCounter').textContent = `${idx + 1} / ${visible.length}`;
@@ -2292,17 +2308,13 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') navigateCard(-1);
 });
 
-// Mobile swipe support
+// Mobile swipe
 let touchStartX = 0;
-let touchEndX = 0;
 const modalEl = document.getElementById('cardModal');
 modalEl.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
 modalEl.addEventListener('touchend', e => {
-  touchEndX = e.changedTouches[0].screenX;
-  const diff = touchStartX - touchEndX;
-  if (Math.abs(diff) > 50) {
-    navigateCard(diff > 0 ? 1 : -1);
-  }
+  const diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 50) navigateCard(diff > 0 ? 1 : -1);
 });
 
 let currentCardIndex = -1;
@@ -2312,18 +2324,360 @@ function getVisibleCards() {
 
 function navigateCard(dir) {
   const visible = getVisibleCards();
-  if (visible.length === 0) return;
+  if (!visible.length) return;
   currentCardIndex = Math.max(0, Math.min(visible.length - 1, currentCardIndex + dir));
   openModal(visible[currentCardIndex]);
 }
 
-// Override openModal to track index
 const _origOpen = openModal;
 openModal = function(el) {
   const visible = getVisibleCards();
   currentCardIndex = visible.indexOf(el);
   _origOpen(el);
 };
+
+// ============ DOUBLE DRIBBLE INTRO ============
+(function(){
+  const canvas = document.getElementById('introCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const PX = 4; // pixel scale
+  let W, H, gW, gH;
+  let frame = 0;
+  let phase = 'court'; // court -> dunk -> stats -> title -> done
+  let phaseStart = 0;
+  let introRunning = true;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    gW = Math.floor(W / PX);
+    gH = Math.floor(H / PX);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // NES-like palette
+  const C = {
+    black: '#0a0a0a',
+    court: '#c67e38',
+    courtLine: '#fff',
+    courtDark: '#a86420',
+    jersey1: '#98002e', // Heat red
+    jersey2: '#000',    // Heat black
+    skin: '#c68642',
+    white: '#ffffff',
+    gold: '#ffd700',
+    green: '#00c853',
+    blue: '#2196f3',
+    purple: '#7c5cff',
+    cyan: '#00e5ff',
+    dim: '#333355',
+    scoreBg: '#1a0a2e',
+    sky: '#0a0a2e',
+  };
+
+  // Draw a pixel-art rectangle
+  function px(x, y, w, h, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x * PX, y * PX, w * PX, h * PX);
+  }
+
+  // Draw pixel text (8-bit style using canvas)
+  function pxText(text, x, y, color, size) {
+    ctx.fillStyle = color;
+    ctx.font = `${size || 16}px "Press Start 2P", monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText(text, x, y);
+  }
+
+  // Simple pixel player - ~12x20 px grid
+  function drawPlayer(cx, cy, jerseyColor, armUp, facingRight) {
+    const f = facingRight ? 1 : -1;
+    // Head
+    px(cx-1, cy-9, 3, 3, C.skin);
+    // Hair
+    px(cx-1, cy-10, 3, 1, '#222');
+    // Body/jersey
+    px(cx-2, cy-6, 5, 4, jerseyColor);
+    // Number 13
+    px(cx, cy-5, 1, 1, C.white);
+    // Arms
+    if (armUp) {
+      px(cx + f*3, cy-8, 1, 3, C.skin);
+      px(cx - f*3, cy-5, 1, 2, C.skin);
+    } else {
+      px(cx+3, cy-5, 1, 2, C.skin);
+      px(cx-3, cy-5, 1, 2, C.skin);
+    }
+    // Shorts
+    px(cx-2, cy-2, 5, 2, C.jersey2);
+    // Legs
+    px(cx-2, cy, 2, 3, C.skin);
+    px(cx+1, cy, 2, 3, C.skin);
+    // Shoes
+    px(cx-2, cy+3, 2, 1, C.white);
+    px(cx+1, cy+3, 2, 1, C.white);
+  }
+
+  // Draw basketball
+  function drawBall(bx, by, r) {
+    // Simplified pixel circle
+    for (let dy = -r; dy <= r; dy++) {
+      for (let dx = -r; dx <= r; dx++) {
+        if (dx*dx + dy*dy <= r*r) {
+          px(bx+dx, by+dy, 1, 1, '#e67e22');
+        }
+      }
+    }
+    // Lines on ball
+    px(bx, by-r, 1, r*2+1, '#c65800');
+    px(bx-r, by, r*2+1, 1, '#c65800');
+  }
+
+  // Draw court
+  function drawCourt() {
+    // Floor
+    const courtY = Math.floor(gH * 0.55);
+    px(0, courtY, gW, gH - courtY, C.court);
+    // Court lines
+    px(0, courtY, gW, 1, C.courtLine);
+    // Center circle hint
+    px(Math.floor(gW/2)-8, courtY+4, 16, 1, C.courtDark);
+    px(Math.floor(gW/2)-6, courtY+8, 12, 1, C.courtDark);
+    // 3pt line hint
+    for (let i = 0; i < 10; i++) {
+      px(gW - 15 + i, courtY + 2 + Math.floor(Math.sin(i*0.5)*3), 1, 1, C.courtDark);
+    }
+    // Backboard + rim on right
+    px(gW - 12, courtY - 18, 1, 10, '#888');
+    px(gW - 16, courtY - 14, 8, 1, '#ddd');
+    px(gW - 15, courtY - 13, 6, 5, '#fff');
+    px(gW - 14, courtY - 8, 4, 1, '#ff4444');
+    // Net
+    for (let i = 0; i < 4; i++) {
+      px(gW - 13 + (i%2), courtY - 7 + i, 1, 1, '#eee');
+      px(gW - 11 + (i%2), courtY - 7 + i, 1, 1, '#eee');
+    }
+  }
+
+  // Scoreboard
+  function drawScoreboard(homeScore, awayScore, quarter, time) {
+    const sx = Math.floor(gW/2) - 24;
+    const sy = 4;
+    px(sx, sy, 48, 14, C.scoreBg);
+    px(sx, sy, 48, 1, C.gold);
+    px(sx, sy+13, 48, 1, C.gold);
+    px(sx, sy, 1, 14, C.gold);
+    px(sx+47, sy, 1, 14, C.gold);
+    // Divider
+    px(sx+24, sy, 1, 14, C.gold);
+
+    pxText('MIA', (sx+12)*PX, (sy+6)*PX, C.gold, 10);
+    pxText(String(homeScore), (sx+12)*PX, (sy+12)*PX, C.white, 10);
+    pxText('OPP', (sx+36)*PX, (sy+6)*PX, '#888', 10);
+    pxText(String(awayScore), (sx+36)*PX, (sy+12)*PX, '#888', 10);
+  }
+
+  // Intro phases
+  const PHASE_DURATIONS = { court: 120, dunk: 90, stats: 140, title: 120 };
+
+  function getPhaseProgress() {
+    return Math.min((frame - phaseStart) / PHASE_DURATIONS[phase], 1);
+  }
+
+  function nextPhase(name) {
+    phase = name;
+    phaseStart = frame;
+  }
+
+  function renderFrame() {
+    if (!introRunning) return;
+    frame++;
+    ctx.clearRect(0, 0, W, H);
+
+    // Background
+    ctx.fillStyle = C.sky;
+    ctx.fillRect(0, 0, W, H);
+
+    const p = getPhaseProgress();
+    const courtY = Math.floor(gH * 0.55);
+    const midX = Math.floor(gW / 2);
+
+    if (phase === 'court') {
+      // Player dribbling from left to center
+      drawCourt();
+      const playerX = Math.floor(-10 + p * (midX + 10));
+      const bounceY = courtY - 12 + Math.abs(Math.sin(frame * 0.15)) * 3;
+      drawPlayer(playerX, courtY - 1, C.jersey1, false, true);
+      // Dribbling ball
+      const ballBounce = Math.abs(Math.sin(frame * 0.2)) * 6;
+      drawBall(playerX + 3, courtY + ballBounce - 2, 2);
+      drawScoreboard(79, 68, '4Q', '0:42');
+
+      if (p >= 1) nextPhase('dunk');
+    }
+    else if (phase === 'dunk') {
+      drawCourt();
+      // Player driving to rim and dunking
+      const startX = midX;
+      const endX = gW - 16;
+      const px2 = startX + (endX - startX) * Math.min(p * 1.5, 1);
+      const jumpP = Math.max(0, (p - 0.3) / 0.7);
+      const jumpH = jumpP > 0 ? Math.sin(jumpP * Math.PI) * 20 : 0;
+      const playerY = courtY - 1 - jumpH;
+
+      drawPlayer(Math.floor(px2), Math.floor(playerY), C.jersey1, jumpP > 0.3, true);
+
+      if (jumpP > 0.4 && jumpP < 0.8) {
+        drawBall(Math.floor(px2) + 3, Math.floor(playerY) - 10, 2);
+      }
+      // Flash on dunk
+      if (jumpP > 0.7 && jumpP < 0.85) {
+        ctx.fillStyle = 'rgba(255,255,255,' + (0.6 - (jumpP - 0.7) * 4) + ')';
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      // Score ticks up during dunk
+      const score = jumpP > 0.6 ? 81 : jumpP > 0.3 ? 80 : 79;
+      drawScoreboard(score, 68, '4Q', '0:12');
+
+      if (p >= 1) nextPhase('stats');
+    }
+    else if (phase === 'stats') {
+      // Stat screen - NES victory style
+      ctx.fillStyle = '#0a0a1a';
+      ctx.fillRect(0, 0, W, H);
+
+      // Scanline effect
+      for (let y = 0; y < H; y += 4) {
+        ctx.fillStyle = 'rgba(0,0,0,0.15)';
+        ctx.fillRect(0, y, W, 2);
+      }
+
+      const cx = W / 2;
+      const fadeIn = Math.min(p * 3, 1);
+      ctx.globalAlpha = fadeIn;
+
+      pxText('FINAL SCORE', cx, H * 0.12, C.gold, Math.min(W * 0.04, 24));
+
+      // Big score
+      if (p > 0.1) {
+        const scoreP = Math.min((p - 0.1) / 0.3, 1);
+        const displayScore = Math.floor(83 * scoreP);
+        pxText(String(displayScore), cx, H * 0.32, C.white, Math.min(W * 0.15, 80));
+        pxText('POINTS', cx, H * 0.38, C.gold, Math.min(W * 0.025, 14));
+      }
+
+      // Stats cascade
+      const stats = [
+        ['FG', '28-46'],
+        ['3PT', '10-18'],
+        ['FT', '17-17'],
+        ['REB', '6'],
+        ['AST', '3'],
+        ['BLK', '2'],
+      ];
+
+      stats.forEach((s, i) => {
+        const delay = 0.3 + i * 0.08;
+        if (p > delay) {
+          const sp = Math.min((p - delay) / 0.15, 1);
+          ctx.globalAlpha = sp;
+          const sy = H * 0.48 + i * Math.min(H * 0.065, 36);
+          pxText(s[0], cx - W * 0.12, sy, '#888', Math.min(W * 0.02, 12));
+          pxText(s[1], cx + W * 0.12, sy, C.cyan, Math.min(W * 0.02, 12));
+        }
+      });
+
+      ctx.globalAlpha = 1;
+
+      if (p > 0.85) {
+        const flashP = (p - 0.85) / 0.15;
+        pxText('FRANCHISE RECORD', cx, H * 0.9, C.gold, Math.min(W * 0.022, 14));
+        if (Math.floor(frame / 8) % 2 === 0) {
+          pxText('JAN 2, 2025', cx, H * 0.95, C.purple, Math.min(W * 0.016, 10));
+        }
+      }
+
+      if (p >= 1) nextPhase('title');
+    }
+    else if (phase === 'title') {
+      // Final title card
+      ctx.fillStyle = '#040409';
+      ctx.fillRect(0, 0, W, H);
+
+      const cx = W / 2;
+      const fadeIn = Math.min(p * 2, 1);
+      ctx.globalAlpha = fadeIn;
+
+      // Glow
+      const grd = ctx.createRadialGradient(cx, H * 0.4, 0, cx, H * 0.4, W * 0.4);
+      grd.addColorStop(0, 'rgba(124,92,255,0.08)');
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, W, H);
+
+      // Title
+      pxText('BAM ADEBAYO', cx, H * 0.35, C.white, Math.min(W * 0.06, 40));
+
+      if (p > 0.2) {
+        const sp = Math.min((p - 0.2) / 0.3, 1);
+        ctx.globalAlpha = sp;
+        pxText('ROOKIE CARD COLLECTION', cx, H * 0.45, C.purple, Math.min(W * 0.025, 16));
+      }
+
+      if (p > 0.5) {
+        const sp = Math.min((p - 0.5) / 0.3, 1);
+        ctx.globalAlpha = sp;
+        // Card count from page
+        pxText('49 CARDS  |  79 PIECES', cx, H * 0.58, C.gold, Math.min(W * 0.018, 12));
+      }
+
+      ctx.globalAlpha = 1;
+
+      // Scanlines
+      for (let y = 0; y < H; y += 3) {
+        ctx.fillStyle = 'rgba(0,0,0,0.08)';
+        ctx.fillRect(0, y, W, 1);
+      }
+
+      if (p >= 1) {
+        setTimeout(skipIntro, 600);
+        introRunning = false;
+      }
+    }
+
+    if (introRunning) requestAnimationFrame(renderFrame);
+  }
+
+  requestAnimationFrame(renderFrame);
+
+  // Skip / click through
+  window.skipIntro = function() {
+    if (!introRunning && document.getElementById('introOverlay').classList.contains('fade-out')) return;
+    introRunning = false;
+    const overlay = document.getElementById('introOverlay');
+    overlay.classList.add('fade-out');
+    document.body.classList.remove('intro-active');
+    // Fade in main content
+    document.querySelectorAll('.bg-mesh,.bg-noise,.hero,.wrap,.footer').forEach(el => {
+      el.style.transition = 'opacity .8s ease';
+      el.style.opacity = '1';
+    });
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      animateCounters();
+    }, 800);
+  };
+
+  // Click anywhere or press any key to skip
+  document.getElementById('introOverlay').addEventListener('click', skipIntro);
+  document.addEventListener('keydown', function introKey(e) {
+    skipIntro();
+    document.removeEventListener('keydown', introKey);
+  });
+})();
 </script>
 </body>
 </html>
