@@ -9,40 +9,65 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#000;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-rendering:crisp-edges;object-fit:contain}
-/* Touch controls overlay */
-#touch-controls{position:fixed;bottom:0;left:0;right:0;height:40vh;pointer-events:none;display:none;z-index:10}
-.dpad{position:absolute;left:20px;bottom:20px;width:120px;height:120px;pointer-events:auto}
-.dpad-btn{position:absolute;width:40px;height:40px;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-family:'Press Start 2P',monospace}
-.dpad-btn:active{background:rgba(255,23,68,0.5)}
-.dpad-up{left:40px;top:0}
-.dpad-down{left:40px;bottom:0}
-.dpad-left{left:0;top:40px}
-.dpad-right{right:0;top:40px}
-.action-btns{position:absolute;right:20px;bottom:20px;pointer-events:auto}
-.action-btn{width:56px;height:56px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:9px;color:#fff;position:absolute}
-.action-btn:active{transform:scale(0.9)}
-.btn-a{background:rgba(255,23,68,0.4);right:0;bottom:30px}
-.btn-b{background:rgba(33,150,243,0.4);right:65px;bottom:0}
-.btn-start{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:60px;height:28px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:14px;pointer-events:auto;color:#fff;font-size:7px;font-family:'Press Start 2P',monospace;display:flex;align-items:center;justify-content:center}
-.btn-start:active{background:rgba(255,255,255,0.3)}
+
+/* Touch controls — zone-based, not individual buttons */
+#touch-controls{position:fixed;bottom:0;left:0;right:0;height:45vh;display:none;z-index:10;pointer-events:none}
+
+/* Left zone: d-pad area */
+#zone-dpad{position:absolute;left:0;top:0;width:50%;height:100%;pointer-events:auto}
+
+/* Right zone: action buttons */
+#zone-actions{position:absolute;right:0;top:0;width:50%;height:100%;pointer-events:auto}
+
+/* Visual d-pad overlay (non-interactive, just visual) */
+.dpad-visual{position:absolute;left:20px;bottom:20px;width:110px;height:110px;pointer-events:none;opacity:0.5}
+.dpad-visual .h{position:absolute;left:0;top:37px;width:110px;height:36px;background:rgba(255,255,255,0.12);border-radius:6px}
+.dpad-visual .v{position:absolute;left:37px;top:0;width:36px;height:110px;background:rgba(255,255,255,0.12);border-radius:6px}
+.dpad-visual .center{position:absolute;left:37px;top:37px;width:36px;height:36px;background:rgba(255,255,255,0.18);border-radius:4px}
+.dpad-visual .arrow{position:absolute;color:rgba(255,255,255,0.4);font-size:16px;font-family:'Press Start 2P',monospace;display:flex;align-items:center;justify-content:center}
+.dpad-visual .arrow.up{left:37px;top:4px;width:36px;height:30px}
+.dpad-visual .arrow.down{left:37px;bottom:4px;width:36px;height:30px}
+.dpad-visual .arrow.left{left:4px;top:37px;width:30px;height:36px}
+.dpad-visual .arrow.right{right:4px;top:37px;width:30px;height:36px}
+
+/* Visual action buttons (non-interactive, just visual) */
+.action-visual{position:absolute;right:20px;bottom:20px;width:130px;height:110px;pointer-events:none;opacity:0.5}
+.action-visual .btn{position:absolute;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:10px;color:rgba(255,255,255,0.7)}
+.action-visual .btn-a{background:rgba(255,23,68,0.35);border:2px solid rgba(255,23,68,0.5);right:0;top:0}
+.action-visual .btn-b{background:rgba(33,150,243,0.35);border:2px solid rgba(33,150,243,0.5);left:0;bottom:0}
+
+/* Start button */
+.start-visual{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);pointer-events:auto;
+  width:64px;height:28px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);
+  border-radius:14px;color:rgba(255,255,255,0.5);font-size:7px;font-family:'Press Start 2P',monospace;
+  display:flex;align-items:center;justify-content:center;opacity:0.5}
+
 .back-btn{position:fixed;top:8px;left:8px;z-index:20;background:rgba(0,0,0,0.6);color:#ff1744;border:1px solid #ff1744;padding:4px 10px;font-size:8px;font-family:'Press Start 2P',monospace;text-decoration:none;border-radius:4px}
 </style>
 </head>
 <body>
 <a href="index.html" class="back-btn">< BACK</a>
 <canvas id="c" width="256" height="240"></canvas>
+
 <div id="touch-controls">
-  <div class="dpad">
-    <div class="dpad-btn dpad-up" data-dir="up">^</div>
-    <div class="dpad-btn dpad-down" data-dir="down">v</div>
-    <div class="dpad-btn dpad-left" data-dir="left"><</div>
-    <div class="dpad-btn dpad-right" data-dir="right">></div>
+  <div id="zone-dpad">
+    <div class="dpad-visual">
+      <div class="h"></div>
+      <div class="v"></div>
+      <div class="center"></div>
+      <div class="arrow up">^</div>
+      <div class="arrow down">v</div>
+      <div class="arrow left"><</div>
+      <div class="arrow right">></div>
+    </div>
   </div>
-  <div class="action-btns">
-    <div class="action-btn btn-a" data-action="shoot">A</div>
-    <div class="action-btn btn-b" data-action="pass">B</div>
+  <div id="zone-actions">
+    <div class="action-visual">
+      <div class="btn btn-a">A</div>
+      <div class="btn btn-b">B</div>
+    </div>
   </div>
-  <div class="btn-start" data-action="start">START</div>
+  <div class="start-visual">START</div>
 </div>
 
 <script src="static/game/court.js"></script>
@@ -61,49 +86,201 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
   const ctx = canvas.getContext('2d');
   const W = 256, H = 240;
 
-  // Show touch controls on mobile
-  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  // Detect mobile — show touch controls on narrow screens OR touch devices
+  const isMobile = (('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth < 1024);
   if (isMobile) document.getElementById('touch-controls').style.display = 'block';
 
-  // Touch input state
-  const touchState = { up:false,down:false,left:false,right:false,shoot:false,pass:false,start:false };
-  const touchActive = {};
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UNIFIED INPUT SYSTEM
+  // Merges keyboard (InputController) and touch into a single state each frame
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  const input = {
+    // Continuous (held) state
+    dx: 0, dy: 0, turbo: false,
+    // Edge-detected (just pressed this frame)
+    shootJust: false, passJust: false, startJust: false,
+    // Raw hold state for touch buttons
+    _shootHeld: false, _passHeld: false, _startHeld: false,
+    _prevShootHeld: false, _prevPassHeld: false, _prevStartHeld: false,
+    // Touch d-pad tracking
+    _dpadTouchId: null,
+    _dpadCenterX: 0, _dpadCenterY: 0,
+    _dpadDx: 0, _dpadDy: 0,
+    // Touch action tracking (multiple simultaneous touches)
+    _actionTouches: {}, // touchId -> 'shoot' | 'pass' | 'start'
+  };
+
+  // ── Touch Setup ──────────────────────────────────────────────────────────
 
   function setupTouch() {
-    const tc = document.getElementById('touch-controls');
-    tc.addEventListener('touchstart', handleTouch, {passive:false});
-    tc.addEventListener('touchmove', handleTouch, {passive:false});
-    tc.addEventListener('touchend', handleTouchEnd, {passive:false});
-    tc.addEventListener('touchcancel', handleTouchEnd, {passive:false});
+    const dpad = document.getElementById('zone-dpad');
+    const actions = document.getElementById('zone-actions');
+    const startBtn = document.querySelector('.start-visual');
+
+    // D-PAD: track finger position relative to initial touch point
+    dpad.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      const t = e.changedTouches[0];
+      input._dpadTouchId = t.identifier;
+      input._dpadCenterX = t.clientX;
+      input._dpadCenterY = t.clientY;
+      input._dpadDx = 0;
+      input._dpadDy = 0;
+    }, {passive: false});
+
+    dpad.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        if (t.identifier === input._dpadTouchId) {
+          const dx = t.clientX - input._dpadCenterX;
+          const dy = t.clientY - input._dpadCenterY;
+          const deadzone = 10;
+          input._dpadDx = Math.abs(dx) > deadzone ? (dx > 0 ? 1 : -1) : 0;
+          input._dpadDy = Math.abs(dy) > deadzone ? (dy > 0 ? 1 : -1) : 0;
+        }
+      }
+    }, {passive: false});
+
+    dpad.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        if (t.identifier === input._dpadTouchId) {
+          input._dpadTouchId = null;
+          input._dpadDx = 0;
+          input._dpadDy = 0;
+        }
+      }
+    }, {passive: false});
+
+    dpad.addEventListener('touchcancel', (e) => {
+      e.preventDefault();
+      input._dpadTouchId = null;
+      input._dpadDx = 0;
+      input._dpadDy = 0;
+    }, {passive: false});
+
+    // ACTION BUTTONS: zone-based detection
+    // Top-right area of zone = A (shoot), bottom-left area = B (pass)
+    actions.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        const rect = actions.getBoundingClientRect();
+        const rx = (t.clientX - rect.left) / rect.width;
+        const ry = (t.clientY - rect.top) / rect.height;
+        // A button zone: right side, upper area
+        // B button zone: left side, lower area
+        // Simple split: top-right = shoot, bottom-left = pass
+        if (rx > 0.35 && ry < 0.65) {
+          input._actionTouches[t.identifier] = 'shoot';
+        } else {
+          input._actionTouches[t.identifier] = 'pass';
+        }
+      }
+    }, {passive: false});
+
+    actions.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        delete input._actionTouches[t.identifier];
+      }
+    }, {passive: false});
+
+    actions.addEventListener('touchcancel', (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        delete input._actionTouches[t.identifier];
+      }
+    }, {passive: false});
+
+    // START button
+    startBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        input._actionTouches[t.identifier] = 'start';
+      }
+    }, {passive: false});
+
+    startBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        delete input._actionTouches[t.identifier];
+      }
+    }, {passive: false});
+
+    startBtn.addEventListener('touchcancel', (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        delete input._actionTouches[t.identifier];
+      }
+    }, {passive: false});
+
+    // Global touch on canvas for menu screens (title, howtoplay, gameover)
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      // Set a flag for any-tap detection used by menu screens
+      input._canvasTapped = true;
+    }, {passive: false});
   }
 
-  function handleTouch(e) {
-    e.preventDefault();
-    for (const t of e.changedTouches) {
-      const el = document.elementFromPoint(t.clientX, t.clientY);
-      if (!el) continue;
-      const dir = el.dataset.dir;
-      const action = el.dataset.action;
-      if (dir) { touchActive[t.identifier] = dir; touchState[dir] = true; }
-      if (action) { touchActive[t.identifier] = action; touchState[action] = true; }
-    }
-  }
+  // ── Input Update (call once per frame BEFORE reading input) ──────────────
 
-  function handleTouchEnd(e) {
-    e.preventDefault();
-    for (const t of e.changedTouches) {
-      const key = touchActive[t.identifier];
-      if (key) { touchState[key] = false; delete touchActive[t.identifier]; }
+  function updateInput() {
+    // Keyboard state from InputController
+    const move = InputController.getMovement();
+    const kbShoot = InputController.isShootPressed();
+    const kbPass = InputController.isPassPressed();
+    const kbPause = InputController.isPausePressed();
+    const kbTurbo = InputController.isTurbo();
+
+    // Touch action buttons: derive held state from active touches
+    let touchShoot = false, touchPass = false, touchStart = false;
+    for (const id in input._actionTouches) {
+      const v = input._actionTouches[id];
+      if (v === 'shoot') touchShoot = true;
+      if (v === 'pass') touchPass = true;
+      if (v === 'start') touchStart = true;
     }
+
+    // Merge d-pad
+    input.dx = move.dx || input._dpadDx;
+    input.dy = move.dy || input._dpadDy;
+
+    // Current held state
+    const shootNow = kbShoot || touchShoot;
+    const passNow = kbPass || touchPass;
+    const startNow = kbPause || touchStart || !!input._canvasTapped;
+
+    // Edge detection: just pressed = now true AND was false last frame
+    input.shootJust = shootNow && !input._prevShootHeld;
+    input.passJust = passNow && !input._prevPassHeld;
+    input.startJust = startNow && !input._prevStartHeld;
+
+    input.turbo = kbTurbo;
+
+    // Save for next frame
+    input._prevShootHeld = shootNow;
+    input._prevPassHeld = passNow;
+    input._prevStartHeld = startNow;
+    input._shootHeld = shootNow;
+    input._passHeld = passNow;
+    input._startHeld = startNow;
+
+    // Clear canvas tap
+    input._canvasTapped = false;
+
+    // Update InputController's internal state
+    InputController.update();
   }
 
   setupTouch();
-
-  // Init modules
   InputController.init();
 
-  // Game state
-  let scene = 'title'; // title | playing | paused | quarterBreak | gameover
+  // ═══════════════════════════════════════════════════════════════════════════
+  // GAME STATE
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  let scene = 'title'; // title | howtoplay | playing | paused | quarterBreak | gameover
   let frame = 0;
   let gs = null;
   let players = [];
@@ -112,7 +289,6 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
   let shotPower = 0;
   let shotActive = false;
 
-  // Hoop positions
   const LEFT_HOOP = {x:24, y:120};
   const RIGHT_HOOP = {x:232, y:120};
 
@@ -132,12 +308,9 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
   }
 
   function getControlled() { return players[controlledIdx]; }
-
   function getTeamPlayers(team) { return players.filter(p => p.team === team); }
-
   function dist(a, b) { return Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2); }
 
-  // Find which player on home team is closest to ball
   function findClosestHome() {
     let best = 0, bestD = Infinity;
     for (let i = 0; i < players.length; i++) {
@@ -148,27 +321,44 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
     return best;
   }
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // GAME LOOP
+  // ═══════════════════════════════════════════════════════════════════════════
+
   function gameLoop() {
     frame++;
     ctx.clearRect(0, 0, W, H);
+    updateInput();
 
+    // ── TITLE SCREEN ──
     if (scene === 'title') {
       TitleScreen.drawTitle(ctx, W, H, frame);
-      const enterPressed = InputController.isPausePressed() || touchState.start || touchState.shoot;
-      if (enterPressed) { startGame(); touchState.start = false; touchState.shoot = false; }
-      InputController.update();
+      if (input.startJust || input.shootJust) {
+        scene = 'howtoplay';
+      }
       requestAnimationFrame(gameLoop);
       return;
     }
 
+    // ── HOW TO PLAY ──
+    if (scene === 'howtoplay') {
+      TitleScreen.drawHowToPlay(ctx, W, H, frame, isMobile);
+      if (input.startJust || input.shootJust) {
+        startGame();
+      }
+      requestAnimationFrame(gameLoop);
+      return;
+    }
+
+    // ── GAME OVER ──
     if (scene === 'gameover') {
       TitleScreen.drawGameOver(ctx, W, H, gs.homeScore, gs.awayScore, frame);
-      if (InputController.isPausePressed() || touchState.start) { scene = 'title'; touchState.start = false; }
-      InputController.update();
+      if (input.startJust || input.shootJust) { scene = 'title'; }
       requestAnimationFrame(gameLoop);
       return;
     }
 
+    // ── PAUSED ──
     if (scene === 'paused') {
       Court.draw(ctx, W, H);
       drawPlayers();
@@ -176,13 +366,12 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
       BallPhysics.drawBall(ctx);
       gs.drawHUD(ctx, W, H);
       TitleScreen.drawPauseMenu(ctx, W, H, 0);
-      if (InputController.isPausePressed() || touchState.start) { scene = 'playing'; gs.gameState = 'playing'; touchState.start = false; }
-      InputController.update();
+      if (input.startJust) { scene = 'playing'; gs.gameState = 'playing'; }
       requestAnimationFrame(gameLoop);
       return;
     }
 
-    // Playing
+    // ── PLAYING ──
     gs.update();
 
     if (gs.gameState === 'gameover') { scene = 'gameover'; }
@@ -191,38 +380,24 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
       drawPlayers();
       gs.drawHUD(ctx, W, H);
       TitleScreen.drawQuarterBreak(ctx, W, H, gs.quarter);
-      InputController.update();
       requestAnimationFrame(gameLoop);
       return;
     }
 
     // Pause check
-    if (InputController.isPausePressed() || touchState.start) {
-      if (gs.gameState === 'playing') { scene = 'paused'; gs.gameState = 'paused'; touchState.start = false; }
+    if (input.startJust && gs.gameState === 'playing') {
+      scene = 'paused'; gs.gameState = 'paused';
     }
 
-    // Input
-    const move = InputController.getMovement();
-    let dx = move.dx, dy = move.dy;
-    // Merge touch
-    if (touchState.left) dx = -1;
-    if (touchState.right) dx = 1;
-    if (touchState.up) dy = -1;
-    if (touchState.down) dy = 1;
-
-    const turbo = InputController.isTurbo();
-    const shootPressed = InputController.isShootPressed() || touchState.shoot;
-    const passPressed = InputController.isPassPressed() || touchState.pass;
-
-    // Reset one-shot touch
-    if (touchState.shoot) touchState.shoot = false;
-    if (touchState.pass) touchState.pass = false;
+    const dx = input.dx, dy = input.dy;
+    const turbo = input.turbo;
+    const shootPressed = input.shootJust;
+    const passPressed = input.passJust;
 
     const controlled = getControlled();
     const homePlayers = getTeamPlayers('home');
     const awayPlayers = getTeamPlayers('away');
     const homeOnOffense = gs.possession === 'home';
-    const targetHoop = homeOnOffense ? RIGHT_HOOP : LEFT_HOOP;
 
     // Move controlled player
     if (gs.gameState === 'playing' || gs.gameState === 'scored') {
@@ -232,17 +407,15 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
     // Player actions
     if (gs.gameState === 'playing') {
       if (homeOnOffense && controlled.hasBall) {
-        // Offense: shoot or pass
         if (shootPressed && !shotActive) {
           shotActive = true;
           shotPower = 0;
           const shot = ShotMechanics.initShot(controlled, RIGHT_HOOP.x, RIGHT_HOOP.y);
           shot.contested = ShotMechanics.isContested(controlled, awayPlayers);
-          shot.releaseQuality = 0.4 + Math.random() * 0.2; // decent release
+          shot.releaseQuality = 0.4 + Math.random() * 0.2;
           shotInProgress = shot;
           const result = ShotMechanics.attemptShot(shot);
 
-          // Launch ball
           BallPhysics.ball.holder = null;
           controlled.hasBall = false;
           controlled.shooting = true;
@@ -254,13 +427,9 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
               const pts = shot.type === 'three' ? 3 : 2;
               gs.onScore('home', pts);
               try { SoundFX.swish(); } catch(e) {}
-              // Reset ball
-              setTimeout(() => {
-                resetAfterScore('away');
-              }, 500);
+              setTimeout(() => { resetAfterScore('away'); }, 500);
             } else {
               try { SoundFX.brick(); } catch(e) {}
-              // Rebound - loose ball
               if (shot.reboundX !== undefined) {
                 BallPhysics.ball.x = shot.reboundX;
                 BallPhysics.ball.y = shot.reboundY;
@@ -281,7 +450,6 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
             controlled.hasBall = false;
             BallPhysics.pass(controlled.x, controlled.y, teammate.x, teammate.y);
             try { SoundFX.pass(); } catch(e) {}
-            // After pass arrives, give ball to teammate
             setTimeout(() => {
               if (BallPhysics.ball.state === 'passing') {
                 BallPhysics.ball.state = 'held';
@@ -293,9 +461,7 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
           }
         }
       } else if (!homeOnOffense) {
-        // Defense: steal or switch
         if (shootPressed) {
-          // Try to steal
           const ballHolder = players.find(p => p.hasBall && p.team === 'away');
           if (ballHolder && dist(controlled, ballHolder) < 18) {
             if (PlayerManager.attemptSteal(controlled, ballHolder)) {
@@ -309,7 +475,6 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
           }
         }
         if (passPressed) {
-          // Switch controlled player
           controlledIdx = PlayerManager.switchControlled(players, controlledIdx, 'home');
         }
       }
@@ -411,7 +576,6 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
       const handler = players.find(p => p.hasBall && p.team === 'home');
       if (handler) controlledIdx = players.indexOf(handler);
     } else {
-      // On defense, auto-switch to nearest to ball
       if (frame % 30 === 0) controlledIdx = findClosestHome();
     }
 
@@ -442,28 +606,16 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
     BallPhysics.drawBall(ctx);
     gs.drawHUD(ctx, W, H);
 
-    // Controlled player indicator (small arrow above)
+    // Controlled player indicator
     const cp = getControlled();
     ctx.fillStyle = '#fff';
     ctx.fillRect(cp.x - 1, cp.y - 18, 3, 1);
     ctx.fillRect(cp.x, cp.y - 19, 1, 1);
 
-    // Controls hint
-    if (frame < 300 && gs.gameState === 'playing') {
-      ctx.fillStyle = 'rgba(0,0,0,0.6)';
-      ctx.fillRect(0, H - 20, W, 20);
-      ctx.fillStyle = '#fff';
-      ctx.font = '6px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText(isMobile ? 'D-PAD: MOVE | A: SHOOT/STEAL | B: PASS/SWITCH' : 'ARROWS: MOVE | Z: SHOOT/STEAL | X: PASS/SWITCH | ENTER: PAUSE', W/2, H - 8);
-    }
-
-    InputController.update();
     requestAnimationFrame(gameLoop);
   }
 
   function drawPlayers() {
-    // Sort by Y for depth
     const sorted = [...players].sort((a,b) => a.y - b.y);
     for (const p of sorted) {
       const color = p.team === 'home' ? '#ff1744' : '#2196f3';
@@ -475,7 +627,6 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
   }
 
   function resetAfterScore(newPossTeam) {
-    // Give ball to the inbounding team's PG
     for (const p of players) p.hasBall = false;
     const pg = players.find(p => p.team === newPossTeam && p.index === 0);
     if (pg) {
@@ -487,7 +638,6 @@ canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-re
       BallPhysics.ball.vy = 0;
       if (newPossTeam === 'home') controlledIdx = players.indexOf(pg);
     }
-    // Reset positions
     PlayerManager.resetPositions(players, newPossTeam);
   }
 

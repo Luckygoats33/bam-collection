@@ -491,6 +491,112 @@ const TitleScreen = (() => {
     drawScanlines(ctx, W, H);
   }
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // PUBLIC: drawHowToPlay(ctx, W, H, frame, isMobile)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  function drawHowToPlay(ctx, W, H, frame, isMobile) {
+    fr(ctx, 0, 0, W, H, C.bg);
+    drawStars(ctx, W, H, frame);
+
+    // Title
+    drawPixelTextCentered(ctx, 'HOW TO PLAY', 10, 2, C.red, W);
+
+    // Divider
+    fr(ctx, 20, 30, W - 40, 2, C.redDark);
+
+    const lx = 14; // left margin
+    let y = 40;
+    const lineH = 14;
+
+    if (isMobile) {
+      // ── MOBILE CONTROLS ──
+      nesText(ctx, 'TOUCH CONTROLS', W / 2, y, 7, C.yellow);
+      y += lineH + 4;
+
+      nesText(ctx, 'D-PAD', lx + 30, y, 6, C.white, 'left');
+      nesText(ctx, 'Move player', lx + 80, y, 6, C.gray, 'left');
+      y += lineH;
+
+      nesText(ctx, 'A BTN', lx + 30, y, 6, C.red, 'left');
+      nesText(ctx, 'Shoot / Steal', lx + 80, y, 6, C.gray, 'left');
+      y += lineH;
+
+      nesText(ctx, 'B BTN', lx + 30, y, 6, '#2196f3', 'left');
+      nesText(ctx, 'Pass / Switch', lx + 80, y, 6, C.gray, 'left');
+      y += lineH;
+
+      nesText(ctx, 'START', lx + 30, y, 6, C.white, 'left');
+      nesText(ctx, 'Pause game', lx + 80, y, 6, C.gray, 'left');
+      y += lineH + 4;
+
+      // Draw d-pad icon
+      const dpx = W / 2 - 20, dpy = y;
+      fr(ctx, dpx + 8, dpy, 8, 24, '#333');
+      fr(ctx, dpx, dpy + 8, 24, 8, '#333');
+      fr(ctx, dpx + 9, dpy + 1, 6, 6, C.gray); // up
+      fr(ctx, dpx + 9, dpy + 17, 6, 6, C.gray); // down
+      fr(ctx, dpx + 1, dpy + 9, 6, 6, C.gray); // left
+      fr(ctx, dpx + 17, dpy + 9, 6, 6, C.gray); // right
+
+      // Draw A/B buttons
+      fr(ctx, dpx + 50, dpy + 2, 14, 14, C.red);
+      nesText(ctx, 'A', dpx + 57, dpy + 5, 5, C.white);
+      fr(ctx, dpx + 36, dpy + 12, 14, 14, '#2196f3');
+      nesText(ctx, 'B', dpx + 43, dpy + 15, 5, C.white);
+
+      y += 30;
+    } else {
+      // ── DESKTOP CONTROLS ──
+      nesText(ctx, 'KEYBOARD CONTROLS', W / 2, y, 7, C.yellow);
+      y += lineH + 4;
+
+      nesText(ctx, 'ARROWS', lx, y, 6, C.white, 'left');
+      nesText(ctx, 'Move player', lx + 60, y, 6, C.gray, 'left');
+      y += lineH;
+
+      nesText(ctx, 'Z or J', lx, y, 6, C.red, 'left');
+      nesText(ctx, 'Shoot / Steal', lx + 60, y, 6, C.gray, 'left');
+      y += lineH;
+
+      nesText(ctx, 'X or K', lx, y, 6, '#2196f3', 'left');
+      nesText(ctx, 'Pass / Switch', lx + 60, y, 6, C.gray, 'left');
+      y += lineH;
+
+      nesText(ctx, 'SPACE', lx, y, 6, C.green, 'left');
+      nesText(ctx, 'Turbo speed', lx + 60, y, 6, C.gray, 'left');
+      y += lineH;
+
+      nesText(ctx, 'ENTER', lx, y, 6, C.white, 'left');
+      nesText(ctx, 'Pause game', lx + 60, y, 6, C.gray, 'left');
+      y += lineH + 4;
+    }
+
+    // ── GAMEPLAY TIPS ──
+    fr(ctx, 20, y, W - 40, 2, C.redDark);
+    y += 8;
+    nesText(ctx, 'GAMEPLAY', W / 2, y, 7, C.yellow);
+    y += lineH + 2;
+
+    nesText(ctx, 'You are the HEAT (red)', W / 2, y, 5, C.red);
+    y += 11;
+    nesText(ctx, 'On offense: shoot or pass', W / 2, y, 5, C.gray);
+    y += 11;
+    nesText(ctx, 'On defense: steal or switch', W / 2, y, 5, C.gray);
+    y += 11;
+    nesText(ctx, '4 quarters - 90 sec each', W / 2, y, 5, C.gray);
+    y += 16;
+
+    // Blink prompt
+    const blink = Math.floor(frame / 30) % 2 === 0;
+    if (blink) {
+      const prompt = isMobile ? 'TAP TO START' : 'PRESS ENTER TO START';
+      nesText(ctx, prompt, W / 2, H - 20, 7, C.yellow);
+    }
+
+    drawScanlines(ctx, W, H);
+  }
+
   // ── public API ─────────────────────────────────────────────────────────────
 
   return {
@@ -498,6 +604,7 @@ const TitleScreen = (() => {
     drawPauseMenu,
     drawGameOver,
     drawQuarterBreak,
+    drawHowToPlay,
     // Expose helpers in case game engine wants to reuse them
     drawPixelText,
     drawPixelTextCentered,
