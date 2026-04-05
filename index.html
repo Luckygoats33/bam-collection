@@ -95,6 +95,11 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .card:hover{transform:translateY(-6px) scale(1.02);border-color:var(--bdr2);box-shadow:0 20px 40px rgba(0,0,0,.4),0 0 40px rgba(124,92,255,.08)}
 .card:hover::before{opacity:1}
 .card.owned{border-color:rgba(0,229,160,.12)}
+.card.missing{border:1px dashed rgba(255,71,87,.35);opacity:.75}
+.card.missing:hover{opacity:1;border-color:rgba(255,71,87,.6)}
+.card.missing .card-img{position:relative}
+.card.missing .card-img::after{content:'MISSING';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:900;color:var(--r);letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border:2px solid var(--r);border-radius:var(--radius-xs);background:rgba(0,0,0,.7);z-index:2}
+.badge-missing{position:absolute;top:8px;right:8px;font-size:8px;font-weight:700;padding:3px 8px;border-radius:var(--radius-xs);background:rgba(255,71,87,.15);color:var(--r);border:1px solid rgba(255,71,87,.3);z-index:1;text-transform:uppercase;letter-spacing:.5px}
 
 .card-img{aspect-ratio:3/4;background:#0a0a0a;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1)}
@@ -283,6 +288,7 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
     <button class="fbtn" onclick="filterCards('jersey')" style="border-color:#e65100"><span>Jersey</span></button>
     <button class="fbtn" onclick="filterCards('autograph')" style="border-color:#1565c0"><span>Autograph</span></button>
     <button class="fbtn" onclick="filterCards('collage')" style="border-color:#7b1fa2"><span>Collage</span></button>
+    <button class="fbtn" onclick="filterCards('missing')" style="border-color:#ff4757"><span>Missing</span></button>
   </div>
 
   <div class="search-area">
@@ -2019,10 +2025,19 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
       <div class="tier-count">0 cards</div>
     </div>
     <div class="cards">
-      
+
     </div>
   </div>
-  
+
+  <div class="tier-section" data-tier="missing" id="missingSection" style="display:none">
+    <div class="tier-header">
+      <div class="tier-badge" style="background:#ff4757">?</div>
+      <div class="tier-title">Missing Cards</div>
+      <div class="tier-count" id="missingCount">0 cards</div>
+    </div>
+    <div class="cards" id="missingCards"></div>
+  </div>
+
 </div>
 
 <div class="modal-overlay" id="cardModal" onclick="if(event.target===this)closeModal()">
@@ -2129,7 +2144,7 @@ const COLOR_MAP = {
 
 let activeColor = null;
 let activeSet = null;
-const cards = document.querySelectorAll('.card');
+let cards = document.querySelectorAll('.card');
 const sets = new Map();
 cards.forEach(c => {
   const s = c.dataset.set;
@@ -2296,6 +2311,20 @@ function filterCards(f) {
   document.querySelectorAll('.slab-menu .fbtn').forEach(b => b.classList.remove('active'));
   document.getElementById('slabWrap').classList.remove('open');
 
+  // Missing filter: show only the missing section
+  if (f === 'missing') {
+    document.querySelectorAll('.tier-section').forEach(s => {
+      s.style.display = s.dataset.tier === 'missing' ? '' : 'none';
+    });
+    cards.forEach(c => c.style.display = c.dataset.tier === 'missing' ? '' : 'none');
+    event.target.closest('.fbtn').classList.add('active');
+    return;
+  }
+
+  // Hide missing section for all other filters (except 'all')
+  const missingSection = document.getElementById('missingSection');
+  if (missingSection && f !== 'all') missingSection.style.display = 'none';
+
   const isGradeFilter = ['slabs','psa10','psa9','raw'].includes(f);
   const isCategoryFilter = ['jersey','autograph','collage'].includes(f);
   const isSpecial = isGradeFilter || f === 'nonrookie' || isCategoryFilter;
@@ -2312,6 +2341,7 @@ function filterCards(f) {
   });
   if (isSpecial) {
     cards.forEach(c => {
+      if (c.dataset.tier === 'missing') { c.style.display = 'none'; return; }
       const g = c.dataset.grade || '';
       const yr = c.dataset.year || '';
       if (f === 'slabs') c.style.display = (g.includes('PSA') || g.includes('SGC') || g.includes('BGS')) ? '' : 'none';
@@ -2342,7 +2372,11 @@ function filterCards(f) {
   } else if (f !== 'all') {
     // Show all cards within visible tiers
   } else {
-    cards.forEach(c => c.style.display = '');
+    cards.forEach(c => {
+      // Hide missing cards in 'all' view
+      c.style.display = c.dataset.tier === 'missing' ? 'none' : '';
+    });
+    document.getElementById('missingSection').style.display = 'none';
   }
 }
 
@@ -3754,6 +3788,97 @@ function initGame() {
   gameLoop();
   waitForTutorial();
 }
+
+// ============ MISSING CARDS ============
+const MISSING_CARDS = [
+  // 2017-18 Prizm Rainbow — missing parallels
+  {set:'Prizm', parallel:'Gold', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/10', priority:'grail', note:'Only 10 exist. Holy grail of the rainbow.'},
+  {set:'Prizm', parallel:'Black', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'1/1', priority:'grail', note:'True 1/1. The ultimate Bam card.'},
+  {set:'Prizm', parallel:'Red', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/299', priority:'high', note:'Numbered to 299.'},
+  {set:'Prizm', parallel:'Mojo', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/25', priority:'high', note:'Numbered to 25. Mojo refractor.'},
+  {set:'Prizm', parallel:'Camo', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/25', priority:'medium', note:'Numbered to 25. Camo pattern.'},
+  // Fast Break parallels not yet owned
+  {set:'Prizm Fast Break', parallel:'Base', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'low', note:'Fast Break base parallel.'},
+  {set:'Prizm Fast Break', parallel:'Neon Green', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'medium', note:'Bright neon green refractor.'},
+  {set:'Prizm Fast Break', parallel:'Neon Orange', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'medium', note:'Neon orange refractor.'},
+  // Donruss Optic missing
+  {set:'Donruss Optic', parallel:'Holo', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'', priority:'high', note:'Silver holo prizm. Key parallel.'},
+  {set:'Donruss Optic', parallel:'Red', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/99', priority:'medium', note:'Numbered to 99.'},
+  {set:'Donruss Optic', parallel:'Purple', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/175', priority:'medium', note:'Numbered to 175.'},
+  {set:'Donruss Optic', parallel:'Orange', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/199', priority:'medium', note:'Numbered to 199.'},
+  {set:'Donruss Optic', parallel:'Green', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/5', priority:'grail', note:'Only 5 exist.'},
+  // Key inserts missing
+  {set:'Select', parallel:'Silver', year:'2017-18', cardNumber:'#50', name:'Bam Adebayo RC', serial:'', priority:'high', note:'Select silver prizm. Clean design.'},
+  {set:'Prizm', parallel:'Sensational Swatches', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'', priority:'high', note:'Jersey relic card from Prizm set.'},
+  {set:'Contenders Draft Picks', parallel:'Cracked Ice Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/23', priority:'grail', note:'Cracked Ice autograph. Numbered to 23.'},
+  {set:'National Treasures', parallel:'RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'grail', note:'Rookie Patch Auto. The ultimate rookie card.'},
+  {set:'National Treasures', parallel:'Gold RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/10', priority:'grail', note:'Gold Rookie Patch Auto. Only 10 exist.'},
+  {set:'Immaculate', parallel:'RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'grail', note:'Immaculate Rookie Patch Auto.'},
+  {set:'Flawless', parallel:'Base Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/25', priority:'grail', note:'Flawless auto on-card. Diamond embedded.'},
+  {set:'Crown Royale', parallel:'Silhouettes', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'high', note:'Die-cut jersey card. Iconic design.'},
+  {set:'Noir', parallel:'Base Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'high', note:'On-card auto on dark acetate stock.'},
+  {set:'Prizm', parallel:'Gold Shimmer Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/10', priority:'grail', note:'Gold shimmer autograph. Only 10.'},
+];
+
+(function renderMissingCards() {
+  const container = document.getElementById('missingCards');
+  if (!container) return;
+  const section = document.getElementById('missingSection');
+  const countEl = document.getElementById('missingCount');
+  countEl.textContent = MISSING_CARDS.length + ' cards';
+
+  const priorityColors = {grail:'#ffd700', high:'#ff4757', medium:'#ff8c42', low:'#6e6e8a'};
+  const priorityLabels = {grail:'GRAIL', high:'HIGH', medium:'MED', low:'LOW'};
+
+  MISSING_CARDS.forEach(mc => {
+    const ebayQ = encodeURIComponent(`${mc.year} ${mc.set} ${mc.parallel} Bam Adebayo ${mc.cardNumber}`);
+    const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&_sacat=212&LH_BIN=1`;
+    const pColor = priorityColors[mc.priority] || '#6e6e8a';
+    const pLabel = priorityLabels[mc.priority] || '';
+
+    const card = document.createElement('div');
+    card.className = 'card missing';
+    card.dataset.tier = 'missing';
+    card.dataset.set = mc.set;
+    card.dataset.parallel = mc.parallel;
+    card.dataset.year = mc.year;
+    card.dataset.cardNumber = mc.cardNumber;
+    card.dataset.name = mc.name;
+    card.dataset.serial = mc.serial;
+    card.dataset.qty = '0';
+    card.dataset.grade = '';
+    card.dataset.image = '';
+    card.dataset.notes = mc.note;
+    card.onclick = function() { openModal(this); };
+
+    card.innerHTML = `
+      <div class="card-img">
+        <div class="placeholder">
+          <div class="set-name">${mc.year} ${mc.set}</div>
+          ${mc.parallel}<br>${mc.serial || 'Unlimited'}
+        </div>
+        <span class="badge-missing">NEED</span>
+        <span class="badge" style="top:8px;left:8px;background:${pColor}22;color:${pColor};border:1px solid ${pColor}44;font-size:7px;padding:2px 6px">${pLabel}</span>
+      </div>
+      <div class="card-info">
+        <div class="card-set">${mc.year} ${mc.set} ${mc.cardNumber}</div>
+        <div class="card-name">${mc.name}</div>
+        <div class="card-parallel" style="color:${pColor}">${mc.parallel}</div>
+        <div class="card-meta">
+          <a href="${ebayUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()"
+            style="font-size:9px;color:#2196f3;text-decoration:none;font-weight:700;padding:2px 8px;border-radius:4px;background:rgba(33,150,243,.1);border:1px solid rgba(33,150,243,.2)">Find on eBay</a>
+          ${mc.serial ? `<div class="card-qty" style="color:${pColor}">${mc.serial}</div>` : ''}
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  // Refresh the cards NodeList to include missing cards
+  cards = document.querySelectorAll('.card');
+  // Hide missing cards by default (only shown when Missing filter is active)
+  container.querySelectorAll('.card').forEach(c => c.style.display = 'none');
+  section.style.display = 'none';
+})();
 </script>
 </body>
 </html>
