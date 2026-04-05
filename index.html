@@ -82,6 +82,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .set-btn:hover,.set-btn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
 .set-label{font-size:11px;color:var(--td);text-transform:uppercase;letter-spacing:1px;font-weight:600}
 .parallel-filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.color-filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.color-btn{padding:4px 12px;border-radius:16px;border:2px solid transparent;background:var(--s2);color:var(--td);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.color-btn:hover{border-color:var(--bdr2);color:var(--t)}
+.color-btn.active{color:#fff;border-color:#fff3}
+.color-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .footer{text-align:center;padding:32px 16px;color:var(--td);font-size:12px;border-top:1px solid var(--bdr)}
 
 @media(max-width:600px){
@@ -137,6 +142,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="set-filters" id="setFilters"></div>
     <div class="set-label" id="parallelLabel" style="display:none;margin-top:6px">Parallels</div>
     <div class="parallel-filters" id="parallelFilters"></div>
+    <div class="set-label" style="margin-top:8px">Color / Parallel</div>
+    <div class="color-filters" id="colorFilters"></div>
   </div>
 
   
@@ -1355,7 +1362,27 @@ document.addEventListener('click', () => {
   document.getElementById('slabWrap').classList.remove('open');
 });
 
-// Build set and parallel filter buttons dynamically
+// Color mapping for universal color filter
+const COLOR_MAP = {
+  'Base':     {color:'#888',    keywords:['base','paper']},
+  'Silver':   {color:'#c0c0c0', keywords:['silver']},
+  'Gold':     {color:'#ffd700', keywords:['gold']},
+  'Green':    {color:'#2ecc71', keywords:['green']},
+  'Blue':     {color:'#3498db', keywords:['blue']},
+  'Purple':   {color:'#9b59b6', keywords:['purple']},
+  'Orange':   {color:'#ff8c42', keywords:['orange']},
+  'Red':      {color:'#e74c3c', keywords:['red','ruby','disco red']},
+  'Pink':     {color:'#ff69b4', keywords:['pink']},
+  'Bronze':   {color:'#cd7f32', keywords:['bronze']},
+  'Black':    {color:'#333',    keywords:['black']},
+  'White':    {color:'#f0f0f0', keywords:['white','sparkle']},
+  'Hyper':    {color:'#00e5ff', keywords:['hyper']},
+  'Shock':    {color:'#ffeb3b', keywords:['shock']},
+  'Astro':    {color:'#7c5cff', keywords:['astro']},
+  'Mosaic':   {color:'#e67e22', keywords:['mosaic']},
+};
+
+let activeColor = null;
 let activeSet = null;
 const cards = document.querySelectorAll('.card');
 const sets = new Map();
@@ -1375,9 +1402,59 @@ const setContainer = document.getElementById('setFilters');
   setContainer.appendChild(btn);
 });
 
-function filterBySet(setName, btn) {
-  // Clear search
+// Build color filter buttons - only show colors that have matching cards
+const colorContainer = document.getElementById('colorFilters');
+Object.entries(COLOR_MAP).forEach(([name, {color, keywords}]) => {
+  const hasCards = [...cards].some(c => {
+    const p = c.dataset.parallel.toLowerCase();
+    return keywords.some(k => p.includes(k));
+  });
+  if (!hasCards) return;
+  const btn = document.createElement('button');
+  btn.className = 'color-btn';
+  btn.innerHTML = `<span class="color-dot" style="background:${color}${name==='Black'?';border:1px solid #666':''}"></span>${name}`;
+  btn.onclick = () => filterByColor(name, btn);
+  colorContainer.appendChild(btn);
+});
+
+function filterByColor(colorName, btn) {
+  // Clear other filters
   document.getElementById('searchBar').value = '';
+  activeSet = null;
+  document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('parallelLabel').style.display = 'none';
+  document.getElementById('parallelFilters').innerHTML = '';
+  document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filters > .fbtn').forEach(b => { if(b.textContent==='All') b.classList.add('active'); });
+
+  if (activeColor === colorName) {
+    activeColor = null;
+    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+    cards.forEach(c => c.style.display = '');
+    document.querySelectorAll('.tier-section').forEach(s => s.style.display = '');
+    return;
+  }
+
+  activeColor = colorName;
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const keywords = COLOR_MAP[colorName].keywords;
+  cards.forEach(c => {
+    const p = c.dataset.parallel.toLowerCase();
+    c.style.display = keywords.some(k => p.includes(k)) ? '' : 'none';
+  });
+  document.querySelectorAll('.tier-section').forEach(s => {
+    const visible = s.querySelectorAll('.card:not([style*="display: none"])').length;
+    s.style.display = visible ? '' : 'none';
+  });
+}
+
+function filterBySet(setName, btn) {
+  // Clear search and color
+  document.getElementById('searchBar').value = '';
+  activeColor = null;
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
   // Reset top filters
   document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.filters > .fbtn').forEach(b => { if(b.textContent==='All') b.classList.add('active'); });
@@ -1441,8 +1518,10 @@ function filterBySetAndParallel(setName, parallel) {
 }
 
 function searchCards(q) {
-  // Clear set/parallel filters
+  // Clear set/parallel/color filters
   activeSet = null;
+  activeColor = null;
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('parallelLabel').style.display = 'none';
   document.getElementById('parallelFilters').innerHTML = '';
@@ -1467,9 +1546,11 @@ function searchCards(q) {
 }
 
 function filterCards(f) {
-  // Clear search and set filters
+  // Clear search, set, and color filters
   document.getElementById('searchBar').value = '';
   activeSet = null;
+  activeColor = null;
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('parallelLabel').style.display = 'none';
   document.getElementById('parallelFilters').innerHTML = '';
