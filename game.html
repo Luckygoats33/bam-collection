@@ -182,7 +182,7 @@ canvas#nes-canvas {
   });
 
   // Load ROM
-  fetch('/static/game/basketball.nes')
+  fetch('static/game/basketball.nes')
     .then(r => {
       if (!r.ok) throw new Error('ROM not found');
       return r.arrayBuffer();
