@@ -2058,6 +2058,33 @@ cards.forEach(c => {
   sets.get(s).add(p);
 });
 
+// Calculate filter counts and inject into buttons
+(function addFilterCounts() {
+  const allCards = [...cards];
+  const counts = {
+    all: allCards.length,
+    'tier-1': allCards.filter(c => c.dataset.tier === '1').length,
+    'tier-3': allCards.filter(c => c.dataset.tier === '3').length,
+    'tier-4': allCards.filter(c => c.dataset.tier === '4').length,
+    slabs: allCards.filter(c => {const g=c.dataset.grade||'';return g.includes('PSA')||g.includes('SGC')||g.includes('BGS');}).length,
+    psa10: allCards.filter(c => (c.dataset.grade||'').includes('PSA 10')).length,
+    psa9: allCards.filter(c => (c.dataset.grade||'').includes('PSA 9')).length,
+    raw: allCards.filter(c => {const g=c.dataset.grade||'';return g==='Raw'||!g||g.includes('Raw');}).length,
+    nonrookie: allCards.filter(c => (c.dataset.year||'') !== '2017-18').length,
+    jersey: allCards.filter(c => /jersey|patch|relic|swatch|memorabilia|game.worn|fabric/.test((c.dataset.name+' '+c.dataset.set+' '+(c.dataset.parallel||'')).toLowerCase())).length,
+    autograph: allCards.filter(c => /auto|autograph|signature|signed/.test((c.dataset.name+' '+c.dataset.set+' '+(c.dataset.parallel||'')).toLowerCase())).length,
+    collage: allCards.filter(c => /mosaic|collage|select|court kings|revolution|flux|illusions/.test((c.dataset.set||'').toLowerCase())).length,
+  };
+  document.querySelectorAll('.filter-bar .fbtn').forEach(btn => {
+    const onclick = btn.getAttribute('onclick') || '';
+    const m = onclick.match(/filterCards\('([^']+)'\)/);
+    if (m && counts[m[1]] !== undefined) {
+      const span = btn.querySelector('span');
+      if (span) span.textContent += ` (${counts[m[1]]})`;
+    }
+  });
+})();
+
 const setSelect = document.getElementById('setSelect');
 [...sets.keys()].sort().forEach(s => {
   const opt = document.createElement('option');
@@ -2210,7 +2237,7 @@ function filterCards(f) {
       if (f === 'slabs') c.style.display = (g.includes('PSA') || g.includes('SGC') || g.includes('BGS')) ? '' : 'none';
       else if (f === 'psa10') c.style.display = g.includes('PSA 10') ? '' : 'none';
       else if (f === 'psa9') c.style.display = g.includes('PSA 9') ? '' : 'none';
-      else if (f === 'raw') c.style.display = (g === 'Raw' || !g) ? '' : 'none';
+      else if (f === 'raw') c.style.display = (g === 'Raw' || !g || g.includes('Raw')) ? '' : 'none';
       else if (f === 'nonrookie') c.style.display = yr !== '2017-18' ? '' : 'none';
       else if (f === 'jersey') {
         const nm = (c.dataset.name||'').toLowerCase();
@@ -2228,7 +2255,7 @@ function filterCards(f) {
       }
       else if (f === 'collage') {
         const st = (c.dataset.set||'').toLowerCase();
-        c.style.display = /mosaic|collage/.test(st) ? '' : 'none';
+        c.style.display = /mosaic|collage|select|court kings|revolution|flux|illusions/.test(st) ? '' : 'none';
       }
     });
     updateTierVisibility();
