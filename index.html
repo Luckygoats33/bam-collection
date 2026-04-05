@@ -2312,6 +2312,7 @@ function openModal(el) {
   const psaUrl = `https://www.psacard.com/pop/basketball-cards?q=${psaQuery}`;
   const ebayQuery = encodeURIComponent(`${d.year} ${d.set} ${d.parallel} Bam Adebayo ${d.cardNumber}`);
   const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${ebayQuery}&_sacat=212&LH_Complete=1&LH_Sold=1`;
+  const ebayActiveUrl = `https://www.ebay.com/sch/i.html?_nkw=${ebayQuery}&_sacat=212&LH_BIN=1`;
 
   if (pop) {
     const psa10pct = (pop.psa10/pop.total*100).toFixed(1);
@@ -2326,6 +2327,7 @@ function openModal(el) {
       </div>
       <div style="display:flex;gap:8px;margin-top:12px">
         <a href="${psaUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);color:#ffd700;font-size:11px;font-weight:700;text-decoration:none;transition:all .2s">View on PSA</a>
+        <a href="${ebayActiveUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(33,150,243,.1);border:1px solid rgba(33,150,243,.2);color:#2196f3;font-size:11px;font-weight:700;text-decoration:none;transition:all .2s">Buy on eBay</a>
         <a href="${ebayUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);color:#00e5a0;font-size:11px;font-weight:700;text-decoration:none;transition:all .2s">Sold Comps</a>
       </div>
     `;
@@ -2337,6 +2339,7 @@ function openModal(el) {
       <div style="font-size:13px;color:var(--t);margin-bottom:10px">${pr ? `Only <strong style="color:var(--go)">${pr}</strong> copies exist worldwide` : `<strong style="color:var(--go)">SSP</strong> — Short Supply Print`}</div>
       <div style="display:flex;gap:8px">
         <a href="${psaUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);color:#ffd700;font-size:11px;font-weight:700;text-decoration:none">View on PSA</a>
+        <a href="${ebayActiveUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(33,150,243,.1);border:1px solid rgba(33,150,243,.2);color:#2196f3;font-size:11px;font-weight:700;text-decoration:none">Buy on eBay</a>
         <a href="${ebayUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);color:#00e5a0;font-size:11px;font-weight:700;text-decoration:none">Sold Comps</a>
       </div>
     `;
@@ -2345,6 +2348,7 @@ function openModal(el) {
     popDiv.innerHTML = `
       <div style="display:flex;gap:8px;margin-top:4px">
         <a href="${psaUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);color:#ffd700;font-size:11px;font-weight:700;text-decoration:none">View on PSA</a>
+        <a href="${ebayActiveUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(33,150,243,.1);border:1px solid rgba(33,150,243,.2);color:#2196f3;font-size:11px;font-weight:700;text-decoration:none">Buy on eBay</a>
         <a href="${ebayUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);color:#00e5a0;font-size:11px;font-weight:700;text-decoration:none">Sold Comps</a>
       </div>
     `;
@@ -2427,7 +2431,7 @@ openModal = function(el) {
     ctx.fillText(text, x, y);
   }
 
-  const SKY = '#0a0a2e';
+  const SKY = '#0a0a0a';
   const COURT = '#c67e38';
   const COURT_DARK = '#a86420';
   const HEAT = '#98002e';
@@ -2514,7 +2518,7 @@ openModal = function(el) {
 
   function drawScoreboard(score) {
     const sx = Math.floor(gW/2)-20, sy = 3;
-    px(sx, sy, 40, 12, '#1a0a2e');
+    px(sx, sy, 40, 12, '#1a0a0a');
     px(sx, sy, 40, 1, GOLD); px(sx, sy+11, 40, 1, GOLD);
     px(sx, sy, 1, 12, GOLD); px(sx+39, sy, 1, 12, GOLD);
     px(sx+20, sy, 1, 12, '#ffd70066');
@@ -2611,7 +2615,7 @@ openModal = function(el) {
       }
 
       // Retro grid floor
-      ctx.strokeStyle = '#1a1a3e';
+      ctx.strokeStyle = '#3a0a0a';
       ctx.lineWidth = 1;
       for (let x = 0; x < W; x += 40) {
         ctx.beginPath(); ctx.moveTo(x, H*0.7); ctx.lineTo(x + (x-W/2)*0.3, H); ctx.stroke();
@@ -2626,8 +2630,8 @@ openModal = function(el) {
       pxText('BAM ADEBAYO', W/2, H*0.3, WHITE, Math.min(W*0.06, 36));
       if (p > 0.1) {
         ctx.globalAlpha = Math.min((p-0.1)/0.15, 1);
-        pxText('ROOKIE CARD', W/2, H*0.45, '#7c5cff', Math.min(W*0.035, 22));
-        pxText('COLLECTION', W/2, H*0.55, '#7c5cff', Math.min(W*0.035, 22));
+        pxText('ROOKIE CARD', W/2, H*0.45, '#ff1744', Math.min(W*0.035, 22));
+        pxText('COLLECTION', W/2, H*0.55, '#ff1744', Math.min(W*0.035, 22));
       }
       if (p > 0.3) {
         ctx.globalAlpha = Math.min((p-0.3)/0.2, 1);
