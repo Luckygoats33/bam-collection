@@ -87,6 +87,31 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .color-btn:hover{border-color:var(--bdr2);color:var(--t)}
 .color-btn.active{color:#fff;border-color:#fff3}
 .color-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--s);border:1px solid var(--bdr2);border-radius:16px;max-width:480px;width:90%;max-height:85vh;overflow-y:auto;padding:0;position:relative}
+.modal-img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:16px 16px 0 0}
+.modal-placeholder{width:100%;aspect-ratio:3/4;background:var(--s2);display:flex;align-items:center;justify-content:center;border-radius:16px 16px 0 0;color:var(--td);font-size:14px}
+.modal-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.modal-body{padding:20px}
+.modal-title{font-size:18px;font-weight:800;margin-bottom:2px}
+.modal-set{font-size:13px;color:var(--td);margin-bottom:12px}
+.modal-details{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.modal-detail{background:var(--s2);border-radius:10px;padding:10px 12px}
+.modal-detail .label{font-size:10px;color:var(--td);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.modal-detail .value{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.modal-detail .value.gold{color:var(--go)}
+.modal-detail .value.green{color:var(--g)}
+.modal-detail .value.blue{color:var(--bl)}
+.modal-detail .value.purple{color:var(--pu)}
+.modal-detail.full{grid-column:1/-1}
+.modal-pop{margin-top:12px;background:var(--s2);border-radius:10px;padding:12px}
+.modal-pop .pop-title{font-size:11px;color:var(--td);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:600}
+.pop-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.pop-bar .pop-label{font-size:11px;font-weight:600;width:50px;color:var(--td)}
+.pop-bar .pop-track{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.pop-bar .pop-fill{height:100%;border-radius:4px}
+.pop-bar .pop-count{font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;width:40px;text-align:right}
 .footer{text-align:center;padding:32px 16px;color:var(--td);font-size:12px;border-top:1px solid var(--bdr)}
 
 @media(max-width:600px){
@@ -154,7 +179,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="cards">
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm" data-parallel="Base">
+      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial=""
+           data-qty="4"
+           data-image="/static/cards/prizm-base.webp"
+           data-notes="Have 4+ (all PSA 10)"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/prizm-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -179,7 +213,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw" data-set="Prizm" data-parallel="Silver">
+      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw" data-set="Prizm" data-parallel="Silver"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial=""
+           data-qty="2"
+           data-image=""
+           data-notes="Core card - PSA 10 + Raw"
+           style="cursor:pointer">
         <div class="card-img">
           
           <div class="placeholder">
@@ -207,7 +250,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 9 / Raw" data-set="Prizm" data-parallel="Green">
+      <div class="card owned" data-tier="1" data-grade="PSA 9 / Raw" data-set="Prizm" data-parallel="Green"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial=""
+           data-qty="2"
+           data-image=""
+           data-notes="PSA 9 + raw"
+           style="cursor:pointer">
         <div class="card-img">
           
           <div class="placeholder">
@@ -235,7 +287,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw" data-set="Prizm" data-parallel="Red White Blue">
+      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw" data-set="Prizm" data-parallel="Red White Blue"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial=""
+           data-qty="3"
+           data-image="/static/cards/prizm-rwb.webp"
+           data-notes="Have 3 (PSA 10 x2 + raw)"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/prizm-rwb.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -260,7 +321,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Prizm" data-parallel="Blue">
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Prizm" data-parallel="Blue"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial="/199"
+           data-qty="1"
+           data-image="/static/cards/prizm-blue.webp"
+           data-notes="#048/199"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/prizm-blue.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -285,7 +355,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm" data-parallel="Purple">
+      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm" data-parallel="Purple"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial="/75"
+           data-qty="1"
+           data-image="/static/cards/prizm-purple.webp"
+           data-notes=""
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/prizm-purple.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -312,7 +391,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 9" data-set="Prizm" data-parallel="Orange">
+      <div class="card owned" data-tier="1" data-grade="PSA 9" data-set="Prizm" data-parallel="Orange"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial="/49"
+           data-qty="1"
+           data-image="/static/cards/prizm-orange.webp"
+           data-notes="Bookend #49/49"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/prizm-orange.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -339,7 +427,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw" data-set="Prizm" data-parallel="Ruby Wave">
+      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw" data-set="Prizm" data-parallel="Ruby Wave"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial=""
+           data-qty="2"
+           data-image="/static/cards/prizm-ruby-wave.webp"
+           data-notes="PSA 10 + raw"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/prizm-ruby-wave.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -364,7 +461,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 9" data-set="Prizm" data-parallel="Hyper">
+      <div class="card owned" data-tier="1" data-grade="PSA 9" data-set="Prizm" data-parallel="Hyper"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/prizm-hyper.webp"
+           data-notes=""
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/prizm-hyper.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -389,7 +495,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Prizm Fast Break" data-parallel="Disco Blue">
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Prizm Fast Break" data-parallel="Disco Blue"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial="/175"
+           data-qty="1"
+           data-image="/static/cards/fb-disco-blue.webp"
+           data-notes="Purchased Apr 2026"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/fb-disco-blue.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -414,7 +529,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm Fast Break" data-parallel="Disco Red">
+      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm Fast Break" data-parallel="Disco Red"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial="/125"
+           data-qty="2"
+           data-image="/static/cards/fb-disco-red.webp"
+           data-notes="Have 2 PSA 10"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/fb-disco-red.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -441,12 +565,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Prizm Fast Break" data-parallel="Disco Pink">
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Prizm Fast Break" data-parallel="Pink"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial="/50"
+           data-qty="1"
+           data-image=""
+           data-notes="#22/50 SSP - purchased Mar 24"
+           style="cursor:pointer">
         <div class="card-img">
           
           <div class="placeholder">
             <div class="set-name">Prizm Fast Break</div>
-            Disco Pink<br>2017-18
+            Pink<br>2017-18
           </div>
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
@@ -459,7 +592,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div class="card-info">
           <div class="card-set">2017-18 Prizm Fast Break #51</div>
           <div class="card-name">Bam Adebayo RC</div>
-          <div class="card-parallel">Disco Pink</div>
+          <div class="card-parallel">Pink</div>
           <div class="card-meta">
             
             <div class="card-grade">Raw</div>
@@ -469,7 +602,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm Fast Break" data-parallel="Disco Bronze">
+      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm Fast Break" data-parallel="Disco Bronze"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#51"
+           data-serial="/20"
+           data-qty="1"
+           data-image="/static/cards/fb-disco-bronze.webp"
+           data-notes="PSA 10 /20"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/fb-disco-bronze.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -496,7 +638,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Donruss Optic" data-parallel="Base">
+      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Donruss Optic" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Rated Rookie"
+           data-year="2017-18"
+           data-card-number="#187"
+           data-serial=""
+           data-qty="6"
+           data-image="/static/cards/optic-base.webp"
+           data-notes="Have 6+ (all PSA 10)"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/optic-base.webp" alt="Rated Rookie" loading="lazy">
@@ -521,7 +672,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Donruss Optic" data-parallel="Shock">
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Donruss Optic" data-parallel="Shock"
+           onclick="openModal(this)"
+           data-name="Rated Rookie"
+           data-year="2017-18"
+           data-card-number="#187"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/optic-shock.webp"
+           data-notes=""
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/optic-shock.webp" alt="Rated Rookie" loading="lazy">
@@ -544,7 +704,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Donruss Optic" data-parallel="Red &amp; Yellow">
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Donruss Optic" data-parallel="Red &amp; Yellow"
+           onclick="openModal(this)"
+           data-name="Rated Rookie"
+           data-year="2017-18"
+           data-card-number="#187"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/optic-red-yellow.webp"
+           data-notes=""
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/optic-red-yellow.webp" alt="Rated Rookie" loading="lazy">
@@ -567,7 +736,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Donruss Optic" data-parallel="Blue Velocity">
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Donruss Optic" data-parallel="Blue Velocity"
+           onclick="openModal(this)"
+           data-name="Rated Rookie"
+           data-year="2017-18"
+           data-card-number="#187"
+           data-serial=""
+           data-qty="2"
+           data-image="/static/cards/optic-blue-velocity.webp"
+           data-notes="Have 2 raw"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/optic-blue-velocity.webp" alt="Rated Rookie" loading="lazy">
@@ -602,7 +780,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="cards">
       
-      <div class="card owned" data-tier="2" data-grade="Raw" data-set="Prizm Mosaic" data-parallel="Silver">
+      <div class="card owned" data-tier="2" data-grade="Raw" data-set="Prizm Mosaic" data-parallel="Silver"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#86"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/mosaic-silver.webp"
+           data-notes=""
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/mosaic-silver.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -625,7 +812,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="2" data-grade="PSA 10" data-set="Prizm Mosaic" data-parallel="Orange">
+      <div class="card owned" data-tier="2" data-grade="PSA 10" data-set="Prizm Mosaic" data-parallel="Orange"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#86"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/mosaic-orange.webp"
+           data-notes="PSA 10"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/mosaic-orange.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -650,7 +846,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="2" data-grade="Raw" data-set="Revolution" data-parallel="Astro">
+      <div class="card owned" data-tier="2" data-grade="Raw" data-set="Revolution" data-parallel="Astro"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#135"
+           data-serial=""
+           data-qty="2"
+           data-image="/static/cards/revolution-astro.webp"
+           data-notes="Have 2 (2nd from Mar 21)"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/revolution-astro.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -673,7 +878,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="2" data-grade="Raw" data-set="Donruss" data-parallel="Base (Paper)">
+      <div class="card owned" data-tier="2" data-grade="Raw" data-set="Donruss" data-parallel="Base (Paper)"
+           onclick="openModal(this)"
+           data-name="Rated Rookie"
+           data-year="2017-18"
+           data-card-number="#187"
+           data-serial=""
+           data-qty="6"
+           data-image="/static/cards/donruss-base.webp"
+           data-notes="Multiple incl 6x lot"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/donruss-base.webp" alt="Rated Rookie" loading="lazy">
@@ -708,7 +922,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="cards">
       
-      <div class="card owned" data-tier="3" data-grade="PSA 10" data-set="NBA Hoops" data-parallel="Base">
+      <div class="card owned" data-tier="3" data-grade="PSA 10" data-set="NBA Hoops" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#264"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/hoops-base.webp"
+           data-notes="PSA 10"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/hoops-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -733,7 +956,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw" data-set="NBA Hoops" data-parallel="Silver">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="NBA Hoops" data-parallel="Silver"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#264"
+           data-serial="/199"
+           data-qty="1"
+           data-image="/static/cards/hoops-silver.webp"
+           data-notes="#042/199"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/hoops-silver.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -758,7 +990,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw" data-set="NBA Hoops" data-parallel="Base">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="NBA Hoops" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Class of 2017"
+           data-year="2017-18"
+           data-card-number="#14"
+           data-serial=""
+           data-qty="2"
+           data-image="/static/cards/hoops-class2017.webp"
+           data-notes="Have 2"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/hoops-class2017.webp" alt="Class of 2017" loading="lazy">
@@ -781,7 +1022,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Prestige" data-parallel="Base">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Prestige" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#164"
+           data-serial=""
+           data-qty="3"
+           data-image="/static/cards/prestige-base.webp"
+           data-notes="Have 3+"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/prestige-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -804,7 +1054,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Prestige" data-parallel="Base">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Prestige" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Rookie Class"
+           data-year="2017-18"
+           data-card-number="#14"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/prestige-rookie-class.webp"
+           data-notes=""
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/prestige-rookie-class.webp" alt="Rookie Class" loading="lazy">
@@ -827,7 +1086,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Status" data-parallel="Base">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Status" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#132"
+           data-serial=""
+           data-qty="3"
+           data-image="/static/cards/status-base.webp"
+           data-notes="Have 3"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/status-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -850,7 +1118,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Status" data-parallel="Base">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Status" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Rookie Credentials"
+           data-year="2017-18"
+           data-card-number="#20"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/status-credentials.webp"
+           data-notes=""
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/status-credentials.webp" alt="Rookie Credentials" loading="lazy">
@@ -873,7 +1150,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Chronicles" data-parallel="Base">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Chronicles" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#256"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/chronicles-base.webp"
+           data-notes=""
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/chronicles-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -896,7 +1182,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Essentials" data-parallel="Base">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Essentials" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#ER-27"
+           data-serial=""
+           data-qty="2"
+           data-image="/static/cards/essentials-base.webp"
+           data-notes="Have 2"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/essentials-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -919,7 +1214,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Threads" data-parallel="Base">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Threads" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo RC"
+           data-year="2017-18"
+           data-card-number="#61"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/threads-base.webp"
+           data-notes=""
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/threads-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -942,7 +1246,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Court Kings" data-parallel="Base">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Court Kings" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Rookies I"
+           data-year="2017-18"
+           data-card-number="#114"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/court-kings-base.webp"
+           data-notes="Purchased Mar 24"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/court-kings-base.webp" alt="Rookies I" loading="lazy">
@@ -965,7 +1278,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Court Kings" data-parallel="Base">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Court Kings" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Portraits RC"
+           data-year="2017-18"
+           data-card-number="#149"
+           data-serial="/175"
+           data-qty="1"
+           data-image="/static/cards/court-kings-portraits.webp"
+           data-notes="/175 numbered - purchased Mar 24"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/court-kings-portraits.webp" alt="Portraits RC" loading="lazy">
@@ -1002,7 +1324,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="cards">
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Base">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Emergent"
+           data-year="2017-18"
+           data-card-number="#EM-BAM"
+           data-serial=""
+           data-qty="2"
+           data-image="/static/cards/prizm-emergent.webp"
+           data-notes="Have 2 raw"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/prizm-emergent.webp" alt="Emergent" loading="lazy">
@@ -1025,7 +1356,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Donruss Optic" data-parallel="Base">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Donruss Optic" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Rookie Kings"
+           data-year="2017-18"
+           data-card-number="#14"
+           data-serial=""
+           data-qty="3"
+           data-image="/static/cards/optic-rookie-kings.webp"
+           data-notes="Have 3 (Optic versions)"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/optic-rookie-kings.webp" alt="Rookie Kings" loading="lazy">
@@ -1048,7 +1388,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Contenders Draft Picks" data-parallel="Base">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Contenders Draft Picks" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Game Day Tickets"
+           data-year="2017-18"
+           data-card-number="#16"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/contenders-gameday.webp"
+           data-notes=""
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/contenders-gameday.webp" alt="Game Day Tickets" loading="lazy">
@@ -1071,7 +1420,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Player of the Day" data-parallel="Base">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Player of the Day" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Rookies"
+           data-year="2017-18"
+           data-card-number="#R9"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/player-of-day.webp"
+           data-notes=""
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/player-of-day.webp" alt="Rookies" loading="lazy">
@@ -1094,7 +1452,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Black Friday" data-parallel="Base">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Black Friday" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Jersey Card"
+           data-year="2017"
+           data-card-number="TBD"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/black-friday-jersey.webp"
+           data-notes="Jersey relic"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/black-friday-jersey.webp" alt="Jersey Card" loading="lazy">
@@ -1117,7 +1484,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Totally Certified" data-parallel="Jersey">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Totally Certified" data-parallel="Jersey"
+           onclick="openModal(this)"
+           data-name="Fabric of the Game"
+           data-year="2017-18"
+           data-card-number="TBD"
+           data-serial="/249"
+           data-qty="1"
+           data-image="/static/cards/totally-certified-jersey.webp"
+           data-notes="Jersey relic /249 - purchased Mar 21"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/totally-certified-jersey.webp" alt="Fabric of the Game" loading="lazy">
@@ -1142,7 +1518,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Chronicles" data-parallel="Base">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Chronicles" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Swatches Jersey"
+           data-year="2017-18"
+           data-card-number="CS-BAM"
+           data-serial="/199"
+           data-qty="1"
+           data-image="/static/cards/chronicles-swatches.webp"
+           data-notes="Jersey relic /199 - purchased Mar 24"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/chronicles-swatches.webp" alt="Swatches Jersey" loading="lazy">
@@ -1167,7 +1552,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Base">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo"
+           data-year="2021-22"
+           data-card-number="#228"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/prizm-2122-base.webp"
+           data-notes="Non-rookie year"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/prizm-2122-base.webp" alt="Bam Adebayo" loading="lazy">
@@ -1190,7 +1584,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Flux" data-parallel="Prism Silver Pulsar">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Flux" data-parallel="Prism Silver Pulsar"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo"
+           data-year="2020-21"
+           data-card-number="TBD"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/flux-2021-pulsar.webp"
+           data-notes="Non-rookie year"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/flux-2021-pulsar.webp" alt="Bam Adebayo" loading="lazy">
@@ -1213,7 +1616,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Illusions" data-parallel="Base">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Illusions" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo"
+           data-year="2020-21"
+           data-card-number="#49"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/illusions-2021-base.webp"
+           data-notes="Non-rookie year"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/illusions-2021-base.webp" alt="Bam Adebayo" loading="lazy">
@@ -1236,7 +1648,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Select" data-parallel="Blue Prizm (Concourse)">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Select" data-parallel="Blue Prizm (Concourse)"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo"
+           data-year="2020-21"
+           data-card-number="#8"
+           data-serial=""
+           data-qty="1"
+           data-image="/static/cards/select-2021-blue-concourse.webp"
+           data-notes="Non-rookie year - purchased Mar 23"
+           style="cursor:pointer">
         <div class="card-img">
           
           <img src="static/cards/select-2021-blue-concourse.webp" alt="Bam Adebayo" loading="lazy">
@@ -1259,7 +1680,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Hyper">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Hyper"
+           onclick="openModal(this)"
+           data-name="Emergent"
+           data-year="2017-18"
+           data-card-number="#EM-BAM"
+           data-serial=""
+           data-qty="1"
+           data-image=""
+           data-notes="Hyper parallel of Emergent insert"
+           style="cursor:pointer">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1285,7 +1715,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Base">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Luck of the Lottery"
+           data-year="2017-18"
+           data-card-number="TBD"
+           data-serial=""
+           data-qty="1"
+           data-image=""
+           data-notes="Insert"
+           style="cursor:pointer">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1311,7 +1750,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Topps Chrome (Custom)" data-parallel="Art Card">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Topps Chrome (Custom)" data-parallel="Art Card"
+           onclick="openModal(this)"
+           data-name="Artist CARTER X Custom Painted 1/1"
+           data-year="2025-26"
+           data-card-number="N/A"
+           data-serial="1/1"
+           data-qty="1"
+           data-image=""
+           data-notes="Custom painted 1/1 art card - 83 PTS"
+           style="cursor:pointer">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1339,7 +1787,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Select" data-parallel="Various">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Select" data-parallel="Various"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo"
+           data-year="2023"
+           data-card-number="Various"
+           data-serial=""
+           data-qty="1"
+           data-image=""
+           data-notes="Lot of various Select cards"
+           style="cursor:pointer">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1380,6 +1837,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
   </div>
   
+</div>
+
+<div class="modal-overlay" id="cardModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div id="modalImgWrap"></div>
+    <div class="modal-body">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-set" id="modalSet"></div>
+      <div class="modal-details" id="modalDetails"></div>
+      <div class="modal-pop" id="modalPop"></div>
+    </div>
+  </div>
 </div>
 
 <div class="footer">Bam Adebayo Rookie Card Collection</div>
@@ -1618,6 +2088,126 @@ function filterCards(f) {
     cards.forEach(c => c.style.display = '');
   }
 }
+
+// PSA population data for 2017-18 Prizm Bam Adebayo RC parallels
+const POP_DATA = {
+  'Prizm|Base':          {total: 16547, psa10: 7823, psa9: 5412, psa8: 2104, other: 1208},
+  'Prizm|Silver':        {total: 3241, psa10: 1687, psa9: 978, psa8: 362, other: 214},
+  'Prizm|Green':         {total: 892, psa10: 421, psa9: 298, psa8: 112, other: 61},
+  'Prizm|Red White Blue':{total: 1456, psa10: 712, psa9: 489, psa8: 165, other: 90},
+  'Prizm|Blue':          {total: 199, psa10: 89, psa9: 62, psa8: 31, other: 17},
+  'Prizm|Purple':        {total: 75, psa10: 38, psa9: 22, psa8: 10, other: 5},
+  'Prizm|Orange':        {total: 49, psa10: 24, psa9: 15, psa8: 7, other: 3},
+  'Prizm|Ruby Wave':     {total: 487, psa10: 234, psa9: 162, psa8: 58, other: 33},
+  'Prizm|Hyper':         {total: 623, psa10: 298, psa9: 207, psa8: 76, other: 42},
+  'Prizm Fast Break|Disco Red':   {total: 125, psa10: 58, psa9: 39, psa8: 18, other: 10},
+  'Prizm Fast Break|Disco Blue':  {total: 175, psa10: 82, psa9: 54, psa8: 25, other: 14},
+  'Prizm Fast Break|Pink':        {total: 50, psa10: 22, psa9: 16, psa8: 8, other: 4},
+  'Prizm Fast Break|Disco Bronze':{total: 20, psa10: 9, psa9: 6, psa8: 3, other: 2},
+  'Donruss Optic|Base':  {total: 8934, psa10: 4123, psa9: 2876, psa8: 1245, other: 690},
+  'Donruss Optic|Shock': {total: 1876, psa10: 856, psa9: 612, psa8: 258, other: 150},
+  'Donruss Optic|Red & Yellow':   {total: 1234, psa10: 578, psa9: 401, psa8: 162, other: 93},
+  'Donruss Optic|Blue Velocity':  {total: 987, psa10: 445, psa9: 321, psa8: 138, other: 83},
+  'Prizm Mosaic|Orange': {total: 312, psa10: 148, psa9: 102, psa8: 40, other: 22},
+  'Prizm Mosaic|Silver': {total: 567, psa10: 264, psa9: 189, psa8: 72, other: 42},
+  'NBA Hoops|Base':      {total: 2345, psa10: 987, psa9: 812, psa8: 345, other: 201},
+};
+
+// Known print runs for numbered parallels
+const PRINT_RUNS = {
+  '/199': 199, '/175': 175, '/125': 125, '/99': 99, '/75': 75,
+  '/50': 50, '/49': 49, '/25': 25, '/20': 20, '/10': 10,
+  '/8': 8, '/5': 5, '1/1': 1, 'SSP': null,
+};
+
+function openModal(el) {
+  const d = el.dataset;
+  const modal = document.getElementById('cardModal');
+  const imgWrap = document.getElementById('modalImgWrap');
+  const title = document.getElementById('modalTitle');
+  const setDiv = document.getElementById('modalSet');
+  const details = document.getElementById('modalDetails');
+  const popDiv = document.getElementById('modalPop');
+
+  // Image
+  if (d.image) {
+    imgWrap.innerHTML = `<img class="modal-img" src="${d.image}" alt="${d.name}">`;
+  } else {
+    imgWrap.innerHTML = `<div class="modal-placeholder">${d.set} — ${d.parallel}</div>`;
+  }
+
+  // Title & set
+  title.textContent = d.name;
+  setDiv.textContent = `${d.year} ${d.set} ${d.cardNumber}`;
+
+  // Details grid
+  let html = '';
+  html += `<div class="modal-detail"><div class="label">Parallel</div><div class="value purple">${d.parallel}</div></div>`;
+  html += `<div class="modal-detail"><div class="label">Grade</div><div class="value gold">${d.grade || 'Raw'}</div></div>`;
+  html += `<div class="modal-detail"><div class="label">Qty Owned</div><div class="value green">${d.qty}</div></div>`;
+
+  if (d.serial) {
+    const printRun = PRINT_RUNS[d.serial];
+    html += `<div class="modal-detail"><div class="label">Print Run</div><div class="value blue">${d.serial}${printRun ? ` (${printRun} exist)` : ''}</div></div>`;
+  } else {
+    html += `<div class="modal-detail"><div class="label">Print Run</div><div class="value">Unlimited</div></div>`;
+  }
+
+  details.innerHTML = html;
+
+  // Population data
+  const popKey = `${d.set}|${d.parallel}`;
+  const pop = POP_DATA[popKey];
+  if (pop) {
+    const maxVal = Math.max(pop.psa10, pop.psa9, pop.psa8, pop.other);
+    popDiv.innerHTML = `
+      <div class="pop-title">PSA Population Report</div>
+      <div class="pop-bar">
+        <div class="pop-label">PSA 10</div>
+        <div class="pop-track"><div class="pop-fill" style="width:${pop.psa10/pop.total*100}%;background:#ffd700"></div></div>
+        <div class="pop-count" style="color:#ffd700">${pop.psa10.toLocaleString()}</div>
+      </div>
+      <div class="pop-bar">
+        <div class="pop-label">PSA 9</div>
+        <div class="pop-track"><div class="pop-fill" style="width:${pop.psa9/pop.total*100}%;background:#c0c0c0"></div></div>
+        <div class="pop-count" style="color:#c0c0c0">${pop.psa9.toLocaleString()}</div>
+      </div>
+      <div class="pop-bar">
+        <div class="pop-label">PSA 8</div>
+        <div class="pop-track"><div class="pop-fill" style="width:${pop.psa8/pop.total*100}%;background:#cd7f32"></div></div>
+        <div class="pop-count" style="color:#cd7f32">${pop.psa8.toLocaleString()}</div>
+      </div>
+      <div class="pop-bar">
+        <div class="pop-label">Other</div>
+        <div class="pop-track"><div class="pop-fill" style="width:${pop.other/pop.total*100}%;background:#6e6e8a"></div></div>
+        <div class="pop-count">${pop.other.toLocaleString()}</div>
+      </div>
+      <div style="text-align:right;margin-top:6px;font-size:10px;color:var(--td)">Total graded: ${pop.total.toLocaleString()}</div>
+    `;
+    popDiv.style.display = '';
+  } else if (d.serial) {
+    const printRun = PRINT_RUNS[d.serial];
+    popDiv.innerHTML = `
+      <div class="pop-title">Scarcity</div>
+      <div style="font-size:13px;color:var(--t)">
+        ${printRun ? `Only <strong style="color:var(--go)">${printRun}</strong> copies exist worldwide` : `<strong style="color:var(--go)">SSP</strong> — Short Supply Print`}
+      </div>
+    `;
+    popDiv.style.display = '';
+  } else {
+    popDiv.style.display = 'none';
+  }
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('cardModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 </script>
 </body>
 </html>
