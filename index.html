@@ -24,9 +24,9 @@
 html{scroll-behavior:smooth}
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;overflow-x:hidden}
 
-/* Background - pure black, subtle noise only */
+/* Background - pure black */
 .bg-mesh{display:none}
-.bg-noise{position:fixed;inset:0;z-index:1;opacity:.02;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")}
+.bg-noise{display:none}
 
 /* Hero */
 .hero{position:relative;z-index:2;padding:64px 20px 40px;text-align:center}
@@ -126,19 +126,19 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .modal-placeholder{width:100%;height:220px;background:linear-gradient(135deg,var(--s2),var(--bg));display:flex;align-items:center;justify-content:center;border-radius:20px 20px 0 0;color:var(--td);font-size:14px}
 .modal-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--bdr);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .2s;backdrop-filter:blur(8px)}
 .modal-close:hover{background:var(--r);border-color:var(--r);transform:scale(1.1)}
-.modal-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:4px;background:#1a0a2e;border:3px solid #ffd700;color:#ffd700;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .15s;font-family:'Press Start 2P',monospace;image-rendering:pixelated;box-shadow:0 4px 0 #000,inset 0 0 0 1px rgba(255,215,0,.2)}
-.modal-nav:hover{background:#98002e;transform:translateY(-50%) scale(1.05);box-shadow:0 2px 0 #000,inset 0 0 0 1px rgba(255,215,0,.3)}
-.modal-nav:active{transform:translateY(-48%) scale(.95);box-shadow:none}
-.modal-nav.prev{left:-56px}
-.modal-nav.next{right:-56px}
+.modal-nav{position:fixed;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:6px;background:#1a0a2e;border:3px solid #ffd700;color:#ffd700;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:102;transition:all .15s;font-family:'Press Start 2P',monospace;image-rendering:pixelated;box-shadow:0 4px 0 #000,inset 0 0 0 1px rgba(255,215,0,.2)}
+.modal-nav:hover{background:#98002e;transform:translateY(-50%) scale(1.08);box-shadow:0 2px 0 #000,inset 0 0 0 1px rgba(255,215,0,.3)}
+.modal-nav:active{transform:translateY(-48%) scale(.92);box-shadow:none}
+.modal-nav.prev{left:max(12px, calc(50% - 300px))}
+.modal-nav.next{right:max(12px, calc(50% - 300px))}
 .modal-counter{position:absolute;top:12px;left:12px;font-size:11px;font-weight:600;color:#fff;background:rgba(0,0,0,.4);padding:4px 12px;border-radius:20px;z-index:2;font-family:'JetBrains Mono',monospace;backdrop-filter:blur(8px);border:1px solid var(--bdr)}
 
 @media(max-width:600px){
   .modal{max-width:96%;border-radius:16px 16px 0 0;max-height:92vh;position:fixed;bottom:0;left:2%;right:2%;top:auto;border-radius:20px 20px 0 0;transform:translateY(100%);width:96%}
   .modal-overlay.open .modal{transform:translateY(0)}
-  .modal-nav.prev{left:12px;top:auto;bottom:16px;transform:none}
-  .modal-nav.next{right:12px;top:auto;bottom:16px;transform:none}
-  .modal-nav:hover{transform:scale(1.1)}
+  .modal-nav.prev{left:8px;top:50%;bottom:auto;transform:translateY(-50%)}
+  .modal-nav.next{right:8px;top:50%;bottom:auto;transform:translateY(-50%)}
+  .modal-nav:hover{transform:translateY(-50%) scale(1.1)}
 }
 
 .modal-body{padding:24px}
@@ -311,14 +311,11 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
            data-card-number="#51"
            data-serial=""
            data-qty="2"
-           data-image=""
+           data-image="static/cards/prizm-silver.webp"
            data-notes="Core card - PSA 10 + Raw">
         <div class="card-img">
           
-          <div class="placeholder">
-            <div class="set-name">Prizm</div>
-            Silver<br>2017-18
-          </div>
+          <img src="static/cards/prizm-silver.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
           
@@ -349,14 +346,11 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
            data-card-number="#51"
            data-serial=""
            data-qty="2"
-           data-image=""
+           data-image="static/cards/prizm-green.webp"
            data-notes="PSA 9 + raw">
         <div class="card-img">
           
-          <div class="placeholder">
-            <div class="set-name">Prizm</div>
-            Green<br>2017-18
-          </div>
+          <img src="static/cards/prizm-green.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
           
@@ -663,14 +657,11 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
            data-card-number="#51"
            data-serial="/50"
            data-qty="1"
-           data-image=""
+           data-image="static/cards/fb-pink.webp"
            data-notes="#22/50 SSP - purchased Mar 24">
         <div class="card-img">
           
-          <div class="placeholder">
-            <div class="set-name">Prizm Fast Break</div>
-            Pink<br>2017-18
-          </div>
+          <img src="static/cards/fb-pink.webp" alt="Bam Adebayo RC" loading="lazy">
           
           <div class="badge-tier" style="background:#e74c3c">1</div>
           
@@ -1765,14 +1756,11 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
            data-card-number="#EM-BAM"
            data-serial=""
            data-qty="1"
-           data-image=""
+           data-image="static/cards/prizm-emergent-hyper.webp"
            data-notes="Hyper parallel of Emergent insert">
         <div class="card-img">
           
-          <div class="placeholder">
-            <div class="set-name">Prizm</div>
-            Hyper<br>2017-18
-          </div>
+          <img src="static/cards/prizm-emergent-hyper.webp" alt="Emergent" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
           
@@ -1799,14 +1787,11 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
            data-card-number="TBD"
            data-serial=""
            data-qty="1"
-           data-image=""
+           data-image="static/cards/prizm-luck-lottery.webp"
            data-notes="Insert">
         <div class="card-img">
           
-          <div class="placeholder">
-            <div class="set-name">Prizm</div>
-            Base<br>2017-18
-          </div>
+          <img src="static/cards/prizm-luck-lottery.webp" alt="Luck of the Lottery" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
           
@@ -1833,14 +1818,11 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
            data-card-number="N/A"
            data-serial="1/1"
            data-qty="1"
-           data-image=""
+           data-image="static/cards/carter-x-custom-1of1.webp"
            data-notes="Custom painted 1/1 art card - 83 PTS">
         <div class="card-img">
           
-          <div class="placeholder">
-            <div class="set-name">Topps Chrome (Custom)</div>
-            Art Card<br>2025-26
-          </div>
+          <img src="static/cards/carter-x-custom-1of1.webp" alt="Artist CARTER X Custom Painted 1/1" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
           
@@ -1869,14 +1851,11 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
            data-card-number="Various"
            data-serial=""
            data-qty="1"
-           data-image=""
+           data-image="static/cards/select-2023-lot.webp"
            data-notes="Lot of various Select cards">
         <div class="card-img">
           
-          <div class="placeholder">
-            <div class="set-name">Select</div>
-            Various<br>2023
-          </div>
+          <img src="static/cards/select-2023-lot.webp" alt="Bam Adebayo" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
           
@@ -1903,14 +1882,11 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
            data-card-number="#201"
            data-serial=""
            data-qty="1"
-           data-image=""
+           data-image="static/cards/topps-now-201.webp"
            data-notes="PR: 2741">
         <div class="card-img">
           
-          <div class="placeholder">
-            <div class="set-name">Topps NOW</div>
-            Base<br>2025-26
-          </div>
+          <img src="static/cards/topps-now-201.webp" alt="Bam Adebayo" loading="lazy">
           
           <div class="badge-tier" style="background:#9b59b6">4</div>
           
