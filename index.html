@@ -193,7 +193,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .intro-overlay{position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;transition:opacity .8s ease}
 .intro-overlay.fade-out{opacity:0;pointer-events:none}
 .intro-overlay canvas{width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
-.intro-skip{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);font-family:'Press Start 2P',monospace;font-size:12px;color:#ffd700;animation:blink8 1s step-end infinite;z-index:10000;text-shadow:0 0 8px rgba(255,215,0,.5)}
+.intro-skip{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);font-family:'Press Start 2P',monospace;font-size:14px;color:#ff1744;animation:blink8 1s step-end infinite;z-index:10000;text-shadow:0 0 8px rgba(255,23,68,.5)}
 @keyframes blink8{0%,100%{opacity:1}50%{opacity:0}}
 body.intro-active{overflow:hidden}
 body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,body.intro-active .wrap,body.intro-active .footer{opacity:0}
@@ -219,11 +219,11 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
 <div class="wrap">
   <div class="stats">
     <div class="stat-card">
-      <div class="stat-num" data-count="49">0</div>
+      <div class="stat-num" data-count="51">0</div>
       <div class="stat-lbl">Unique Cards</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num" data-count="79">0</div>
+      <div class="stat-num" data-count="81">0</div>
       <div class="stat-lbl">Total Pieces</div>
     </div>
   </div>
@@ -1418,7 +1418,7 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
     <div class="tier-header">
       <div class="tier-badge" style="background:#9b59b6">4</div>
       <div class="tier-title">Inserts</div>
-      <div class="tier-count">16 cards</div>
+      <div class="tier-count">18 cards</div>
     </div>
     <div class="cards">
       
@@ -1496,7 +1496,7 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
            data-serial=""
            data-qty="1"
            data-image="static/cards/contenders-gameday.webp"
-           data-notes="">
+           data-notes="College uniform">
         <div class="card-img">
           
           <img src="static/cards/contenders-gameday.webp" alt="Game Day Tickets" loading="lazy">
@@ -1509,6 +1509,68 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
         <div class="card-info">
           <div class="card-set">2017-18 Contenders Draft Picks #16</div>
           <div class="card-name">Game Day Tickets</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Contenders Draft Picks" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="School Colors"
+           data-year="2017-18"
+           data-card-number="#6"
+           data-serial=""
+           data-qty="1"
+           data-image="static/cards/contenders-school-colors.jpg"
+           data-notes="Kentucky Wildcats college uniform">
+        <div class="card-img">
+          
+          <img src="static/cards/contenders-school-colors.jpg" alt="School Colors" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Contenders Draft Picks #6</div>
+          <div class="card-name">School Colors</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Contenders Draft Picks" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Season Ticket"
+           data-year="2017-18"
+           data-card-number="#6a"
+           data-serial=""
+           data-qty="1"
+           data-image="static/cards/contenders-season-ticket.jpg"
+           data-notes="College uniform base rookie">
+        <div class="card-img">
+          
+          <img src="static/cards/contenders-season-ticket.jpg" alt="Season Ticket" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Contenders Draft Picks #6a</div>
+          <div class="card-name">Season Ticket</div>
           <div class="card-parallel">Base</div>
           <div class="card-meta">
             
@@ -1961,7 +2023,7 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
   <button class="modal-nav next" onclick="event.stopPropagation();navigateCard(1)">&#8250;</button>
 </div>
 
-<div class="footer">Bam Adebayo Rookie Card Collection &mdash; 79 pieces</div>
+<div class="footer">Bam Adebayo Rookie Card Collection &mdash; 81 pieces</div>
 
 <script>
 // Animated counter on load
@@ -2439,7 +2501,7 @@ openModal = function(el) {
   const canvas = document.getElementById('introCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const PX = 3;
+  const PX = 4;
   let W, H, gW, gH;
   let frame = 0;
   let phase = 'dunk'; // dunk -> title -> done
@@ -2467,7 +2529,7 @@ openModal = function(el) {
   const COURT = '#c67e38';
   const COURT_DARK = '#a86420';
   const HEAT = '#98002e';
-  const GOLD = '#ffd700';
+  const GOLD = '#ff1744';
   const WHITE = '#fff';
 
   // Draw detailed pixel Bam (#13 Heat jersey, headband, athletic build)
@@ -2553,7 +2615,7 @@ openModal = function(el) {
     px(sx, sy, 40, 12, '#1a0a0a');
     px(sx, sy, 40, 1, GOLD); px(sx, sy+11, 40, 1, GOLD);
     px(sx, sy, 1, 12, GOLD); px(sx+39, sy, 1, 12, GOLD);
-    px(sx+20, sy, 1, 12, '#ffd70066');
+    px(sx+20, sy, 1, 12, '#ff174466');
     pxText('MIA', (sx+10)*PX, (sy+5)*PX, GOLD, 8);
     pxText(String(score), (sx+10)*PX, (sy+10)*PX, WHITE, 9);
     pxText('IND', (sx+30)*PX, (sy+5)*PX, '#666', 8);
@@ -2585,7 +2647,7 @@ openModal = function(el) {
         const runP = p / runEnd;
         const playerX = Math.floor(-8 + runP * (gW - 8));
         const bounce = Math.sin(frame * 0.4) * 2;
-        const sc = 1 + runP * 0.5; // scale up as he gets closer
+        const sc = 1.5 + runP * 1; // scale up as he gets closer — BIGGER
         drawPlayer(playerX, courtY - 1 + Math.floor(bounce), Math.ceil(sc), false);
         // Dribbling ball
         const ballBounce = Math.abs(Math.sin(frame * 0.25)) * 5;
@@ -2601,7 +2663,7 @@ openModal = function(el) {
         const dunkX = gW - 14;
         const playerY = courtY - 1 - Math.floor(jumpH);
 
-        drawPlayer(dunkX, playerY, 2, jumpP > 0.2 && jumpP < 0.7);
+        drawPlayer(dunkX, playerY, 3, jumpP > 0.2 && jumpP < 0.7);
 
         // Flash on slam
         if (jumpP > 0.45 && jumpP < 0.55) {
@@ -2621,10 +2683,10 @@ openModal = function(el) {
         // "83 PTS!!" text after dunk lands
         if (jumpP > 0.6) {
           const tp = Math.min((jumpP - 0.6) / 0.2, 1);
-          const sz = Math.min(W * 0.12, 72);
+          const sz = Math.min(W * 0.18, 96);
           pxText('83', W/2, H*0.25, GOLD, sz * (2 - tp));
-          if (tp > 0.3) pxText('POINTS', W/2, H*0.25 + sz*0.5, WHITE, Math.min(W*0.03, 18));
-          if (tp > 0.6) pxText('FRANCHISE RECORD', W/2, H*0.25 + sz*0.8, GOLD, Math.min(W*0.02, 12));
+          if (tp > 0.3) pxText('POINTS', W/2, H*0.25 + sz*0.5, WHITE, Math.min(W*0.05, 28));
+          if (tp > 0.6) pxText('FRANCHISE RECORD', W/2, H*0.25 + sz*0.8, GOLD, Math.min(W*0.03, 18));
         }
 
         if (jumpP > 0.4 && jumpP < 0.6) ctx.restore();
@@ -2659,15 +2721,15 @@ openModal = function(el) {
       const fadeIn = Math.min(p / 0.15, 1);
       ctx.globalAlpha = fadeIn;
 
-      pxText('BAM ADEBAYO', W/2, H*0.3, WHITE, Math.min(W*0.06, 36));
+      pxText('BAM ADEBAYO', W/2, H*0.3, WHITE, Math.min(W*0.08, 48));
       if (p > 0.1) {
         ctx.globalAlpha = Math.min((p-0.1)/0.15, 1);
-        pxText('ROOKIE CARD', W/2, H*0.45, '#ff1744', Math.min(W*0.035, 22));
-        pxText('COLLECTION', W/2, H*0.55, '#ff1744', Math.min(W*0.035, 22));
+        pxText('ROOKIE CARD', W/2, H*0.45, '#ff1744', Math.min(W*0.05, 30));
+        pxText('COLLECTION', W/2, H*0.55, '#ff1744', Math.min(W*0.05, 30));
       }
       if (p > 0.3) {
         ctx.globalAlpha = Math.min((p-0.3)/0.2, 1);
-        pxText('49 CARDS', W/2, H*0.7, GOLD, Math.min(W*0.02, 14));
+        pxText('51 CARDS', W/2, H*0.72, GOLD, Math.min(W*0.03, 20));
       }
 
       ctx.globalAlpha = 1;
