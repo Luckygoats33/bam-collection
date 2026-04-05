@@ -100,6 +100,10 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .card.missing .card-img{position:relative}
 .card.missing .card-img::after{content:'MISSING';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:900;color:var(--r);letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border:2px solid var(--r);border-radius:var(--radius-xs);background:rgba(0,0,0,.7);z-index:2}
 .badge-missing{position:absolute;top:8px;right:8px;font-size:8px;font-weight:700;padding:3px 8px;border-radius:var(--radius-xs);background:rgba(255,71,87,.15);color:var(--r);border:1px solid rgba(255,71,87,.3);z-index:1;text-transform:uppercase;letter-spacing:.5px}
+.missing-btn-fixed{position:fixed;top:16px;right:16px;z-index:50;padding:10px 20px;border-radius:24px;border:1.5px solid #ff4757;background:rgba(255,71,87,.1);color:#ff4757;font-size:13px;font-weight:700;font-family:'Inter',system-ui,sans-serif;cursor:pointer;backdrop-filter:blur(12px);transition:all .3s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(255,71,87,.15)}
+.missing-btn-fixed:hover{background:rgba(255,71,87,.2);transform:translateY(-2px);box-shadow:0 6px 28px rgba(255,71,87,.25)}
+.missing-btn-fixed.active{background:#ff4757;color:#fff;box-shadow:0 4px 24px rgba(255,71,87,.4)}
+.missing-btn-fixed .count-badge{background:rgba(255,255,255,.2);padding:2px 8px;border-radius:12px;font-size:11px;font-family:'JetBrains Mono',monospace}
 
 .card-img{aspect-ratio:3/4;background:#0a0a0a;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1)}
@@ -233,6 +237,8 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
 <div class="bg-mesh"></div>
 <div class="bg-noise"></div>
 
+<button class="missing-btn-fixed" id="missingToggle" onclick="toggleMissing()">MISSING <span class="count-badge" id="missingBtnCount">23</span></button>
+
 <div class="hero">
   <h1><span>BAM ADEBAYO</span></h1>
   <div class="hero-sub">Rookie Card Collection</div>
@@ -288,7 +294,6 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
     <button class="fbtn" onclick="filterCards('jersey')" style="border-color:#e65100"><span>Jersey</span></button>
     <button class="fbtn" onclick="filterCards('autograph')" style="border-color:#1565c0"><span>Autograph</span></button>
     <button class="fbtn" onclick="filterCards('collage')" style="border-color:#7b1fa2"><span>Collage</span></button>
-    <button class="fbtn" onclick="filterCards('missing')" style="border-color:#ff4757"><span>Missing</span></button>
   </div>
 
   <div class="search-area">
@@ -2311,19 +2316,11 @@ function filterCards(f) {
   document.querySelectorAll('.slab-menu .fbtn').forEach(b => b.classList.remove('active'));
   document.getElementById('slabWrap').classList.remove('open');
 
-  // Missing filter: show only the missing section
-  if (f === 'missing') {
-    document.querySelectorAll('.tier-section').forEach(s => {
-      s.style.display = s.dataset.tier === 'missing' ? '' : 'none';
-    });
-    cards.forEach(c => c.style.display = c.dataset.tier === 'missing' ? '' : 'none');
-    event.target.closest('.fbtn').classList.add('active');
-    return;
-  }
-
-  // Hide missing section for all other filters (except 'all')
+  // Always hide missing section + deactivate missing toggle when using filter bar
   const missingSection = document.getElementById('missingSection');
-  if (missingSection && f !== 'all') missingSection.style.display = 'none';
+  if (missingSection) missingSection.style.display = 'none';
+  const missingBtn = document.getElementById('missingToggle');
+  if (missingBtn) { missingBtn.classList.remove('active'); missingActive = false; }
 
   const isGradeFilter = ['slabs','psa10','psa9','raw'].includes(f);
   const isCategoryFilter = ['jersey','autograph','collage'].includes(f);
@@ -2384,6 +2381,41 @@ function updateTierVisibility() {
   document.querySelectorAll('.tier-section').forEach(s => {
     s.style.display = s.querySelectorAll('.card:not([style*="display: none"])').length ? '' : 'none';
   });
+}
+
+let missingActive = false;
+function toggleMissing() {
+  missingActive = !missingActive;
+  const btn = document.getElementById('missingToggle');
+  const missingSection = document.getElementById('missingSection');
+
+  if (missingActive) {
+    // Show missing, hide owned
+    btn.classList.add('active');
+    document.querySelectorAll('.tier-section').forEach(s => {
+      s.style.display = s.dataset.tier === 'missing' ? '' : 'none';
+    });
+    cards.forEach(c => {
+      c.style.display = c.dataset.tier === 'missing' ? '' : 'none';
+    });
+    // Clear other active filters
+    document.querySelectorAll('.filter-bar .fbtn').forEach(b => b.classList.remove('active'));
+    // Scroll to missing section
+    missingSection.scrollIntoView({behavior:'smooth', block:'start'});
+  } else {
+    // Back to all owned
+    btn.classList.remove('active');
+    missingSection.style.display = 'none';
+    document.querySelectorAll('.tier-section').forEach(s => {
+      if (s.dataset.tier !== 'missing') s.style.display = '';
+    });
+    cards.forEach(c => {
+      c.style.display = c.dataset.tier === 'missing' ? 'none' : '';
+    });
+    document.querySelectorAll('.filter-bar .fbtn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-bar .fbtn').classList.add('active'); // "All"
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
 }
 
 // PSA population data
@@ -3878,6 +3910,9 @@ const MISSING_CARDS = [
   // Hide missing cards by default (only shown when Missing filter is active)
   container.querySelectorAll('.card').forEach(c => c.style.display = 'none');
   section.style.display = 'none';
+  // Update fixed button count
+  const btnCount = document.getElementById('missingBtnCount');
+  if (btnCount) btnCount.textContent = MISSING_CARDS.length;
 })();
 </script>
 </body>
