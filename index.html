@@ -2122,13 +2122,39 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
     </div>
   </div>
 
-  <div class="tier-section" data-tier="missing" id="missingSection" style="display:none">
-    <div class="tier-header">
-      <div class="tier-badge" style="background:#ff4757">?</div>
-      <div class="tier-title">Missing Cards</div>
-      <div class="tier-count" id="missingCount">0 cards</div>
+  <div id="missingSection" style="display:none">
+    <div class="tier-section" data-tier="missing" id="missingSectionSetComp">
+      <div class="tier-header">
+        <div class="tier-badge" style="background:linear-gradient(135deg,#ff0000,#ff8c00,#ffd700,#00c853,#2196f3,#9b59b6)">1</div>
+        <div class="tier-title">Set Completion</div>
+        <div class="tier-count" id="missingCountSet">0 cards</div>
+      </div>
+      <div class="cards" id="missingCardsSet"></div>
     </div>
-    <div class="cards" id="missingCards"></div>
+    <div class="tier-section" data-tier="missing" id="missingSectionAutos">
+      <div class="tier-header">
+        <div class="tier-badge" style="background:#1565c0">2</div>
+        <div class="tier-title">Autographs</div>
+        <div class="tier-count" id="missingCountAuto">0 cards</div>
+      </div>
+      <div class="cards" id="missingCardsAuto"></div>
+    </div>
+    <div class="tier-section" data-tier="missing" id="missingSectionCollage">
+      <div class="tier-header">
+        <div class="tier-badge" style="background:#7b1fa2">3</div>
+        <div class="tier-title">Patch / Relic / Collage</div>
+        <div class="tier-count" id="missingCountCollage">0 cards</div>
+      </div>
+      <div class="cards" id="missingCardsCollage"></div>
+    </div>
+    <div class="tier-section" data-tier="missing" id="missingSectionSupp">
+      <div class="tier-header">
+        <div class="tier-badge" style="background:#e67e22">4</div>
+        <div class="tier-title">Supplemental</div>
+        <div class="tier-count" id="missingCountSupp">0 cards</div>
+      </div>
+      <div class="cards" id="missingCardsSupp"></div>
+    </div>
   </div>
 
 </div>
@@ -2475,33 +2501,32 @@ let missingActive = false;
 function toggleMissing() {
   missingActive = !missingActive;
   const btn = document.getElementById('missingToggle');
-  const missingSection = document.getElementById('missingSection');
+  const missingWrapper = document.getElementById('missingSection');
 
   if (missingActive) {
     // Show missing, hide owned
     btn.classList.add('active');
-    document.querySelectorAll('.tier-section').forEach(s => {
-      s.style.display = s.dataset.tier === 'missing' ? '' : 'none';
-    });
+    // Hide all owned tier sections
+    document.querySelectorAll('.tier-section:not([data-tier="missing"])').forEach(s => s.style.display = 'none');
+    // Show missing wrapper and all its tier sections
+    missingWrapper.style.display = '';
+    missingWrapper.querySelectorAll('.tier-section').forEach(s => s.style.display = '');
+    // Show all missing cards
     cards.forEach(c => {
       c.style.display = c.dataset.tier === 'missing' ? '' : 'none';
     });
-    // Clear other active filters
     document.querySelectorAll('.filter-bar .fbtn').forEach(b => b.classList.remove('active'));
-    // Scroll to missing section
-    missingSection.scrollIntoView({behavior:'smooth', block:'start'});
+    missingWrapper.scrollIntoView({behavior:'smooth', block:'start'});
   } else {
     // Back to all owned
     btn.classList.remove('active');
-    missingSection.style.display = 'none';
-    document.querySelectorAll('.tier-section').forEach(s => {
-      if (s.dataset.tier !== 'missing') s.style.display = '';
-    });
+    missingWrapper.style.display = 'none';
+    document.querySelectorAll('.tier-section:not([data-tier="missing"])').forEach(s => s.style.display = '');
     cards.forEach(c => {
       c.style.display = c.dataset.tier === 'missing' ? 'none' : '';
     });
     document.querySelectorAll('.filter-bar .fbtn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.filter-bar .fbtn').classList.add('active'); // "All"
+    document.querySelector('.filter-bar .fbtn').classList.add('active');
     window.scrollTo({top:0, behavior:'smooth'});
   }
 }
@@ -4136,41 +4161,48 @@ function initGame() {
 
 // ============ MISSING CARDS ============
 const MISSING_CARDS = [
-  // 2017-18 Prizm Rainbow — missing parallels
-  {set:'Prizm', parallel:'Gold', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/10', priority:'grail', note:'Only 10 exist. Holy grail of the rainbow.', image:'static/cards/prizm-gold.webp', price:8000, rarity:9},
-  {set:'Prizm', parallel:'Black', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'1/1', priority:'grail', note:'True 1/1. The ultimate Bam card.', image:'static/cards/prizm-black.webp', price:25000, rarity:10},
-  {set:'Prizm', parallel:'Red', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/299', priority:'high', note:'Numbered to 299.', image:'static/cards/prizm-red.webp', price:300, rarity:5},
-  {set:'Prizm', parallel:'Mojo', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/25', priority:'high', note:'Numbered to 25. Mojo refractor.', image:'static/cards/prizm-mojo.webp', price:2500, rarity:8},
-  {set:'Prizm', parallel:'Camo', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/25', priority:'medium', note:'Numbered to 25. Camo pattern.', image:'', price:2000, rarity:8},
-  // Fast Break parallels not yet owned
-  {set:'Prizm Fast Break', parallel:'Base', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'low', note:'Fast Break base parallel.', image:'static/cards/fb-disco-base.webp', price:30, rarity:2},
-  {set:'Prizm Fast Break', parallel:'Neon Green', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'medium', note:'Bright neon green refractor.', image:'static/cards/fb-disco-neon-green.webp', price:80, rarity:4},
-  {set:'Prizm Fast Break', parallel:'Neon Orange', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'medium', note:'Neon orange refractor.', image:'static/cards/prizm-orange.webp', price:100, rarity:4},
-  // Donruss Optic missing
-  {set:'Donruss Optic', parallel:'Holo', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'', priority:'high', note:'Silver holo prizm. Key parallel.', image:'static/cards/optic-holo.webp', price:150, rarity:4},
-  {set:'Donruss Optic', parallel:'Red', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/99', priority:'medium', note:'Numbered to 99.', image:'static/cards/optic-red.webp', price:200, rarity:6},
-  {set:'Donruss Optic', parallel:'Purple', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/175', priority:'medium', note:'Numbered to 175.', image:'static/cards/optic-purple.webp', price:120, rarity:5},
-  {set:'Donruss Optic', parallel:'Orange', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/199', priority:'medium', note:'Numbered to 199.', image:'static/cards/optic-orange.webp', price:100, rarity:5},
-  {set:'Donruss Optic', parallel:'Green', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/5', priority:'grail', note:'Only 5 exist.', image:'static/cards/optic-holo.webp', price:5000, rarity:9},
-  // Key inserts missing
-  {set:'Select', parallel:'Silver', year:'2017-18', cardNumber:'#50', name:'Bam Adebayo RC', serial:'', priority:'high', note:'Select silver prizm. Clean design.', image:'static/cards/select-concourse-silver.webp', price:80, rarity:3},
-  {set:'Prizm', parallel:'Sensational Swatches', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'', priority:'high', note:'Jersey relic card from Prizm set.', image:'static/cards/chronicles-swatches.webp', price:250, rarity:6},
-  {set:'Contenders Draft Picks', parallel:'Cracked Ice Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/23', priority:'grail', note:'Cracked Ice autograph. Numbered to 23.', image:'static/cards/contenders-gameday.webp', price:3000, rarity:8},
-  {set:'National Treasures', parallel:'RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'grail', note:'Rookie Patch Auto. The ultimate rookie card.', image:'static/cards/nt-rpa.webp', price:6000, rarity:9},
-  {set:'National Treasures', parallel:'Gold RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/10', priority:'grail', note:'Gold Rookie Patch Auto. Only 10 exist.', image:'static/cards/nt-rpa.webp', price:15000, rarity:10},
-  {set:'Immaculate', parallel:'RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'grail', note:'Immaculate Rookie Patch Auto.', image:'static/cards/immaculate-rpa.webp', price:4000, rarity:9},
-  {set:'Flawless', parallel:'Base Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/25', priority:'grail', note:'Flawless auto on-card. Diamond embedded.', image:'static/cards/flawless-auto.webp', price:5000, rarity:9},
-  {set:'Crown Royale', parallel:'Silhouettes', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'high', note:'Die-cut jersey card. Iconic design.', image:'static/cards/court-kings-portraits.webp', price:1500, rarity:7},
-  {set:'Noir', parallel:'Base Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'high', note:'On-card auto on dark acetate stock.', image:'static/cards/prizm-black.webp', price:1200, rarity:7},
-  {set:'Prizm', parallel:'Gold Shimmer Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/10', priority:'grail', note:'Gold shimmer autograph. Only 10.', image:'static/cards/prizm-rookie-sigs-gold.webp', price:10000, rarity:10},
+  // ── SET COMPLETION: Prizm Rainbow gaps (ranked by attainability) ──
+  {cat:'set', set:'Prizm', parallel:'Red', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/299', priority:'high', note:'Completes Prizm base numbered run. 299 exist.', image:'static/cards/prizm-red.webp', price:300, rarity:5},
+  {cat:'set', set:'Prizm', parallel:'Mojo', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/25', priority:'high', note:'Mojo refractor. Key rainbow gap.', image:'static/cards/prizm-mojo.webp', price:2500, rarity:8},
+  {cat:'set', set:'Prizm', parallel:'Camo', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/25', priority:'medium', note:'Camo pattern. 25 exist.', image:'', price:2000, rarity:8},
+  {cat:'set', set:'Prizm', parallel:'Gold', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/10', priority:'grail', note:'Only 10 exist. Holy grail of the rainbow.', image:'static/cards/prizm-gold.webp', price:8000, rarity:9},
+  {cat:'set', set:'Prizm', parallel:'Black', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'1/1', priority:'grail', note:'True 1/1. The ultimate Bam card.', image:'static/cards/prizm-black.webp', price:25000, rarity:10},
+  // ── SET COMPLETION: Fast Break Rainbow gaps ──
+  {cat:'set', set:'Prizm Fast Break', parallel:'Base', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'low', note:'Fast Break base. Easy pickup.', image:'static/cards/fb-disco-base.webp', price:30, rarity:2},
+  {cat:'set', set:'Prizm Fast Break', parallel:'Neon Green', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'medium', note:'Neon green refractor.', image:'static/cards/fb-disco-neon-green.webp', price:80, rarity:4},
+  {cat:'set', set:'Prizm Fast Break', parallel:'Neon Orange', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'medium', note:'Neon orange refractor.', image:'static/cards/prizm-orange.webp', price:100, rarity:4},
+  // ── SET COMPLETION: Donruss Optic Rainbow gaps ──
+  {cat:'set', set:'Donruss Optic', parallel:'Holo', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'', priority:'high', note:'Silver holo. Key Optic parallel.', image:'static/cards/optic-holo.webp', price:150, rarity:4},
+  {cat:'set', set:'Donruss Optic', parallel:'Orange', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/199', priority:'medium', note:'Numbered to 199.', image:'static/cards/optic-orange.webp', price:100, rarity:5},
+  {cat:'set', set:'Donruss Optic', parallel:'Purple', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/175', priority:'medium', note:'Numbered to 175.', image:'static/cards/optic-purple.webp', price:120, rarity:5},
+  {cat:'set', set:'Donruss Optic', parallel:'Red', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/99', priority:'medium', note:'Numbered to 99.', image:'static/cards/optic-red.webp', price:200, rarity:6},
+  {cat:'set', set:'Donruss Optic', parallel:'Green', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/5', priority:'grail', note:'Only 5 exist.', image:'static/cards/optic-holo.webp', price:5000, rarity:9},
+  // ── AUTOGRAPHS ──
+  {cat:'auto', set:'Contenders Draft Picks', parallel:'Cracked Ice Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/23', priority:'grail', note:'Cracked Ice autograph. Numbered to 23.', image:'static/cards/contenders-gameday.webp', price:3000, rarity:8},
+  {cat:'auto', set:'National Treasures', parallel:'RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'grail', note:'Rookie Patch Auto. The ultimate rookie card.', image:'static/cards/nt-rpa.webp', price:6000, rarity:9},
+  {cat:'auto', set:'National Treasures', parallel:'Gold RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/10', priority:'grail', note:'Gold Rookie Patch Auto. Only 10 exist.', image:'static/cards/nt-rpa.webp', price:15000, rarity:10},
+  {cat:'auto', set:'Immaculate', parallel:'RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'grail', note:'Immaculate Rookie Patch Auto.', image:'static/cards/immaculate-rpa.webp', price:4000, rarity:9},
+  {cat:'auto', set:'Flawless', parallel:'Base Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/25', priority:'grail', note:'Flawless auto on-card. Diamond embedded.', image:'static/cards/flawless-auto.webp', price:5000, rarity:9},
+  {cat:'auto', set:'Noir', parallel:'Base Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'high', note:'On-card auto on dark acetate stock.', image:'static/cards/prizm-black.webp', price:1200, rarity:7},
+  {cat:'auto', set:'Prizm', parallel:'Gold Shimmer Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/10', priority:'grail', note:'Gold shimmer autograph. Only 10.', image:'static/cards/prizm-rookie-sigs-gold.webp', price:10000, rarity:10},
+  // ── PATCH / RELIC / COLLAGE ──
+  {cat:'collage', set:'Prizm', parallel:'Sensational Swatches', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'', priority:'high', note:'Jersey relic card from Prizm set.', image:'static/cards/chronicles-swatches.webp', price:250, rarity:6},
+  {cat:'collage', set:'Crown Royale', parallel:'Silhouettes', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'high', note:'Die-cut jersey card. Iconic design.', image:'static/cards/court-kings-portraits.webp', price:1500, rarity:7},
+  // ── SUPPLEMENTAL ──
+  {cat:'supp', set:'Select', parallel:'Silver', year:'2017-18', cardNumber:'#50', name:'Bam Adebayo RC', serial:'', priority:'high', note:'Select silver prizm. Clean design.', image:'static/cards/select-concourse-silver.webp', price:80, rarity:3},
 ];
 
 (function renderMissingCards() {
-  const container = document.getElementById('missingCards');
-  if (!container) return;
   const section = document.getElementById('missingSection');
-  const countEl = document.getElementById('missingCount');
-  countEl.textContent = MISSING_CARDS.length + ' cards';
+  if (!section) return;
+
+  const containers = {
+    set: document.getElementById('missingCardsSet'),
+    auto: document.getElementById('missingCardsAuto'),
+    collage: document.getElementById('missingCardsCollage'),
+    supp: document.getElementById('missingCardsSupp'),
+  };
+  const counts = {set:0, auto:0, collage:0, supp:0};
 
   const priorityColors = {grail:'#ffd700', high:'#ff4757', medium:'#ff8c42', low:'#6e6e8a'};
   const priorityLabels = {grail:'GRAIL', high:'HIGH', medium:'MED', low:'LOW'};
@@ -4220,12 +4252,22 @@ const MISSING_CARDS = [
         </div>
       </div>
     `;
-    container.appendChild(card);
+
+    const target = containers[mc.cat] || containers.supp;
+    target.appendChild(card);
+    counts[mc.cat || 'supp']++;
   });
+
+  // Update counts
+  document.getElementById('missingCountSet').textContent = counts.set + ' cards';
+  document.getElementById('missingCountAuto').textContent = counts.auto + ' cards';
+  document.getElementById('missingCountCollage').textContent = counts.collage + ' cards';
+  document.getElementById('missingCountSupp').textContent = counts.supp + ' cards';
+
   // Refresh the cards NodeList to include missing cards
   cards = document.querySelectorAll('.card');
-  // Hide missing cards by default (only shown when Missing filter is active)
-  container.querySelectorAll('.card').forEach(c => c.style.display = 'none');
+  // Hide missing cards by default
+  section.querySelectorAll('.card').forEach(c => c.style.display = 'none');
   section.style.display = 'none';
   // Update fixed button count
   const btnCount = document.getElementById('missingBtnCount');
