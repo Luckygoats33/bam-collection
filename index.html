@@ -105,6 +105,38 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .missing-btn-fixed.active{background:#ff4757;color:#fff;box-shadow:0 4px 24px rgba(255,71,87,.4)}
 .missing-btn-fixed .count-badge{background:rgba(255,255,255,.2);padding:2px 8px;border-radius:12px;font-size:11px;font-family:'JetBrains Mono',monospace}
 
+/* Advanced filter panel */
+.adv-filter-toggle{display:flex;align-items:center;gap:6px;margin:0 auto 16px;padding:8px 20px;border-radius:24px;border:1px solid var(--bdr2);background:var(--glass2);color:var(--ac2);font-size:12px;font-weight:600;cursor:pointer;transition:all .3s;backdrop-filter:blur(8px)}
+.adv-filter-toggle:hover{border-color:var(--ac);color:#fff;transform:translateY(-1px)}
+.adv-filter-toggle.open{color:#fff;border-color:var(--ac);box-shadow:0 0 16px rgba(124,92,255,.2)}
+.adv-filter-toggle .arrow{transition:transform .3s;display:inline-block}
+.adv-filter-toggle.open .arrow{transform:rotate(180deg)}
+.adv-filter-panel{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.16,1,.3,1),opacity .3s;opacity:0;margin-bottom:0}
+.adv-filter-panel.open{max-height:500px;opacity:1;margin-bottom:24px}
+.adv-filter-inner{background:var(--glass2);border:1px solid var(--bdr);border-radius:var(--radius);padding:20px 24px;backdrop-filter:blur(16px)}
+.slider-group{margin-bottom:18px}
+.slider-group:last-child{margin-bottom:0}
+.slider-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.slider-label .name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--td)}
+.slider-label .value{font-size:13px;font-weight:800;font-family:'JetBrains Mono',monospace;padding:2px 10px;border-radius:12px;min-width:60px;text-align:center}
+.slider-track{position:relative;height:8px;border-radius:4px;background:rgba(255,255,255,.06);cursor:pointer;touch-action:none}
+.slider-fill{position:absolute;left:0;top:0;height:100%;border-radius:4px;transition:width .1s}
+.slider-thumb{position:absolute;top:50%;width:22px;height:22px;border-radius:50%;transform:translate(-50%,-50%);cursor:grab;transition:box-shadow .2s,transform .15s;z-index:2}
+.slider-thumb:hover{transform:translate(-50%,-50%) scale(1.15)}
+.slider-thumb:active{cursor:grabbing;transform:translate(-50%,-50%) scale(1.25)}
+.slider-thumb.min{z-index:3}
+.slider-ticks{display:flex;justify-content:space-between;margin-top:4px;padding:0 2px}
+.slider-ticks span{font-size:8px;color:var(--td);font-family:'JetBrains Mono',monospace}
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.filter-chip{padding:5px 12px;border-radius:16px;border:1px solid var(--bdr);background:var(--glass);color:var(--td);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.filter-chip:hover{border-color:var(--bdr2);color:var(--t)}
+.filter-chip.active{border-color:transparent;color:#fff;box-shadow:0 0 12px rgba(124,92,255,.2)}
+.adv-reset{padding:6px 16px;border-radius:16px;border:1px solid rgba(255,71,87,.3);background:rgba(255,71,87,.08);color:var(--r);font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:1px}
+.adv-reset:hover{background:rgba(255,71,87,.2);transform:translateY(-1px)}
+.adv-active-count{font-size:10px;color:var(--g);font-weight:700;font-family:'JetBrains Mono',monospace}
+.slider-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.slider-row{grid-template-columns:1fr}}
+
 .card-img{aspect-ratio:3/4;background:#0a0a0a;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1)}
 .card:hover .card-img img{transform:scale(1.05)}
@@ -308,6 +340,62 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
       <div class="color-filters" id="colorFilters"></div>
     </div>
     <div class="parallel-filters" id="parallelFilters"></div>
+  </div>
+
+  <button class="adv-filter-toggle" id="advToggle" onclick="toggleAdvFilters()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M1 14h6M9 8h6M17 16h6"/></svg>
+    Advanced Filters <span class="arrow">&#9660;</span>
+    <span class="adv-active-count" id="advActiveCount"></span>
+  </button>
+  <div class="adv-filter-panel" id="advPanel">
+    <div class="adv-filter-inner">
+      <div class="slider-row">
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="name">Est. Price Range</span>
+            <span class="value" id="priceValue" style="color:#00e5a0;background:rgba(0,229,160,.1)">All</span>
+          </div>
+          <div class="slider-track" id="priceTrack">
+            <div class="slider-fill" id="priceFill" style="background:linear-gradient(90deg,#00e5a0,#ffd700)"></div>
+            <div class="slider-thumb min" id="priceThumbMin" style="background:#00e5a0;box-shadow:0 0 12px rgba(0,229,160,.4)"></div>
+            <div class="slider-thumb" id="priceThumbMax" style="background:#ffd700;box-shadow:0 0 12px rgba(255,215,0,.4)"></div>
+          </div>
+          <div class="slider-ticks"><span>$0</span><span>$500</span><span>$2K</span><span>$10K</span><span>$25K+</span></div>
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="name">Rarity Level</span>
+            <span class="value" id="rarityValue" style="color:#c084fc;background:rgba(192,132,252,.1)">All</span>
+          </div>
+          <div class="slider-track" id="rarityTrack">
+            <div class="slider-fill" id="rarityFill" style="background:linear-gradient(90deg,#6e6e8a,#c084fc,#ffd700)"></div>
+            <div class="slider-thumb min" id="rarityThumbMin" style="background:#c084fc;box-shadow:0 0 12px rgba(192,132,252,.4)"></div>
+            <div class="slider-thumb" id="rarityThumbMax" style="background:#ffd700;box-shadow:0 0 12px rgba(255,215,0,.4)"></div>
+          </div>
+          <div class="slider-ticks"><span>Common</span><span>Uncommon</span><span>Rare</span><span>Ultra</span><span>1/1</span></div>
+        </div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-label">
+          <span class="name">Card Type</span>
+        </div>
+        <div class="filter-chips" id="typeChips">
+          <button class="filter-chip active" data-type="all" onclick="setTypeFilter('all',this)" style="--chip-color:var(--ac)">All Types</button>
+          <button class="filter-chip" data-type="base" onclick="setTypeFilter('base',this)" style="--chip-color:#888">Base</button>
+          <button class="filter-chip" data-type="prizm" onclick="setTypeFilter('prizm',this)" style="--chip-color:#c0c0c0">Prizm / Refractor</button>
+          <button class="filter-chip" data-type="numbered" onclick="setTypeFilter('numbered',this)" style="--chip-color:#ff8c42">Numbered</button>
+          <button class="filter-chip" data-type="auto" onclick="setTypeFilter('auto',this)" style="--chip-color:#2196f3">Autograph</button>
+          <button class="filter-chip" data-type="patch" onclick="setTypeFilter('patch',this)" style="--chip-color:#e65100">Patch / Relic</button>
+          <button class="filter-chip" data-type="rpa" onclick="setTypeFilter('rpa',this)" style="--chip-color:#ffd700">RPA</button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
+        <div>
+          <span class="adv-active-count" id="advResultCount">23 cards</span>
+        </div>
+        <button class="adv-reset" onclick="resetAdvFilters()">Reset All</button>
+      </div>
+    </div>
   </div>
 
   
@@ -3821,35 +3909,260 @@ function initGame() {
   waitForTutorial();
 }
 
+// ============ ADVANCED FILTERS ============
+(function setupAdvFilters() {
+  // Price uses log scale: 0-1 maps to $0-$25000
+  const PRICE_MAX = 25000;
+  const RARITY_MAX = 10;
+
+  // State
+  let priceMin = 0, priceMax = 1;
+  let rarityMin = 0, rarityMax = 1;
+  let typeFilter = 'all';
+
+  // Log scale for price (makes low-end more usable)
+  function priceFromPct(pct) {
+    if (pct <= 0) return 0;
+    return Math.round(Math.pow(pct, 2.5) * PRICE_MAX);
+  }
+  function pctFromPrice(p) {
+    if (p <= 0) return 0;
+    return Math.pow(p / PRICE_MAX, 1/2.5);
+  }
+  function rarityFromPct(pct) { return Math.round(pct * RARITY_MAX); }
+
+  function formatPrice(p) {
+    if (p >= 10000) return '$' + (p/1000).toFixed(0) + 'K';
+    if (p >= 1000) return '$' + (p/1000).toFixed(1) + 'K';
+    return '$' + p.toLocaleString();
+  }
+
+  // Slider drag logic
+  function makeSlider(trackId, fillId, thumbMinId, thumbMaxId, onChange) {
+    const track = document.getElementById(trackId);
+    const fill = document.getElementById(fillId);
+    const thumbMin = document.getElementById(thumbMinId);
+    const thumbMax = document.getElementById(thumbMaxId);
+    let dragging = null;
+    let state = {min: 0, max: 1};
+
+    function updateVisual() {
+      const l = state.min * 100, r = state.max * 100;
+      fill.style.left = l + '%';
+      fill.style.width = (r - l) + '%';
+      thumbMin.style.left = l + '%';
+      thumbMax.style.left = r + '%';
+    }
+    updateVisual();
+
+    function getPct(clientX) {
+      const rect = track.getBoundingClientRect();
+      return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    }
+
+    function startDrag(thumb, which) {
+      return function(e) {
+        e.preventDefault();
+        dragging = which;
+        const moveHandler = (ev) => {
+          const cx = ev.touches ? ev.touches[0].clientX : ev.clientX;
+          let pct = getPct(cx);
+          if (which === 'min') { pct = Math.min(pct, state.max - 0.02); state.min = pct; }
+          else { pct = Math.max(pct, state.min + 0.02); state.max = pct; }
+          updateVisual();
+          onChange(state.min, state.max);
+        };
+        const upHandler = () => {
+          dragging = null;
+          document.removeEventListener('mousemove', moveHandler);
+          document.removeEventListener('mouseup', upHandler);
+          document.removeEventListener('touchmove', moveHandler);
+          document.removeEventListener('touchend', upHandler);
+        };
+        document.addEventListener('mousemove', moveHandler, {passive:false});
+        document.addEventListener('mouseup', upHandler);
+        document.addEventListener('touchmove', moveHandler, {passive:false});
+        document.addEventListener('touchend', upHandler);
+      };
+    }
+
+    thumbMin.addEventListener('mousedown', startDrag(thumbMin, 'min'));
+    thumbMin.addEventListener('touchstart', startDrag(thumbMin, 'min'), {passive:false});
+    thumbMax.addEventListener('mousedown', startDrag(thumbMax, 'max'));
+    thumbMax.addEventListener('touchstart', startDrag(thumbMax, 'max'), {passive:false});
+
+    // Click on track to jump
+    track.addEventListener('click', (e) => {
+      if (dragging) return;
+      const pct = getPct(e.clientX);
+      const dMin = Math.abs(pct - state.min);
+      const dMax = Math.abs(pct - state.max);
+      if (dMin < dMax) { state.min = Math.min(pct, state.max - 0.02); }
+      else { state.max = Math.max(pct, state.min + 0.02); }
+      updateVisual();
+      onChange(state.min, state.max);
+    });
+
+    return {
+      reset() { state.min = 0; state.max = 1; updateVisual(); onChange(0, 1); }
+    };
+  }
+
+  const priceSlider = makeSlider('priceTrack','priceFill','priceThumbMin','priceThumbMax', (min, max) => {
+    priceMin = min; priceMax = max;
+    const lo = priceFromPct(min), hi = priceFromPct(max);
+    const valEl = document.getElementById('priceValue');
+    if (min <= 0.01 && max >= 0.99) valEl.textContent = 'All';
+    else valEl.textContent = formatPrice(lo) + ' - ' + formatPrice(hi);
+    applyAdvFilters();
+  });
+
+  const raritySlider = makeSlider('rarityTrack','rarityFill','rarityThumbMin','rarityThumbMax', (min, max) => {
+    rarityMin = min; rarityMax = max;
+    const lo = rarityFromPct(min), hi = rarityFromPct(max);
+    const valEl = document.getElementById('rarityValue');
+    const labels = ['Common','','','Uncommon','','Rare','','Ultra Rare','','Legendary','Mythic'];
+    if (min <= 0.01 && max >= 0.99) valEl.textContent = 'All';
+    else valEl.textContent = (labels[lo]||lo) + ' - ' + (labels[hi]||hi);
+    applyAdvFilters();
+  });
+
+  // Type filter chips
+  window.setTypeFilter = function(type, btn) {
+    typeFilter = type;
+    document.querySelectorAll('#typeChips .filter-chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    // Set chip color
+    const chipColor = getComputedStyle(btn).getPropertyValue('--chip-color').trim() || 'var(--ac)';
+    btn.style.background = chipColor;
+    btn.style.borderColor = chipColor;
+    applyAdvFilters();
+  };
+
+  function cardMatchesType(c, type) {
+    if (type === 'all') return true;
+    const set = (c.dataset.set || '').toLowerCase();
+    const par = (c.dataset.parallel || '').toLowerCase();
+    const name = (c.dataset.name || '').toLowerCase();
+    const full = set + ' ' + par + ' ' + name;
+    switch (type) {
+      case 'base': return par === 'base' || par === 'base (paper)';
+      case 'prizm': return /silver|gold|green|blue|purple|orange|red|hyper|ruby|mojo|camo|pink|disco|shimmer|holo|shock|wave|neon|velocity|pulsar/.test(par);
+      case 'numbered': return !!c.dataset.serial && c.dataset.serial !== '';
+      case 'auto': return /auto|signature|signed|sigs/.test(full);
+      case 'patch': return /patch|relic|jersey|swatch|memorabilia|swatches|silhouettes/.test(full);
+      case 'rpa': return /rpa|rookie patch auto/.test(full);
+      default: return true;
+    }
+  }
+
+  function applyAdvFilters() {
+    const pLo = priceFromPct(priceMin), pHi = priceFromPct(priceMax);
+    const rLo = rarityFromPct(rarityMin), rHi = rarityFromPct(rarityMax);
+    const isPriceAll = priceMin <= 0.01 && priceMax >= 0.99;
+    const isRarityAll = rarityMin <= 0.01 && rarityMax >= 0.99;
+    const isTypeAll = typeFilter === 'all';
+    const isAllDefault = isPriceAll && isRarityAll && isTypeAll;
+
+    let count = 0;
+    const allCards = document.querySelectorAll('.card');
+    allCards.forEach(c => {
+      // Skip if card is in a hidden tier section
+      const tier = c.closest('.tier-section');
+      if (tier && tier.style.display === 'none' && !isAllDefault) return;
+
+      const price = parseInt(c.dataset.price) || 0;
+      const rarity = parseInt(c.dataset.rarity) || 1;
+
+      let show = true;
+      if (!isPriceAll && price > 0) {
+        if (price < pLo || price > pHi) show = false;
+      }
+      if (!isRarityAll) {
+        if (rarity < rLo || rarity > rHi) show = false;
+      }
+      if (!isTypeAll) {
+        if (!cardMatchesType(c, typeFilter)) show = false;
+      }
+
+      // Only filter missing cards with advanced filters (owned cards don't have price/rarity data)
+      if (c.dataset.tier === 'missing') {
+        c.style.display = show ? '' : 'none';
+        if (show) count++;
+      } else {
+        // For owned cards, only apply type filter
+        if (!isTypeAll) {
+          c.style.display = cardMatchesType(c, typeFilter) ? '' : 'none';
+          if (c.style.display !== 'none') count++;
+        } else {
+          if (c.style.display !== 'none') count++;
+        }
+      }
+    });
+
+    const countEl = document.getElementById('advResultCount');
+    if (countEl) countEl.textContent = count + ' cards';
+
+    const activeCount = document.getElementById('advActiveCount');
+    const numActive = (!isPriceAll ? 1 : 0) + (!isRarityAll ? 1 : 0) + (!isTypeAll ? 1 : 0);
+    if (activeCount) activeCount.textContent = numActive > 0 ? numActive + ' active' : '';
+
+    updateTierVisibility();
+  }
+
+  window.toggleAdvFilters = function() {
+    const panel = document.getElementById('advPanel');
+    const toggle = document.getElementById('advToggle');
+    panel.classList.toggle('open');
+    toggle.classList.toggle('open');
+  };
+
+  window.resetAdvFilters = function() {
+    priceSlider.reset();
+    raritySlider.reset();
+    typeFilter = 'all';
+    document.querySelectorAll('#typeChips .filter-chip').forEach(c => {
+      c.classList.remove('active');
+      c.style.background = '';
+      c.style.borderColor = '';
+    });
+    document.querySelector('#typeChips .filter-chip[data-type="all"]').classList.add('active');
+    document.getElementById('priceValue').textContent = 'All';
+    document.getElementById('rarityValue').textContent = 'All';
+    document.getElementById('advActiveCount').textContent = '';
+    document.getElementById('advResultCount').textContent = document.querySelectorAll('.card').length + ' cards';
+  };
+})();
+
 // ============ MISSING CARDS ============
 const MISSING_CARDS = [
   // 2017-18 Prizm Rainbow — missing parallels
-  {set:'Prizm', parallel:'Gold', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/10', priority:'grail', note:'Only 10 exist. Holy grail of the rainbow.'},
-  {set:'Prizm', parallel:'Black', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'1/1', priority:'grail', note:'True 1/1. The ultimate Bam card.'},
-  {set:'Prizm', parallel:'Red', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/299', priority:'high', note:'Numbered to 299.'},
-  {set:'Prizm', parallel:'Mojo', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/25', priority:'high', note:'Numbered to 25. Mojo refractor.'},
-  {set:'Prizm', parallel:'Camo', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/25', priority:'medium', note:'Numbered to 25. Camo pattern.'},
+  {set:'Prizm', parallel:'Gold', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/10', priority:'grail', note:'Only 10 exist. Holy grail of the rainbow.', image:'static/cards/prizm-gold.webp', price:8000, rarity:9},
+  {set:'Prizm', parallel:'Black', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'1/1', priority:'grail', note:'True 1/1. The ultimate Bam card.', image:'static/cards/prizm-black.webp', price:25000, rarity:10},
+  {set:'Prizm', parallel:'Red', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/299', priority:'high', note:'Numbered to 299.', image:'static/cards/prizm-red.webp', price:300, rarity:5},
+  {set:'Prizm', parallel:'Mojo', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/25', priority:'high', note:'Numbered to 25. Mojo refractor.', image:'static/cards/prizm-mojo.webp', price:2500, rarity:8},
+  {set:'Prizm', parallel:'Camo', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'/25', priority:'medium', note:'Numbered to 25. Camo pattern.', image:'', price:2000, rarity:8},
   // Fast Break parallels not yet owned
-  {set:'Prizm Fast Break', parallel:'Base', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'low', note:'Fast Break base parallel.'},
-  {set:'Prizm Fast Break', parallel:'Neon Green', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'medium', note:'Bright neon green refractor.'},
-  {set:'Prizm Fast Break', parallel:'Neon Orange', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'medium', note:'Neon orange refractor.'},
+  {set:'Prizm Fast Break', parallel:'Base', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'low', note:'Fast Break base parallel.', image:'static/cards/fb-disco-base.webp', price:30, rarity:2},
+  {set:'Prizm Fast Break', parallel:'Neon Green', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'medium', note:'Bright neon green refractor.', image:'static/cards/fb-disco-neon-green.webp', price:80, rarity:4},
+  {set:'Prizm Fast Break', parallel:'Neon Orange', year:'2017-18', cardNumber:'#51', name:'Bam Adebayo RC', serial:'', priority:'medium', note:'Neon orange refractor.', image:'static/cards/prizm-orange.webp', price:100, rarity:4},
   // Donruss Optic missing
-  {set:'Donruss Optic', parallel:'Holo', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'', priority:'high', note:'Silver holo prizm. Key parallel.'},
-  {set:'Donruss Optic', parallel:'Red', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/99', priority:'medium', note:'Numbered to 99.'},
-  {set:'Donruss Optic', parallel:'Purple', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/175', priority:'medium', note:'Numbered to 175.'},
-  {set:'Donruss Optic', parallel:'Orange', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/199', priority:'medium', note:'Numbered to 199.'},
-  {set:'Donruss Optic', parallel:'Green', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/5', priority:'grail', note:'Only 5 exist.'},
+  {set:'Donruss Optic', parallel:'Holo', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'', priority:'high', note:'Silver holo prizm. Key parallel.', image:'static/cards/optic-holo.webp', price:150, rarity:4},
+  {set:'Donruss Optic', parallel:'Red', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/99', priority:'medium', note:'Numbered to 99.', image:'static/cards/optic-red.webp', price:200, rarity:6},
+  {set:'Donruss Optic', parallel:'Purple', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/175', priority:'medium', note:'Numbered to 175.', image:'static/cards/optic-purple.webp', price:120, rarity:5},
+  {set:'Donruss Optic', parallel:'Orange', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/199', priority:'medium', note:'Numbered to 199.', image:'static/cards/optic-orange.webp', price:100, rarity:5},
+  {set:'Donruss Optic', parallel:'Green', year:'2017-18', cardNumber:'#187', name:'Bam Adebayo RC', serial:'/5', priority:'grail', note:'Only 5 exist.', image:'static/cards/optic-holo.webp', price:5000, rarity:9},
   // Key inserts missing
-  {set:'Select', parallel:'Silver', year:'2017-18', cardNumber:'#50', name:'Bam Adebayo RC', serial:'', priority:'high', note:'Select silver prizm. Clean design.'},
-  {set:'Prizm', parallel:'Sensational Swatches', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'', priority:'high', note:'Jersey relic card from Prizm set.'},
-  {set:'Contenders Draft Picks', parallel:'Cracked Ice Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/23', priority:'grail', note:'Cracked Ice autograph. Numbered to 23.'},
-  {set:'National Treasures', parallel:'RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'grail', note:'Rookie Patch Auto. The ultimate rookie card.'},
-  {set:'National Treasures', parallel:'Gold RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/10', priority:'grail', note:'Gold Rookie Patch Auto. Only 10 exist.'},
-  {set:'Immaculate', parallel:'RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'grail', note:'Immaculate Rookie Patch Auto.'},
-  {set:'Flawless', parallel:'Base Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/25', priority:'grail', note:'Flawless auto on-card. Diamond embedded.'},
-  {set:'Crown Royale', parallel:'Silhouettes', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'high', note:'Die-cut jersey card. Iconic design.'},
-  {set:'Noir', parallel:'Base Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'high', note:'On-card auto on dark acetate stock.'},
-  {set:'Prizm', parallel:'Gold Shimmer Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/10', priority:'grail', note:'Gold shimmer autograph. Only 10.'},
+  {set:'Select', parallel:'Silver', year:'2017-18', cardNumber:'#50', name:'Bam Adebayo RC', serial:'', priority:'high', note:'Select silver prizm. Clean design.', image:'static/cards/select-concourse-silver.webp', price:80, rarity:3},
+  {set:'Prizm', parallel:'Sensational Swatches', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'', priority:'high', note:'Jersey relic card from Prizm set.', image:'static/cards/chronicles-swatches.webp', price:250, rarity:6},
+  {set:'Contenders Draft Picks', parallel:'Cracked Ice Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/23', priority:'grail', note:'Cracked Ice autograph. Numbered to 23.', image:'static/cards/contenders-gameday.webp', price:3000, rarity:8},
+  {set:'National Treasures', parallel:'RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'grail', note:'Rookie Patch Auto. The ultimate rookie card.', image:'static/cards/nt-rpa.webp', price:6000, rarity:9},
+  {set:'National Treasures', parallel:'Gold RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/10', priority:'grail', note:'Gold Rookie Patch Auto. Only 10 exist.', image:'static/cards/nt-rpa.webp', price:15000, rarity:10},
+  {set:'Immaculate', parallel:'RPA', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'grail', note:'Immaculate Rookie Patch Auto.', image:'static/cards/immaculate-rpa.webp', price:4000, rarity:9},
+  {set:'Flawless', parallel:'Base Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/25', priority:'grail', note:'Flawless auto on-card. Diamond embedded.', image:'static/cards/flawless-auto.webp', price:5000, rarity:9},
+  {set:'Crown Royale', parallel:'Silhouettes', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'high', note:'Die-cut jersey card. Iconic design.', image:'static/cards/court-kings-portraits.webp', price:1500, rarity:7},
+  {set:'Noir', parallel:'Base Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/99', priority:'high', note:'On-card auto on dark acetate stock.', image:'static/cards/prizm-black.webp', price:1200, rarity:7},
+  {set:'Prizm', parallel:'Gold Shimmer Auto', year:'2017-18', cardNumber:'', name:'Bam Adebayo', serial:'/10', priority:'grail', note:'Gold shimmer autograph. Only 10.', image:'static/cards/prizm-rookie-sigs-gold.webp', price:10000, rarity:10},
 ];
 
 (function renderMissingCards() {
@@ -3879,18 +4192,22 @@ const MISSING_CARDS = [
     card.dataset.serial = mc.serial;
     card.dataset.qty = '0';
     card.dataset.grade = '';
-    card.dataset.image = '';
+    card.dataset.image = mc.image || '';
     card.dataset.notes = mc.note;
+    card.dataset.price = mc.price || 0;
+    card.dataset.rarity = mc.rarity || 1;
     card.onclick = function() { openModal(this); };
+
+    const imgHtml = mc.image
+      ? `<img src="${mc.image}" alt="${mc.name}" loading="lazy" style="opacity:.6;filter:grayscale(30%)">`
+      : `<div class="placeholder"><div class="set-name">${mc.year} ${mc.set}</div>${mc.parallel}<br>${mc.serial || 'Unlimited'}</div>`;
 
     card.innerHTML = `
       <div class="card-img">
-        <div class="placeholder">
-          <div class="set-name">${mc.year} ${mc.set}</div>
-          ${mc.parallel}<br>${mc.serial || 'Unlimited'}
-        </div>
+        ${imgHtml}
         <span class="badge-missing">NEED</span>
         <span class="badge" style="top:8px;left:8px;background:${pColor}22;color:${pColor};border:1px solid ${pColor}44;font-size:7px;padding:2px 6px">${pLabel}</span>
+        <span class="badge" style="bottom:8px;left:8px;background:rgba(0,229,160,.12);color:#00e5a0;border:1px solid rgba(0,229,160,.2);font-size:8px;padding:2px 6px">~$${mc.price ? mc.price.toLocaleString() : '?'}</span>
       </div>
       <div class="card-info">
         <div class="card-set">${mc.year} ${mc.set} ${mc.cardNumber}</div>
@@ -3913,6 +4230,12 @@ const MISSING_CARDS = [
   // Update fixed button count
   const btnCount = document.getElementById('missingBtnCount');
   if (btnCount) btnCount.textContent = MISSING_CARDS.length;
+
+  // Add price/rarity data to owned cards so type filter works on them
+  document.querySelectorAll('.card.owned').forEach(c => {
+    if (!c.dataset.price) c.dataset.price = '0';
+    if (!c.dataset.rarity) c.dataset.rarity = '1';
+  });
 })();
 </script>
 </body>
