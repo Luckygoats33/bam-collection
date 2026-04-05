@@ -2821,7 +2821,7 @@ openModal = function(el) {
       animateCounters();
       // Show bouncing ball CTA on collection page too
       document.getElementById('gameBall').style.display = 'block';
-    document.getElementById('nesLink').style.display = 'block';
+      document.getElementById('nesLink').style.display = 'block';
       document.getElementById('gameLabel').style.display = 'block';
     }, 500);
   };
@@ -3567,12 +3567,6 @@ function initGame() {
     ctx.fillStyle = '#ffffff88';
     ctx.fillText('ESC', W - 32, 112);
   }
-      document.body.style.overflow = '';
-      document.getElementById('gameBall').style.display = 'block';
-    document.getElementById('nesLink').style.display = 'block';
-      document.getElementById('gameLabel').style.display = 'block';
-    }
-  });
 
   // Draw game over screen
   function drawGameOver() {
