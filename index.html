@@ -214,7 +214,7 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
 <!-- DOUBLE DRIBBLE INTRO -->
 <div id="introOverlay" class="intro-overlay">
   <canvas id="introCanvas"></canvas>
-  <div class="intro-skip" onclick="skipIntro()">PRESS START</div>
+  <div class="intro-skip" id="introSkipText" onclick="if(typeof phase!=='undefined'&&phase==='dunk'){goPhase('title');}">SKIP ></div>
 </div>
 
 <!-- BOUNCING BASKETBALL CTA -->
@@ -2715,11 +2715,11 @@ openModal = function(el) {
         ctx.fillRect(0, y, W, 2);
       }
 
-      if (p >= 1) goPhase('title');
+      if (p >= 1) { goPhase('title'); const st = document.getElementById('introSkipText'); if(st) st.style.display='none'; }
     }
 
     else if (phase === 'title') {
-      // Quick retro title card
+      // Title card with menu — stays on screen until user picks an option
       if (p < 0.1) {
         ctx.fillStyle = `rgba(255,255,255,${(1-p/0.1)*0.5})`;
         ctx.fillRect(0, 0, W, H);
@@ -2738,22 +2738,65 @@ openModal = function(el) {
       const fadeIn = Math.min(p / 0.15, 1);
       ctx.globalAlpha = fadeIn;
 
-      pxText('BAM ADEBAYO', W/2, H*0.3, WHITE, Math.min(W*0.08, 48));
+      pxText('BAM ADEBAYO', W/2, H*0.22, WHITE, Math.min(W*0.08, 48));
       if (p > 0.1) {
         ctx.globalAlpha = Math.min((p-0.1)/0.15, 1);
-        pxText('ROOKIE CARD', W/2, H*0.45, '#ff1744', Math.min(W*0.05, 30));
-        pxText('COLLECTION', W/2, H*0.55, '#ff1744', Math.min(W*0.05, 30));
+        pxText('ROOKIE CARD', W/2, H*0.35, '#ff1744', Math.min(W*0.05, 30));
+        pxText('COLLECTION', W/2, H*0.44, '#ff1744', Math.min(W*0.05, 30));
       }
-      if (p > 0.3) {
-        ctx.globalAlpha = Math.min((p-0.3)/0.2, 1);
-        pxText('51 CARDS', W/2, H*0.72, GOLD, Math.min(W*0.03, 20));
+      if (p > 0.25) {
+        ctx.globalAlpha = Math.min((p-0.25)/0.15, 1);
+        pxText('51 CARDS', W/2, H*0.54, GOLD, Math.min(W*0.025, 16));
+      }
+
+      // Menu buttons appear after text
+      if (p > 0.5) {
+        ctx.globalAlpha = Math.min((p-0.5)/0.2, 1);
+        const btnW = Math.min(W*0.7, 340);
+        const btnH = 50;
+        const btnX = W/2 - btnW/2;
+        const btnGap = 16;
+
+        // Button 1: VIEW COLLECTION
+        const btn1Y = H*0.64;
+        ctx.fillStyle = '#ff1744';
+        ctx.fillRect(btnX, btn1Y, btnW, btnH);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(btnX, btn1Y, btnW, btnH);
+        pxText('VIEW COLLECTION', W/2, btn1Y + btnH/2 + 5, '#fff', Math.min(W*0.025, 14));
+
+        // Button 2: 3-POINT CONTEST
+        const btn2Y = btn1Y + btnH + btnGap;
+        ctx.fillStyle = '#1a0a0a';
+        ctx.fillRect(btnX, btn2Y, btnW, btnH);
+        ctx.strokeStyle = '#ff1744';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(btnX, btn2Y, btnW, btnH);
+        // Basketball icon
+        const iconX = btnX + 20;
+        const iconY = btn2Y + btnH/2;
+        ctx.fillStyle = '#e67e22';
+        ctx.beginPath(); ctx.arc(iconX, iconY, 10, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle = '#c65800'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(iconX, iconY, 10, 0, Math.PI*2); ctx.stroke();
+        pxText('3-POINT CONTEST', W/2 + 10, btn2Y + btnH/2 + 5, '#ff1744', Math.min(W*0.025, 14));
+
+        // Store button positions for click detection
+        window._menuBtn1 = { x: btnX, y: btn1Y, w: btnW, h: btnH };
+        window._menuBtn2 = { x: btnX, y: btn2Y, w: btnW, h: btnH };
+        window._menuReady = true;
       }
 
       ctx.globalAlpha = 1;
       // Scanlines
       for (let y = 0; y < H; y += 3) { ctx.fillStyle = 'rgba(0,0,0,0.06)'; ctx.fillRect(0, y, W, 1); }
 
-      if (p >= 1) { introRunning = false; skipIntro(); }
+      // Pause on title — do NOT auto-skip. Wait for user to click a button.
+      if (p >= 1) {
+        // Clamp phase so it keeps rendering the title screen
+        phaseStart = frame - DURATIONS[phase];
+      }
     }
 
     if (introRunning) requestAnimationFrame(renderFrame);
@@ -2772,11 +2815,45 @@ openModal = function(el) {
       el.style.opacity = '1';
     });
     window.scrollTo(0, 0);
-    setTimeout(() => { overlay.style.display = 'none'; animateCounters(); }, 500);
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      animateCounters();
+      // Show bouncing ball CTA on collection page too
+      document.getElementById('gameBall').style.display = 'block';
+      document.getElementById('gameLabel').style.display = 'block';
+    }, 500);
   };
 
-  document.getElementById('introOverlay').addEventListener('click', skipIntro);
-  document.addEventListener('keydown', function ik(e) { skipIntro(); document.removeEventListener('keydown', ik); });
+  // Menu click detection on title screen
+  document.getElementById('introOverlay').addEventListener('click', function(e) {
+    if (window._menuReady) {
+      const rect = canvas.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+      const b1 = window._menuBtn1;
+      const b2 = window._menuBtn2;
+      if (b1 && mx >= b1.x && mx <= b1.x + b1.w && my >= b1.y && my <= b1.y + b1.h) {
+        skipIntro(); // View Collection
+        return;
+      }
+      if (b2 && mx >= b2.x && mx <= b2.x + b2.w && my >= b2.y && my <= b2.y + b2.h) {
+        skipIntro(); // Close intro first
+        setTimeout(startGame, 600); // Then launch game
+        return;
+      }
+    }
+    // During dunk phase, skip ahead to title
+    if (phase === 'dunk') {
+      goPhase('title');
+    }
+  });
+  document.addEventListener('keydown', function ik(e) {
+    if (phase === 'dunk') { goPhase('title'); }
+    else if (window._menuReady) {
+      if (e.key === '1') skipIntro();
+      if (e.key === '2') { skipIntro(); setTimeout(startGame, 600); }
+    }
+  });
 })();
 
 // ============ BOUNCING BASKETBALL CTA ============
@@ -2794,23 +2871,7 @@ openModal = function(el) {
   bx.beginPath(); bx.arc(32,32,16,0.3,2.8); bx.stroke();
   bx.beginPath(); bx.arc(32,32,16,3.5,6); bx.stroke();
 
-  // Show after intro ends
-  const showBall = () => {
-    document.getElementById('gameBall').style.display = 'block';
-    document.getElementById('gameLabel').style.display = 'block';
-  };
-  const obs = new MutationObserver((muts) => {
-    for (const m of muts) {
-      if (m.target.classList && m.target.classList.contains('fade-out')) {
-        setTimeout(showBall, 1500);
-        obs.disconnect();
-      }
-    }
-  });
-  const ov = document.getElementById('introOverlay');
-  if (ov) obs.observe(ov, { attributes: true, attributeFilter: ['class'] });
-  // Also show if intro already done
-  if (ov && ov.style.display === 'none') showBall();
+  // Ball CTA is shown after skipIntro() runs — see skipIntro function
 })();
 
 // ============ 3-POINT CONTEST GAME ============
