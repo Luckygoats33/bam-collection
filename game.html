@@ -2,212 +2,497 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bam Basketball - NES Game</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>BAM Basketball</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  background: #0a0a0a;
-  color: #fff;
-  font-family: 'Courier New', monospace;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-}
-.top-bar {
-  width: 100%;
-  background: #111;
-  border-bottom: 2px solid #ff1744;
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.top-bar a {
-  color: #ff1744;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 8px 16px;
-  border: 2px solid #ff1744;
-  border-radius: 4px;
-  transition: all 0.2s;
-}
-.top-bar a:hover { background: #ff1744; color: #fff; }
-.top-bar h1 { font-size: 16px; color: #ff1744; }
-.nes-wrapper {
-  margin-top: 24px;
-  position: relative;
-  background: #1a1a1a;
-  border: 3px solid #333;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 0 40px rgba(255,23,68,0.15);
-}
-canvas#nes-canvas {
-  width: 512px;
-  height: 480px;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  display: block;
-  background: #000;
-}
-.controls {
-  margin-top: 20px;
-  max-width: 540px;
-  width: 100%;
-}
-.controls h2 { color: #ff1744; font-size: 14px; margin-bottom: 12px; text-align: center; }
-.key-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  font-size: 13px;
-}
-.key-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 6px 12px;
-  background: #1a1a1a;
-  border-radius: 4px;
-}
-.key-label { color: #888; }
-.key-value { color: #ff1744; font-weight: bold; }
-.status {
-  text-align: center;
-  margin-top: 16px;
-  font-size: 12px;
-  color: #666;
-}
-.status.loaded { color: #00e5a0; }
-.status.error { color: #ff1744; }
-@media (max-width: 560px) {
-  canvas#nes-canvas { width: 100%; height: auto; }
-  .nes-wrapper { margin: 12px; padding: 8px; }
-  .key-grid { grid-template-columns: 1fr; }
-}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated;image-rendering:crisp-edges;object-fit:contain}
+/* Touch controls overlay */
+#touch-controls{position:fixed;bottom:0;left:0;right:0;height:40vh;pointer-events:none;display:none;z-index:10}
+.dpad{position:absolute;left:20px;bottom:20px;width:120px;height:120px;pointer-events:auto}
+.dpad-btn{position:absolute;width:40px;height:40px;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-family:'Press Start 2P',monospace}
+.dpad-btn:active{background:rgba(255,23,68,0.5)}
+.dpad-up{left:40px;top:0}
+.dpad-down{left:40px;bottom:0}
+.dpad-left{left:0;top:40px}
+.dpad-right{right:0;top:40px}
+.action-btns{position:absolute;right:20px;bottom:20px;pointer-events:auto}
+.action-btn{width:56px;height:56px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:9px;color:#fff;position:absolute}
+.action-btn:active{transform:scale(0.9)}
+.btn-a{background:rgba(255,23,68,0.4);right:0;bottom:30px}
+.btn-b{background:rgba(33,150,243,0.4);right:65px;bottom:0}
+.btn-start{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:60px;height:28px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:14px;pointer-events:auto;color:#fff;font-size:7px;font-family:'Press Start 2P',monospace;display:flex;align-items:center;justify-content:center}
+.btn-start:active{background:rgba(255,255,255,0.3)}
+.back-btn{position:fixed;top:8px;left:8px;z-index:20;background:rgba(0,0,0,0.6);color:#ff1744;border:1px solid #ff1744;padding:4px 10px;font-size:8px;font-family:'Press Start 2P',monospace;text-decoration:none;border-radius:4px}
 </style>
 </head>
 <body>
-
-<div class="top-bar">
-  <a href="index.html">&larr; Back to Collection</a>
-  <h1>BAM BASKETBALL NES</h1>
-  <a href="index.html">Collection</a>
-</div>
-
-<div class="nes-wrapper">
-  <canvas id="nes-canvas" width="256" height="240"></canvas>
-</div>
-
-<div class="controls">
-  <h2>CONTROLS</h2>
-  <div class="key-grid">
-    <div class="key-row"><span class="key-label">Move Up</span><span class="key-value">W / &uarr;</span></div>
-    <div class="key-row"><span class="key-label">Move Down</span><span class="key-value">S / &darr;</span></div>
-    <div class="key-row"><span class="key-label">Move Left</span><span class="key-value">A / &larr;</span></div>
-    <div class="key-row"><span class="key-label">Move Right</span><span class="key-value">D / &rarr;</span></div>
-    <div class="key-row"><span class="key-label">A Button</span><span class="key-value">J / Z</span></div>
-    <div class="key-row"><span class="key-label">B Button</span><span class="key-value">K / X</span></div>
-    <div class="key-row"><span class="key-label">Start</span><span class="key-value">Enter</span></div>
-    <div class="key-row"><span class="key-label">Select</span><span class="key-value">Shift</span></div>
+<a href="index.html" class="back-btn">< BACK</a>
+<canvas id="c" width="256" height="240"></canvas>
+<div id="touch-controls">
+  <div class="dpad">
+    <div class="dpad-btn dpad-up" data-dir="up">^</div>
+    <div class="dpad-btn dpad-down" data-dir="down">v</div>
+    <div class="dpad-btn dpad-left" data-dir="left"><</div>
+    <div class="dpad-btn dpad-right" data-dir="right">></div>
   </div>
+  <div class="action-btns">
+    <div class="action-btn btn-a" data-action="shoot">A</div>
+    <div class="action-btn btn-b" data-action="pass">B</div>
+  </div>
+  <div class="btn-start" data-action="start">START</div>
 </div>
 
-<div id="status" class="status">Loading ROM...</div>
-
-<script src="https://unpkg.com/jsnes@1.2.1/dist/jsnes.min.js"></script>
+<script src="static/game/court.js"></script>
+<script src="static/game/playerRenderer.js"></script>
+<script src="static/game/BallPhysics.js"></script>
+<script src="static/game/InputController.js"></script>
+<script src="static/game/PlayerManager.js"></script>
+<script src="static/game/ShotMechanics.js"></script>
+<script src="static/game/SoundFX.js"></script>
+<script src="static/game/TitleScreen.js"></script>
+<script src="static/game/AIController.js"></script>
+<script src="static/game/GameState.js"></script>
 <script>
 (function() {
-  const canvas = document.getElementById('nes-canvas');
+  const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d');
-  const statusEl = document.getElementById('status');
-  const imageData = ctx.createImageData(256, 240);
-  const frameBuf = new Uint32Array(imageData.data.buffer);
+  const W = 256, H = 240;
 
-  // JSNES emulator
-  const nes = new jsnes.NES({
-    onFrame: function(buffer) {
-      for (let i = 0; i < 256 * 240; i++) {
-        // JSNES gives 0xRRGGBB, canvas needs AABBGGRR (little-endian RGBA)
-        const c = buffer[i];
-        const r = (c >> 16) & 0xFF;
-        const g = (c >> 8) & 0xFF;
-        const b = c & 0xFF;
-        frameBuf[i] = (0xFF << 24) | (b << 16) | (g << 8) | r;
-      }
-      ctx.putImageData(imageData, 0, 0);
-    },
-    onAudioSample: function(left, right) {
-      // Audio not implemented yet
+  // Show touch controls on mobile
+  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  if (isMobile) document.getElementById('touch-controls').style.display = 'block';
+
+  // Touch input state
+  const touchState = { up:false,down:false,left:false,right:false,shoot:false,pass:false,start:false };
+  const touchActive = {};
+
+  function setupTouch() {
+    const tc = document.getElementById('touch-controls');
+    tc.addEventListener('touchstart', handleTouch, {passive:false});
+    tc.addEventListener('touchmove', handleTouch, {passive:false});
+    tc.addEventListener('touchend', handleTouchEnd, {passive:false});
+    tc.addEventListener('touchcancel', handleTouchEnd, {passive:false});
+  }
+
+  function handleTouch(e) {
+    e.preventDefault();
+    for (const t of e.changedTouches) {
+      const el = document.elementFromPoint(t.clientX, t.clientY);
+      if (!el) continue;
+      const dir = el.dataset.dir;
+      const action = el.dataset.action;
+      if (dir) { touchActive[t.identifier] = dir; touchState[dir] = true; }
+      if (action) { touchActive[t.identifier] = action; touchState[action] = true; }
     }
-  });
+  }
 
-  // Key mapping: keyboard -> NES controller
-  const keyMap = {
-    // Arrow keys
-    'ArrowUp': jsnes.Controller.BUTTON_UP,
-    'ArrowDown': jsnes.Controller.BUTTON_DOWN,
-    'ArrowLeft': jsnes.Controller.BUTTON_LEFT,
-    'ArrowRight': jsnes.Controller.BUTTON_RIGHT,
-    // WASD
-    'w': jsnes.Controller.BUTTON_UP, 'W': jsnes.Controller.BUTTON_UP,
-    's': jsnes.Controller.BUTTON_DOWN, 'S': jsnes.Controller.BUTTON_DOWN,
-    'a': jsnes.Controller.BUTTON_LEFT, 'A': jsnes.Controller.BUTTON_LEFT,
-    'd': jsnes.Controller.BUTTON_RIGHT, 'D': jsnes.Controller.BUTTON_RIGHT,
-    // Buttons
-    'j': jsnes.Controller.BUTTON_A, 'J': jsnes.Controller.BUTTON_A,
-    'z': jsnes.Controller.BUTTON_A, 'Z': jsnes.Controller.BUTTON_A,
-    'k': jsnes.Controller.BUTTON_B, 'K': jsnes.Controller.BUTTON_B,
-    'x': jsnes.Controller.BUTTON_B, 'X': jsnes.Controller.BUTTON_B,
-    'Enter': jsnes.Controller.BUTTON_START,
-    'Shift': jsnes.Controller.BUTTON_SELECT,
-  };
-
-  document.addEventListener('keydown', function(e) {
-    const btn = keyMap[e.key];
-    if (btn !== undefined) {
-      nes.buttonDown(1, btn);
-      e.preventDefault();
+  function handleTouchEnd(e) {
+    e.preventDefault();
+    for (const t of e.changedTouches) {
+      const key = touchActive[t.identifier];
+      if (key) { touchState[key] = false; delete touchActive[t.identifier]; }
     }
-  });
+  }
 
-  document.addEventListener('keyup', function(e) {
-    const btn = keyMap[e.key];
-    if (btn !== undefined) {
-      nes.buttonUp(1, btn);
-      e.preventDefault();
+  setupTouch();
+
+  // Init modules
+  InputController.init();
+
+  // Game state
+  let scene = 'title'; // title | playing | paused | quarterBreak | gameover
+  let frame = 0;
+  let gs = null;
+  let players = [];
+  let controlledIdx = 0;
+  let shotInProgress = null;
+  let shotPower = 0;
+  let shotActive = false;
+
+  // Hoop positions
+  const LEFT_HOOP = {x:24, y:120};
+  const RIGHT_HOOP = {x:232, y:120};
+
+  function startGame() {
+    gs = GameState.create({homeTeam:'HEAT', awayTeam:'CELTICS'});
+    players = PlayerManager.createPlayers();
+    controlledIdx = 0;
+    BallPhysics.ball.state = 'held';
+    BallPhysics.ball.holder = players[0];
+    players[0].hasBall = true;
+    gs.startQuarter();
+    scene = 'playing';
+    shotInProgress = null;
+    shotPower = 0;
+    shotActive = false;
+    try { SoundFX.init(); } catch(e) {}
+  }
+
+  function getControlled() { return players[controlledIdx]; }
+
+  function getTeamPlayers(team) { return players.filter(p => p.team === team); }
+
+  function dist(a, b) { return Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2); }
+
+  // Find which player on home team is closest to ball
+  function findClosestHome() {
+    let best = 0, bestD = Infinity;
+    for (let i = 0; i < players.length; i++) {
+      if (players[i].team !== 'home') continue;
+      const d = dist(players[i], BallPhysics.ball);
+      if (d < bestD) { bestD = d; best = i; }
     }
-  });
+    return best;
+  }
 
-  // Load ROM
-  fetch('static/game/basketball.nes')
-    .then(r => {
-      if (!r.ok) throw new Error('ROM not found');
-      return r.arrayBuffer();
-    })
-    .then(buf => {
-      const data = new Uint8Array(buf);
-      let romStr = '';
-      for (let i = 0; i < data.length; i++) {
-        romStr += String.fromCharCode(data[i]);
-      }
-      nes.loadROM(romStr);
-      statusEl.textContent = 'ROM loaded! Use keyboard to play.';
-      statusEl.className = 'status loaded';
+  function gameLoop() {
+    frame++;
+    ctx.clearRect(0, 0, W, H);
 
-      // Run at ~60fps
-      function frame() {
-        nes.frame();
-        requestAnimationFrame(frame);
+    if (scene === 'title') {
+      TitleScreen.drawTitle(ctx, W, H, frame);
+      const enterPressed = InputController.isPausePressed() || touchState.start || touchState.shoot;
+      if (enterPressed) { startGame(); touchState.start = false; touchState.shoot = false; }
+      InputController.update();
+      requestAnimationFrame(gameLoop);
+      return;
+    }
+
+    if (scene === 'gameover') {
+      TitleScreen.drawGameOver(ctx, W, H, gs.homeScore, gs.awayScore, frame);
+      if (InputController.isPausePressed() || touchState.start) { scene = 'title'; touchState.start = false; }
+      InputController.update();
+      requestAnimationFrame(gameLoop);
+      return;
+    }
+
+    if (scene === 'paused') {
+      Court.draw(ctx, W, H);
+      drawPlayers();
+      BallPhysics.drawShadow(ctx);
+      BallPhysics.drawBall(ctx);
+      gs.drawHUD(ctx, W, H);
+      TitleScreen.drawPauseMenu(ctx, W, H, 0);
+      if (InputController.isPausePressed() || touchState.start) { scene = 'playing'; gs.gameState = 'playing'; touchState.start = false; }
+      InputController.update();
+      requestAnimationFrame(gameLoop);
+      return;
+    }
+
+    // Playing
+    gs.update();
+
+    if (gs.gameState === 'gameover') { scene = 'gameover'; }
+    if (gs.gameState === 'quarterEnd' || gs.gameState === 'halftime') {
+      Court.draw(ctx, W, H);
+      drawPlayers();
+      gs.drawHUD(ctx, W, H);
+      TitleScreen.drawQuarterBreak(ctx, W, H, gs.quarter);
+      InputController.update();
+      requestAnimationFrame(gameLoop);
+      return;
+    }
+
+    // Pause check
+    if (InputController.isPausePressed() || touchState.start) {
+      if (gs.gameState === 'playing') { scene = 'paused'; gs.gameState = 'paused'; touchState.start = false; }
+    }
+
+    // Input
+    const move = InputController.getMovement();
+    let dx = move.dx, dy = move.dy;
+    // Merge touch
+    if (touchState.left) dx = -1;
+    if (touchState.right) dx = 1;
+    if (touchState.up) dy = -1;
+    if (touchState.down) dy = 1;
+
+    const turbo = InputController.isTurbo();
+    const shootPressed = InputController.isShootPressed() || touchState.shoot;
+    const passPressed = InputController.isPassPressed() || touchState.pass;
+
+    // Reset one-shot touch
+    if (touchState.shoot) touchState.shoot = false;
+    if (touchState.pass) touchState.pass = false;
+
+    const controlled = getControlled();
+    const homePlayers = getTeamPlayers('home');
+    const awayPlayers = getTeamPlayers('away');
+    const homeOnOffense = gs.possession === 'home';
+    const targetHoop = homeOnOffense ? RIGHT_HOOP : LEFT_HOOP;
+
+    // Move controlled player
+    if (gs.gameState === 'playing' || gs.gameState === 'scored') {
+      PlayerManager.movePlayer(controlled, dx, dy, turbo, players);
+    }
+
+    // Player actions
+    if (gs.gameState === 'playing') {
+      if (homeOnOffense && controlled.hasBall) {
+        // Offense: shoot or pass
+        if (shootPressed && !shotActive) {
+          shotActive = true;
+          shotPower = 0;
+          const shot = ShotMechanics.initShot(controlled, RIGHT_HOOP.x, RIGHT_HOOP.y);
+          shot.contested = ShotMechanics.isContested(controlled, awayPlayers);
+          shot.releaseQuality = 0.4 + Math.random() * 0.2; // decent release
+          shotInProgress = shot;
+          const result = ShotMechanics.attemptShot(shot);
+
+          // Launch ball
+          BallPhysics.ball.holder = null;
+          controlled.hasBall = false;
+          controlled.shooting = true;
+          BallPhysics.shoot(controlled.x, controlled.y, RIGHT_HOOP.x, RIGHT_HOOP.y);
+
+          setTimeout(() => {
+            controlled.shooting = false;
+            if (result === 'made') {
+              const pts = shot.type === 'three' ? 3 : 2;
+              gs.onScore('home', pts);
+              try { SoundFX.swish(); } catch(e) {}
+              // Reset ball
+              setTimeout(() => {
+                resetAfterScore('away');
+              }, 500);
+            } else {
+              try { SoundFX.brick(); } catch(e) {}
+              // Rebound - loose ball
+              if (shot.reboundX !== undefined) {
+                BallPhysics.ball.x = shot.reboundX;
+                BallPhysics.ball.y = shot.reboundY;
+              }
+              BallPhysics.ball.state = 'loose';
+              BallPhysics.ball.z = 0;
+              BallPhysics.ball.vx = (Math.random() - 0.5) * 2;
+              BallPhysics.ball.vy = (Math.random() - 0.5) * 2;
+              BallPhysics.ball.vz = 0;
+            }
+            shotActive = false;
+            shotInProgress = null;
+          }, 600);
+        }
+        if (passPressed) {
+          const teammate = PlayerManager.findNearestTeammate(controlled, players);
+          if (teammate) {
+            controlled.hasBall = false;
+            BallPhysics.pass(controlled.x, controlled.y, teammate.x, teammate.y);
+            try { SoundFX.pass(); } catch(e) {}
+            // After pass arrives, give ball to teammate
+            setTimeout(() => {
+              if (BallPhysics.ball.state === 'passing') {
+                BallPhysics.ball.state = 'held';
+                BallPhysics.ball.holder = teammate;
+                teammate.hasBall = true;
+                controlledIdx = players.indexOf(teammate);
+              }
+            }, 300);
+          }
+        }
+      } else if (!homeOnOffense) {
+        // Defense: steal or switch
+        if (shootPressed) {
+          // Try to steal
+          const ballHolder = players.find(p => p.hasBall && p.team === 'away');
+          if (ballHolder && dist(controlled, ballHolder) < 18) {
+            if (PlayerManager.attemptSteal(controlled, ballHolder)) {
+              ballHolder.hasBall = false;
+              controlled.hasBall = true;
+              BallPhysics.ball.state = 'held';
+              BallPhysics.ball.holder = controlled;
+              gs.onTurnover('home');
+              try { SoundFX.steal(); } catch(e) {}
+            }
+          }
+        }
+        if (passPressed) {
+          // Switch controlled player
+          controlledIdx = PlayerManager.switchControlled(players, controlledIdx, 'home');
+        }
       }
-      frame();
-    })
-    .catch(err => {
-      statusEl.textContent = 'Error: ' + err.message;
-      statusEl.className = 'status error';
-    });
+    }
+
+    // AI control
+    if (gs.gameState === 'playing') {
+      const aiActions = AIController.update(awayPlayers, homePlayers, BallPhysics.ball, gs.awayScore, gs.homeScore, gs.shotClock);
+      for (let i = 0; i < awayPlayers.length; i++) {
+        const p = awayPlayers[i];
+        const a = aiActions[i] || {dx:0,dy:0,action:null};
+        PlayerManager.movePlayer(p, a.dx, a.dy, false, players);
+
+        if (a.action === 'shoot' && p.hasBall) {
+          const shot = ShotMechanics.initShot(p, LEFT_HOOP.x, LEFT_HOOP.y);
+          shot.contested = ShotMechanics.isContested(p, homePlayers);
+          shot.releaseQuality = 0.3 + Math.random() * 0.4;
+          const result = ShotMechanics.attemptShot(shot);
+
+          p.hasBall = false;
+          p.shooting = true;
+          BallPhysics.ball.holder = null;
+          BallPhysics.shoot(p.x, p.y, LEFT_HOOP.x, LEFT_HOOP.y);
+
+          setTimeout(() => {
+            p.shooting = false;
+            if (result === 'made') {
+              const pts = shot.type === 'three' ? 3 : 2;
+              gs.onScore('away', pts);
+              try { SoundFX.swish(); } catch(e) {}
+              setTimeout(() => resetAfterScore('home'), 500);
+            } else {
+              try { SoundFX.brick(); } catch(e) {}
+              BallPhysics.ball.state = 'loose';
+              BallPhysics.ball.z = 0;
+              if (shot.reboundX !== undefined) {
+                BallPhysics.ball.x = shot.reboundX;
+                BallPhysics.ball.y = shot.reboundY;
+              }
+            }
+          }, 600);
+        }
+
+        if (a.action === 'pass' && p.hasBall) {
+          const target = awayPlayers.find((t,j) => j !== i && !t.hasBall);
+          if (target) {
+            p.hasBall = false;
+            BallPhysics.pass(p.x, p.y, target.x, target.y);
+            setTimeout(() => {
+              if (BallPhysics.ball.state === 'passing') {
+                BallPhysics.ball.state = 'held';
+                BallPhysics.ball.holder = target;
+                target.hasBall = true;
+              }
+            }, 300);
+          }
+        }
+
+        if (a.action === 'steal') {
+          const ballHolder = players.find(pp => pp.hasBall && pp.team === 'home');
+          if (ballHolder && dist(p, ballHolder) < 18) {
+            if (PlayerManager.attemptSteal(p, ballHolder)) {
+              ballHolder.hasBall = false;
+              p.hasBall = true;
+              BallPhysics.ball.state = 'held';
+              BallPhysics.ball.holder = p;
+              gs.onTurnover('away');
+              try { SoundFX.steal(); } catch(e) {}
+            }
+          }
+        }
+      }
+    }
+
+    // Loose ball pickup
+    if (BallPhysics.ball.state === 'loose') {
+      for (const p of players) {
+        if (dist(p, BallPhysics.ball) < 10 && !p.hasBall) {
+          p.hasBall = true;
+          BallPhysics.ball.state = 'held';
+          BallPhysics.ball.holder = p;
+          BallPhysics.ball.vx = 0;
+          BallPhysics.ball.vy = 0;
+          BallPhysics.ball.vz = 0;
+          BallPhysics.ball.z = 0;
+          gs.possession = p.team;
+          if (p.team === 'home') controlledIdx = players.indexOf(p);
+          try { SoundFX.bounce(); } catch(e) {}
+          break;
+        }
+      }
+    }
+
+    // Update ball physics
+    BallPhysics.update(1);
+
+    // Auto-switch to ball handler on offense
+    if (homeOnOffense) {
+      const handler = players.find(p => p.hasBall && p.team === 'home');
+      if (handler) controlledIdx = players.indexOf(handler);
+    } else {
+      // On defense, auto-switch to nearest to ball
+      if (frame % 30 === 0) controlledIdx = findClosestHome();
+    }
+
+    // Non-controlled home players drift toward positions
+    for (let i = 0; i < players.length; i++) {
+      if (players[i].team !== 'home' || i === controlledIdx) continue;
+      const p = players[i];
+      const positions = homeOnOffense
+        ? PlayerManager.getOffensivePositions('right')
+        : PlayerManager.getDefensivePositions('left');
+      const posIdx = homePlayers.indexOf(p);
+      if (posIdx >= 0 && posIdx < positions.length) {
+        const tgt = positions[posIdx];
+        const tdx = tgt.x - p.x, tdy = tgt.y - p.y;
+        const tdist = Math.sqrt(tdx*tdx + tdy*tdy);
+        if (tdist > 3) {
+          PlayerManager.movePlayer(p, tdx/tdist > 0.3 ? 1 : tdx/tdist < -0.3 ? -1 : 0,
+                                      tdy/tdist > 0.3 ? 1 : tdy/tdist < -0.3 ? -1 : 0,
+                                      false, players);
+        }
+      }
+    }
+
+    // Draw
+    Court.draw(ctx, W, H);
+    BallPhysics.drawShadow(ctx);
+    drawPlayers();
+    BallPhysics.drawBall(ctx);
+    gs.drawHUD(ctx, W, H);
+
+    // Controlled player indicator (small arrow above)
+    const cp = getControlled();
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(cp.x - 1, cp.y - 18, 3, 1);
+    ctx.fillRect(cp.x, cp.y - 19, 1, 1);
+
+    // Controls hint
+    if (frame < 300 && gs.gameState === 'playing') {
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      ctx.fillRect(0, H - 20, W, 20);
+      ctx.fillStyle = '#fff';
+      ctx.font = '6px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(isMobile ? 'D-PAD: MOVE | A: SHOOT/STEAL | B: PASS/SWITCH' : 'ARROWS: MOVE | Z: SHOOT/STEAL | X: PASS/SWITCH | ENTER: PAUSE', W/2, H - 8);
+    }
+
+    InputController.update();
+    requestAnimationFrame(gameLoop);
+  }
+
+  function drawPlayers() {
+    // Sort by Y for depth
+    const sorted = [...players].sort((a,b) => a.y - b.y);
+    for (const p of sorted) {
+      const color = p.team === 'home' ? '#ff1744' : '#2196f3';
+      ctx.save();
+      ctx.translate(p.x - 8, p.y - 12);
+      PlayerRenderer.drawPlayer(ctx, 0, 0, color, p.direction, p.frame, p.hasBall, p.shooting);
+      ctx.restore();
+    }
+  }
+
+  function resetAfterScore(newPossTeam) {
+    // Give ball to the inbounding team's PG
+    for (const p of players) p.hasBall = false;
+    const pg = players.find(p => p.team === newPossTeam && p.index === 0);
+    if (pg) {
+      pg.hasBall = true;
+      BallPhysics.ball.state = 'held';
+      BallPhysics.ball.holder = pg;
+      BallPhysics.ball.z = 0;
+      BallPhysics.ball.vx = 0;
+      BallPhysics.ball.vy = 0;
+      if (newPossTeam === 'home') controlledIdx = players.indexOf(pg);
+    }
+    // Reset positions
+    PlayerManager.resetPositions(players, newPossTeam);
+  }
+
+  // Start
+  requestAnimationFrame(gameLoop);
 })();
 </script>
 </body>
