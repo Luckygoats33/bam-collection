@@ -239,9 +239,9 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 body.intro-active{overflow:hidden}
 body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,body.intro-active .wrap,body.intro-active .footer{opacity:0}
 
-/* Bouncing basketball CTA */
-#gameBall{position:fixed;bottom:24px;right:24px;width:64px;height:64px;z-index:900;cursor:pointer;animation:ballBounce 1.2s ease-in-out infinite;display:none;filter:drop-shadow(0 0 12px rgba(255,23,68,.4))}
-#gameBall canvas{width:64px;height:64px;image-rendering:pixelated}
+/* Bouncing basketball CTA — HIDDEN */
+#gameBall{display:none !important}
+#nesLink{display:none !important}
 #gameLabel{position:fixed;bottom:92px;right:8px;font-family:'Press Start 2P',monospace;font-size:8px;color:#ff1744;text-align:center;z-index:900;animation:blink8 1.5s step-end infinite;display:none;text-shadow:0 0 6px rgba(255,23,68,.5)}
 @keyframes ballBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
 
@@ -2991,8 +2991,8 @@ openModal = function(el) {
       overlay.style.display = 'none';
       animateCounters();
       // Show bouncing ball CTA on collection page too
-      document.getElementById('gameBall').style.display = 'block';
-      document.getElementById('nesLink').style.display = 'block';
+      /* gameBall removed */
+      /* nesLink removed */
       document.getElementById('gameLabel').style.display = 'block';
     }, 500);
   };
@@ -3602,8 +3602,8 @@ function initGame() {
     if (timerInterval) clearInterval(timerInterval);
     document.getElementById('gameOverlay').style.display = 'none';
     document.body.style.overflow = '';
-    document.getElementById('gameBall').style.display = 'block';
-    document.getElementById('nesLink').style.display = 'block';
+    /* gameBall removed */
+    /* nesLink removed */
     document.getElementById('gameLabel').style.display = 'block';
   }
 
