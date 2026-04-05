@@ -230,6 +230,25 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
 
   <div class="filter-bar">
     <button class="fbtn active" onclick="filterCards('all')"><span>All</span></button>
+    <div class="slab-wrap" id="rainbowWrap">
+      <button class="fbtn" onclick="toggleRainbowMenu(event)" style="background:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#00c853,#2196f3,#9b59b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;border-image:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#00c853,#2196f3,#9b59b6) 1"><span style="background:inherit;-webkit-background-clip:text;-webkit-text-fill-color:transparent">Rainbow</span></button>
+      <div class="slab-menu" id="rainbowMenu" style="flex-wrap:wrap;max-width:320px;gap:4px">
+        <button class="fbtn" onclick="filterRainbow('all')"><span>All Prizm</span></button>
+        <button class="fbtn" onclick="filterRainbow('Base')"><span>Base</span></button>
+        <button class="fbtn" onclick="filterRainbow('Silver')"><span>Silver</span></button>
+        <button class="fbtn" onclick="filterRainbow('Green')"><span>Green</span></button>
+        <button class="fbtn" onclick="filterRainbow('Red White Blue')"><span>RWB</span></button>
+        <button class="fbtn" onclick="filterRainbow('Blue')"><span>Blue</span></button>
+        <button class="fbtn" onclick="filterRainbow('Purple')"><span>Purple</span></button>
+        <button class="fbtn" onclick="filterRainbow('Orange')"><span>Orange</span></button>
+        <button class="fbtn" onclick="filterRainbow('Ruby Wave')"><span>Ruby Wave</span></button>
+        <button class="fbtn" onclick="filterRainbow('Hyper')"><span>Hyper</span></button>
+        <button class="fbtn" onclick="filterRainbow('Disco Red')"><span>Disco Red</span></button>
+        <button class="fbtn" onclick="filterRainbow('Disco Blue')"><span>Disco Blue</span></button>
+        <button class="fbtn" onclick="filterRainbow('Disco Bronze')"><span>Disco Bronze</span></button>
+        <button class="fbtn" onclick="filterRainbow('Pink')"><span>Pink</span></button>
+      </div>
+    </div>
     <button class="fbtn" onclick="filterCards('tier-1')"><span>Core</span></button>
     <button class="fbtn" onclick="filterCards('tier-3')"><span>Supplemental</span></button>
     <button class="fbtn" onclick="filterCards('tier-4')"><span>Inserts</span></button>
@@ -243,6 +262,9 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
     </div>
     <button class="fbtn" onclick="filterCards('raw')"><span>Raw</span></button>
     <button class="fbtn" onclick="filterCards('nonrookie')"><span>Non-Rookie</span></button>
+    <button class="fbtn" onclick="filterCards('jersey')" style="border-color:#e65100"><span>Jersey</span></button>
+    <button class="fbtn" onclick="filterCards('autograph')" style="border-color:#1565c0"><span>Autograph</span></button>
+    <button class="fbtn" onclick="filterCards('collage')" style="border-color:#7b1fa2"><span>Collage</span></button>
   </div>
 
   <div class="search-area">
@@ -1972,9 +1994,37 @@ animateCounters();
 function toggleSlabMenu(e) {
   e.stopPropagation();
   document.getElementById('slabWrap').classList.toggle('open');
+  document.getElementById('rainbowWrap').classList.remove('open');
+}
+// Rainbow menu toggle
+function toggleRainbowMenu(e) {
+  e.stopPropagation();
+  document.getElementById('rainbowWrap').classList.toggle('open');
+  document.getElementById('slabWrap').classList.remove('open');
+}
+// Rainbow filter — show only Prizm parallels
+function filterRainbow(parallel) {
+  clearAllFilters();
+  document.querySelectorAll('.slab-menu .fbtn').forEach(b => b.classList.remove('active'));
+  document.getElementById('rainbowWrap').classList.remove('open');
+  document.querySelector('#rainbowWrap > .fbtn').classList.add('active');
+  event.target.closest('.fbtn').classList.add('active');
+
+  cards.forEach(c => {
+    const set = c.dataset.set;
+    const par = c.dataset.parallel;
+    const isPrizm = set.includes('Prizm');
+    if (parallel === 'all') {
+      c.style.display = isPrizm ? '' : 'none';
+    } else {
+      c.style.display = (isPrizm && par === parallel) ? '' : 'none';
+    }
+  });
+  updateTierVisibility();
 }
 document.addEventListener('click', () => {
   document.getElementById('slabWrap').classList.remove('open');
+  document.getElementById('rainbowWrap').classList.remove('open');
 });
 
 // Color mapping
@@ -2135,7 +2185,8 @@ function filterCards(f) {
   document.getElementById('slabWrap').classList.remove('open');
 
   const isGradeFilter = ['slabs','psa10','psa9','raw'].includes(f);
-  const isSpecial = isGradeFilter || f === 'nonrookie';
+  const isCategoryFilter = ['jersey','autograph','collage'].includes(f);
+  const isSpecial = isGradeFilter || f === 'nonrookie' || isCategoryFilter;
   if (isGradeFilter && f !== 'raw') {
     event.target.closest('.fbtn').classList.add('active');
     document.querySelector('#slabWrap > .fbtn').classList.add('active');
@@ -2156,6 +2207,24 @@ function filterCards(f) {
       else if (f === 'psa9') c.style.display = g.includes('PSA 9') ? '' : 'none';
       else if (f === 'raw') c.style.display = (g === 'Raw' || !g) ? '' : 'none';
       else if (f === 'nonrookie') c.style.display = yr !== '2017-18' ? '' : 'none';
+      else if (f === 'jersey') {
+        const nm = (c.dataset.name||'').toLowerCase();
+        const st = (c.dataset.set||'').toLowerCase();
+        const pl = (c.dataset.parallel||'').toLowerCase();
+        const txt = nm + ' ' + st + ' ' + pl;
+        c.style.display = /jersey|patch|relic|swatch|memorabilia|game.worn|fabric/.test(txt) ? '' : 'none';
+      }
+      else if (f === 'autograph') {
+        const nm = (c.dataset.name||'').toLowerCase();
+        const st = (c.dataset.set||'').toLowerCase();
+        const pl = (c.dataset.parallel||'').toLowerCase();
+        const txt = nm + ' ' + st + ' ' + pl;
+        c.style.display = /auto|autograph|signature|signed/.test(txt) ? '' : 'none';
+      }
+      else if (f === 'collage') {
+        const st = (c.dataset.set||'').toLowerCase();
+        c.style.display = /mosaic|collage/.test(st) ? '' : 'none';
+      }
     });
     updateTierVisibility();
   } else if (f !== 'all') {
@@ -2225,31 +2294,61 @@ function openModal(el) {
   } else {
     html += `<div class="modal-detail"><div class="label">Print Run</div><div class="value">Unlimited</div></div>`;
   }
+  // Year
+  html += `<div class="modal-detail"><div class="label">Year</div><div class="value">${d.year}</div></div>`;
+  // Card Number
+  html += `<div class="modal-detail"><div class="label">Card #</div><div class="value">${d.cardNumber}</div></div>`;
+  // Notes
+  if (d.notes) {
+    html += `<div class="modal-detail full"><div class="label">Notes</div><div class="value" style="font-size:12px;font-family:Inter,sans-serif;font-weight:400;color:var(--td)">${d.notes}</div></div>`;
+  }
   document.getElementById('modalDetails').innerHTML = html;
 
   // Population data
   const popDiv = document.getElementById('modalPop');
   const popKey = `${d.set}|${d.parallel}`;
   const pop = POP_DATA[popKey];
+  const psaQuery = encodeURIComponent(`${d.year} ${d.set} ${d.parallel} Bam Adebayo`);
+  const psaUrl = `https://www.psacard.com/pop/basketball-cards?q=${psaQuery}`;
+  const ebayQuery = encodeURIComponent(`${d.year} ${d.set} ${d.parallel} Bam Adebayo ${d.cardNumber}`);
+  const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${ebayQuery}&_sacat=212&LH_Complete=1&LH_Sold=1`;
+
   if (pop) {
+    const psa10pct = (pop.psa10/pop.total*100).toFixed(1);
     popDiv.innerHTML = `
       <div class="pop-title">PSA Population Report</div>
       <div class="pop-bar"><div class="pop-label">PSA 10</div><div class="pop-track"><div class="pop-fill" style="width:${pop.psa10/pop.total*100}%;background:#ffd700"></div></div><div class="pop-count" style="color:#ffd700">${pop.psa10.toLocaleString()}</div></div>
       <div class="pop-bar"><div class="pop-label">PSA 9</div><div class="pop-track"><div class="pop-fill" style="width:${pop.psa9/pop.total*100}%;background:#c0c0c0"></div></div><div class="pop-count" style="color:#c0c0c0">${pop.psa9.toLocaleString()}</div></div>
       <div class="pop-bar"><div class="pop-label">PSA 8</div><div class="pop-track"><div class="pop-fill" style="width:${pop.psa8/pop.total*100}%;background:#cd7f32"></div></div><div class="pop-count" style="color:#cd7f32">${pop.psa8.toLocaleString()}</div></div>
       <div class="pop-bar"><div class="pop-label">Other</div><div class="pop-track"><div class="pop-fill" style="width:${pop.other/pop.total*100}%;background:#6e6e8a"></div></div><div class="pop-count">${pop.other.toLocaleString()}</div></div>
-      <div style="text-align:right;margin-top:8px;font-size:10px;color:var(--td)">Total graded: ${pop.total.toLocaleString()}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+        <span style="font-size:10px;color:var(--td)">Total graded: ${pop.total.toLocaleString()} | Gem Rate: ${psa10pct}%</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <a href="${psaUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);color:#ffd700;font-size:11px;font-weight:700;text-decoration:none;transition:all .2s">View on PSA</a>
+        <a href="${ebayUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);color:#00e5a0;font-size:11px;font-weight:700;text-decoration:none;transition:all .2s">Sold Comps</a>
+      </div>
     `;
     popDiv.style.display = '';
   } else if (d.serial) {
     const pr = PRINT_RUNS[d.serial];
     popDiv.innerHTML = `
       <div class="pop-title">Scarcity</div>
-      <div style="font-size:13px;color:var(--t)">${pr ? `Only <strong style="color:var(--go)">${pr}</strong> copies exist worldwide` : `<strong style="color:var(--go)">SSP</strong> — Short Supply Print`}</div>
+      <div style="font-size:13px;color:var(--t);margin-bottom:10px">${pr ? `Only <strong style="color:var(--go)">${pr}</strong> copies exist worldwide` : `<strong style="color:var(--go)">SSP</strong> — Short Supply Print`}</div>
+      <div style="display:flex;gap:8px">
+        <a href="${psaUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);color:#ffd700;font-size:11px;font-weight:700;text-decoration:none">View on PSA</a>
+        <a href="${ebayUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);color:#00e5a0;font-size:11px;font-weight:700;text-decoration:none">Sold Comps</a>
+      </div>
     `;
     popDiv.style.display = '';
   } else {
-    popDiv.style.display = 'none';
+    popDiv.innerHTML = `
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <a href="${psaUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);color:#ffd700;font-size:11px;font-weight:700;text-decoration:none">View on PSA</a>
+        <a href="${ebayUrl}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;border-radius:8px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);color:#00e5a0;font-size:11px;font-weight:700;text-decoration:none">Sold Comps</a>
+      </div>
+    `;
+    popDiv.style.display = '';
   }
 
   const visible = getVisibleCards();
