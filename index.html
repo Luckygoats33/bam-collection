@@ -1,0 +1,2614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAM ADEBAYO | Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#050510;--s:#0c0c1d;--s2:#111128;--bdr:#1a1a3e;--bdr2:#2a2a5e;
+  --t:#e8e8f0;--td:#6e6e8a;--tw:#fff;
+  --ac:#7c5cff;--ac2:#a78bfa;
+  --g:#00e5a0;--gd:rgba(0,229,160,.12);
+  --r:#ff4757;--rd:rgba(255,71,87,.12);
+  --go:#ffd700;--god:rgba(255,215,0,.1);
+  --o:#ff8c42;--bl:#38bdf8;--pu:#c084fc;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(124,92,255,.06)0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(0,229,160,.04)0%,transparent 50%);pointer-events:none;z-index:0}
+
+.hero{position:relative;z-index:1;padding:48px 16px 24px;text-align:center;background:linear-gradient(180deg,rgba(124,92,255,.08)0%,transparent 100%)}
+.hero h1{font-size:clamp(32px,8vw,56px);font-weight:900;letter-spacing:-2px;line-height:1}
+.hero h1 span{background:linear-gradient(135deg,#fff 0%,var(--ac2) 50%,var(--g) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{color:var(--td);font-size:clamp(11px,2.5vw,16px);font-weight:300;letter-spacing:4px;text-transform:uppercase;margin-top:6px}
+
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px 48px;position:relative;z-index:1}
+
+.summary{display:flex;justify-content:center;gap:32px;margin:24px 0 32px;flex-wrap:wrap}
+.summary-item{text-align:center}
+.summary-item .num{font-size:36px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--g)}
+.summary-item .lbl{font-size:11px;color:var(--td);text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+
+.tier-section{margin-bottom:32px}
+.tier-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+.tier-badge{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff}
+.tier-title{font-size:20px;font-weight:700}
+.tier-count{font-size:13px;color:var(--td);margin-left:auto;font-family:'JetBrains Mono',monospace}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.card{background:var(--s);border:1px solid var(--bdr);border-radius:12px;overflow:hidden;transition:border-color .3s,transform .2s}
+.card:hover{border-color:var(--bdr2);transform:translateY(-2px)}
+.card.owned{border-left:3px solid var(--g)}
+.card.missing{border-left:3px solid var(--bdr);opacity:.45}
+
+.card-img{aspect-ratio:3/4;background:var(--s2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:cover}
+.card-img .placeholder{text-align:center;padding:12px;color:var(--td);font-size:11px;line-height:1.4}
+.card-img .placeholder .set-name{font-size:14px;font-weight:700;color:var(--t);margin-bottom:4px}
+
+.badge{position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.5px}
+.badge-owned{background:var(--gd);color:var(--g);border:1px solid rgba(0,229,160,.25)}
+.badge-need{background:var(--rd);color:var(--r);border:1px solid rgba(255,71,87,.25)}
+.badge-tier{position:absolute;top:8px;left:8px;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
+.badge-grade{position:absolute;bottom:8px;right:8px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(255,215,0,.15);color:var(--go);border:1px solid rgba(255,215,0,.25)}
+.badge-serial{position:absolute;bottom:8px;left:8px;font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:rgba(124,92,255,.15);color:var(--ac2);border:1px solid rgba(124,92,255,.25)}
+.badge-qty{position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--gd);color:var(--g);border:1px solid rgba(0,229,160,.25)}
+
+.card-info{padding:10px 12px}
+.card-set{font-size:11px;color:var(--td);font-weight:500}
+.card-name{font-size:13px;font-weight:700;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-parallel{font-size:12px;color:var(--ac2);font-weight:500;margin-top:2px}
+.card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.card-grade{font-size:11px;font-weight:700;color:var(--go);font-family:'JetBrains Mono',monospace}
+.card-qty{font-size:11px;color:var(--td)}
+
+.filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
+.fbtn{padding:6px 16px;border-radius:20px;border:1px solid var(--bdr);background:var(--s);color:var(--td);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.fbtn:hover,.fbtn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+
+.footer{text-align:center;padding:32px 16px;color:var(--td);font-size:12px;border-top:1px solid var(--bdr)}
+
+@media(max-width:600px){
+  .cards{grid-template-columns:repeat(2,1fr);gap:8px}
+  .summary{gap:16px}
+  .summary-item .num{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1><span>BAM ADEBAYO</span></h1>
+  <div class="hero-sub">Rookie Card Collection</div>
+</div>
+
+<div class="wrap">
+  <div class="summary">
+    <div class="summary-item">
+      <div class="num">47</div>
+      <div class="lbl">Unique Cards</div>
+    </div>
+    <div class="summary-item">
+      <div class="num">77</div>
+      <div class="lbl">Total Pieces</div>
+    </div>
+    <div class="summary-item">
+      <div class="num">88</div>
+      <div class="lbl">In Checklist</div>
+    </div>
+    <div class="summary-item">
+      <div class="num">53.4%</div>
+      <div class="lbl">Complete</div>
+    </div>
+  </div>
+
+  <div class="filters">
+    <button class="fbtn active" onclick="filterCards('all')">All</button>
+    <button class="fbtn" onclick="filterCards('owned')">Owned</button>
+    <button class="fbtn" onclick="filterCards('need')">Need</button>
+    
+    <button class="fbtn" onclick="filterCards('tier-1')">Core</button>
+    
+    <button class="fbtn" onclick="filterCards('tier-2')">Important</button>
+    
+    <button class="fbtn" onclick="filterCards('tier-3')">Supplemental</button>
+    
+    <button class="fbtn" onclick="filterCards('tier-4')">Inserts</button>
+    
+    <button class="fbtn" onclick="filterCards('tier-5')">Autos / High End</button>
+    
+  </div>
+
+  
+  
+  <div class="tier-section" data-tier="1">
+    <div class="tier-header">
+      <div class="tier-badge" style="background:#e74c3c">1</div>
+      <div class="tier-title">Core</div>
+      <div class="tier-count">16/35</div>
+    </div>
+    <div class="cards">
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-base.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x4</span>
+          
+          
+          <span class="badge-grade">PSA 10</span>
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 10</div>
+            
+            
+            <div class="card-qty">Qty: 4</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-silver.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x2</span>
+          
+          
+          <span class="badge-grade">PSA 10 / Raw</span>
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Silver</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 10 / Raw</div>
+            
+            
+            <div class="card-qty">Qty: 2</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-green.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x2</span>
+          
+          
+          <span class="badge-grade">PSA 9 / Raw</span>
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Green</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 9 / Raw</div>
+            
+            
+            <div class="card-qty">Qty: 2</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-rwb.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x3</span>
+          
+          
+          <span class="badge-grade">PSA 10 / Raw</span>
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Red White Blue</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 10 / Raw</div>
+            
+            
+            <div class="card-qty">Qty: 3</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-blue.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+          <span class="badge-serial">/199</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Blue</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-purple.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          <span class="badge-grade">PSA 10</span>
+          
+          
+          <span class="badge-serial">/75</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Purple</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 10</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-orange.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          <span class="badge-grade">PSA 9</span>
+          
+          
+          <span class="badge-serial">/49</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Orange</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 9</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-ruby-wave.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x2</span>
+          
+          
+          <span class="badge-grade">PSA 10 / Raw</span>
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Ruby Wave</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 10 / Raw</div>
+            
+            
+            <div class="card-qty">Qty: 2</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-hyper.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          <span class="badge-grade">PSA 9</span>
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Hyper</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 9</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-blue-ice.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/99</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Blue Ice</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-red-pulsar.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/25</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Red Pulsar</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-red-shimmer.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/8</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Red Shimmer</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-green-pulsar.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/25</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Green Pulsar</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-white-sparkle.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">~20</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">White Sparkle</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-mojo.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/25</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Mojo</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-gold.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/10</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Gold</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-black.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">1/1</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Black</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/fb-disco-base.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Fast Break #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Disco</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/fb-disco-blue.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/175</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Fast Break #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Disco Blue</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/fb-disco-red.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x2</span>
+          
+          
+          <span class="badge-grade">PSA 10</span>
+          
+          
+          <span class="badge-serial">/125</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Fast Break #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Disco Red</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 10</div>
+            
+            
+            <div class="card-qty">Qty: 2</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/fb-disco-purple.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/75</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Fast Break #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Disco Purple</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/fb-disco-pink.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+          <span class="badge-serial">/50</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Fast Break #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Disco Pink</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/fb-disco-bronze.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          <span class="badge-grade">PSA 10</span>
+          
+          
+          <span class="badge-serial">/20</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Fast Break #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Disco Bronze</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 10</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/fb-disco-neon-green.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/5</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Fast Break #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Disco Neon Green</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/fb-disco-black.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">1/1</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Fast Break #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Disco Black</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/optic-base.webp" alt="Rated Rookie" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x6</span>
+          
+          
+          <span class="badge-grade">PSA 10</span>
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 10</div>
+            
+            
+            <div class="card-qty">Qty: 6</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/optic-shock.webp" alt="Rated Rookie" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Shock</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/optic-red-yellow.webp" alt="Rated Rookie" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Red &amp; Yellow</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/optic-holo.webp" alt="Rated Rookie" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Holo</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/optic-orange.webp" alt="Rated Rookie" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/199</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Orange</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/optic-red.webp" alt="Rated Rookie" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/99</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Red</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/optic-blue-velocity.webp" alt="Rated Rookie" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-qty">x2</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Blue Velocity</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 2</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/optic-purple.webp" alt="Rated Rookie" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/99</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Purple</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/optic-checkerboard.webp" alt="Rated Rookie" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">SSP</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Checkerboard</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="1">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-pink-pulsar.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/42</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #51</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Pink Pulsar</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  
+  <div class="tier-section" data-tier="2">
+    <div class="tier-header">
+      <div class="tier-badge" style="background:#3498db">2</div>
+      <div class="tier-title">Important</div>
+      <div class="tier-count">4/19</div>
+    </div>
+    <div class="cards">
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/select-concourse.webp" alt="Concourse RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Select TBD</div>
+          <div class="card-name">Concourse RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/select-concourse-silver.webp" alt="Concourse RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Select TBD</div>
+          <div class="card-name">Concourse RC</div>
+          <div class="card-parallel">Silver</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/select-concourse-blue.webp" alt="Concourse RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/299</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Select TBD</div>
+          <div class="card-name">Concourse RC</div>
+          <div class="card-parallel">Blue</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/select-concourse-purple.webp" alt="Concourse RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/99</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Select TBD</div>
+          <div class="card-name">Concourse RC</div>
+          <div class="card-parallel">Purple</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/select-concourse-tiedye.webp" alt="Concourse RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/25</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Select TBD</div>
+          <div class="card-name">Concourse RC</div>
+          <div class="card-parallel">Tie-Dye</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/select-concourse-gold.webp" alt="Concourse RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/10</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Select TBD</div>
+          <div class="card-name">Concourse RC</div>
+          <div class="card-parallel">Gold</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/select-premier.webp" alt="Premier Level RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Select TBD</div>
+          <div class="card-name">Premier Level RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/select-courtside.webp" alt="Courtside RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Select TBD</div>
+          <div class="card-name">Courtside RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/mosaic-base.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Mosaic #86</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/mosaic-silver.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Mosaic #86</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Silver</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/mosaic-orange.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          <span class="badge-grade">PSA 10</span>
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Mosaic #86</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Orange</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 10</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/mosaic-gold.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm Mosaic #86</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Gold</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/revolution-base.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Revolution #135</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/revolution-astro.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-qty">x2</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Revolution #135</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Astro</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 2</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/revolution-groove.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Revolution #135</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Groove</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/revolution-impact.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Revolution #135</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Impact</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/revolution-galactic.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">SSP</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Revolution #135</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Galactic</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/donruss-base.webp" alt="Rated Rookie" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-qty">x6</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Base (Paper)</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 6</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="2">
+        <div class="card-img">
+          
+          <img src="/static/cards/donruss-press-proof.webp" alt="Rated Rookie" loading="lazy">
+          
+          <div class="badge-tier" style="background:#3498db">2</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Press Proof</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  
+  <div class="tier-section" data-tier="3">
+    <div class="tier-header">
+      <div class="tier-badge" style="background:#f1c40f">3</div>
+      <div class="tier-title">Supplemental</div>
+      <div class="tier-count">12/12</div>
+    </div>
+    <div class="cards">
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/hoops-base.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          <span class="badge-grade">PSA 10</span>
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 NBA Hoops #264</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">PSA 10</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/hoops-silver.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+          <span class="badge-serial">/199</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 NBA Hoops #264</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Silver</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/hoops-class2017.webp" alt="Class of 2017" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x2</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 NBA Hoops #14</div>
+          <div class="card-name">Class of 2017</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 2</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/prestige-base.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x3</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prestige #164</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 3</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/prestige-rookie-class.webp" alt="Rookie Class" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prestige #14</div>
+          <div class="card-name">Rookie Class</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/status-base.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x3</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Status #132</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 3</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/status-credentials.webp" alt="Rookie Credentials" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Status #20</div>
+          <div class="card-name">Rookie Credentials</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/chronicles-base.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Chronicles #256</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/essentials-base.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x2</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Essentials #ER-27</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 2</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/threads-base.webp" alt="Bam Adebayo RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Threads #61</div>
+          <div class="card-name">Bam Adebayo RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/court-kings-base.webp" alt="Rookies I" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Court Kings #114</div>
+          <div class="card-name">Rookies I</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="3">
+        <div class="card-img">
+          
+          <img src="/static/cards/court-kings-portraits.webp" alt="Portraits RC" loading="lazy">
+          
+          <div class="badge-tier" style="background:#f1c40f">3</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+          <span class="badge-serial">/175</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Court Kings #149</div>
+          <div class="card-name">Portraits RC</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  
+  <div class="tier-section" data-tier="4">
+    <div class="tier-header">
+      <div class="tier-badge" style="background:#9b59b6">4</div>
+      <div class="tier-title">Inserts</div>
+      <div class="tier-count">15/16</div>
+    </div>
+    <div class="cards">
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-emergent.webp" alt="Emergent" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x2</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #EM-BAM</div>
+          <div class="card-name">Emergent</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 2</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/optic-rookie-kings.webp" alt="Rookie Kings" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x3</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic #14</div>
+          <div class="card-name">Rookie Kings</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 3</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/donruss-rk-paper.webp" alt="Rookie Kings (Paper)" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss #14</div>
+          <div class="card-name">Rookie Kings (Paper)</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/contenders-gameday.webp" alt="Game Day Tickets" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Contenders Draft Picks #16</div>
+          <div class="card-name">Game Day Tickets</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/player-of-day.webp" alt="Rookies" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Player of the Day #R9</div>
+          <div class="card-name">Rookies</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/black-friday-jersey.webp" alt="Jersey Card" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017 Black Friday TBD</div>
+          <div class="card-name">Jersey Card</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/totally-certified-jersey.webp" alt="Fabric of the Game" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+          <span class="badge-serial">/249</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Totally Certified TBD</div>
+          <div class="card-name">Fabric of the Game</div>
+          <div class="card-parallel">Jersey</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/chronicles-swatches.webp" alt="Swatches Jersey" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+          <span class="badge-serial">/199</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Chronicles CS-BAM</div>
+          <div class="card-name">Swatches Jersey</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-2122-base.webp" alt="Bam Adebayo" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2021-22 Prizm #228</div>
+          <div class="card-name">Bam Adebayo</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/flux-2021-pulsar.webp" alt="Bam Adebayo" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2020-21 Flux TBD</div>
+          <div class="card-name">Bam Adebayo</div>
+          <div class="card-parallel">Prism Silver Pulsar</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/illusions-2021-base.webp" alt="Bam Adebayo" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2020-21 Illusions #49</div>
+          <div class="card-name">Bam Adebayo</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <img src="/static/cards/select-2021-blue-concourse.webp" alt="Bam Adebayo" loading="lazy">
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2020-21 Select #8</div>
+          <div class="card-name">Bam Adebayo</div>
+          <div class="card-parallel">Blue Prizm (Concourse)</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <div class="placeholder">
+            <div class="set-name">Prizm</div>
+            Hyper<br>2017-18
+          </div>
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm #EM-BAM</div>
+          <div class="card-name">Emergent</div>
+          <div class="card-parallel">Hyper</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <div class="placeholder">
+            <div class="set-name">Prizm</div>
+            Base<br>2017-18
+          </div>
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm TBD</div>
+          <div class="card-name">Luck of the Lottery</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <div class="placeholder">
+            <div class="set-name">Topps Chrome (Custom)</div>
+            Art Card<br>2025-26
+          </div>
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+          <span class="badge-serial">1/1</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2025-26 Topps Chrome (Custom) N/A</div>
+          <div class="card-name">Artist CARTER X Custom Painted 1/1</div>
+          <div class="card-parallel">Art Card</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card owned" data-owned="yes" data-tier="4">
+        <div class="card-img">
+          
+          <div class="placeholder">
+            <div class="set-name">Select</div>
+            Various<br>2023
+          </div>
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          
+          <span class="badge badge-qty">x1</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2023 Select Various</div>
+          <div class="card-name">Bam Adebayo</div>
+          <div class="card-parallel">Various</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            
+            <div class="card-qty">Qty: 1</div>
+            
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  
+  <div class="tier-section" data-tier="5">
+    <div class="tier-header">
+      <div class="tier-badge" style="background:#e67e22">5</div>
+      <div class="tier-title">Autos / High End</div>
+      <div class="tier-count">0/6</div>
+    </div>
+    <div class="cards">
+      
+      <div class="card missing" data-owned="no" data-tier="5">
+        <div class="card-img">
+          
+          <img src="/static/cards/nt-rpa.webp" alt="Rookie Patch Auto" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e67e22">5</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/99</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 National Treasures TBD</div>
+          <div class="card-name">Rookie Patch Auto</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="5">
+        <div class="card-img">
+          
+          <img src="/static/cards/immaculate-rpa.webp" alt="Rookie Patch Auto" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e67e22">5</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/99</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Immaculate TBD</div>
+          <div class="card-name">Rookie Patch Auto</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="5">
+        <div class="card-img">
+          
+          <img src="/static/cards/flawless-auto.webp" alt="Flawless Auto" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e67e22">5</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Flawless TBD</div>
+          <div class="card-name">Flawless Auto</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="5">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-rookie-sigs.webp" alt="Rookie Signatures" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e67e22">5</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm TBD</div>
+          <div class="card-name">Rookie Signatures</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="5">
+        <div class="card-img">
+          
+          <img src="/static/cards/prizm-rookie-sigs-gold.webp" alt="Rookie Signatures" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e67e22">5</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+          <span class="badge-serial">/10</span>
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Prizm TBD</div>
+          <div class="card-name">Rookie Signatures</div>
+          <div class="card-parallel">Gold</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="card missing" data-owned="no" data-tier="5">
+        <div class="card-img">
+          
+          <img src="/static/cards/optic-rookie-auto.webp" alt="Rookie Autograph" loading="lazy">
+          
+          <div class="badge-tier" style="background:#e67e22">5</div>
+          
+          <span class="badge badge-need">NEED</span>
+          
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic TBD</div>
+          <div class="card-name">Rookie Autograph</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div></div>
+            
+            
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">Bam Adebayo Rookie Card Collection</div>
+
+<script>
+function filterCards(f) {
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.tier-section').forEach(s => {
+    if (f === 'all' || f === 'owned' || f === 'need') {
+      s.style.display = '';
+    } else if (f.startsWith('tier-')) {
+      s.style.display = s.dataset.tier === f.replace('tier-','') ? '' : 'none';
+    }
+  });
+  document.querySelectorAll('.card').forEach(c => {
+    if (f === 'all') c.style.display = '';
+    else if (f === 'owned') c.style.display = c.dataset.owned === 'yes' ? '' : 'none';
+    else if (f === 'need') c.style.display = c.dataset.owned === 'no' ? '' : 'none';
+    else if (f.startsWith('tier-')) c.style.display = '';
+  });
+}
+</script>
+</body>
+</html>
