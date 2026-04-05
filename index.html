@@ -73,6 +73,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .slab-wrap.open .slab-menu{display:flex;gap:4px}
 .slab-menu .fbtn{font-size:11px;padding:4px 12px}
 
+.search-section{margin-bottom:20px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.search-bar{width:100%;max-width:400px;padding:8px 16px;border-radius:20px;border:1px solid var(--bdr);background:var(--s);color:var(--t);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+.search-bar:focus{border-color:var(--ac)}
+.search-bar::placeholder{color:var(--td)}
+.set-filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.set-btn{padding:4px 12px;border-radius:16px;border:1px solid var(--bdr);background:var(--s2);color:var(--td);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.set-btn:hover,.set-btn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+.set-label{font-size:11px;color:var(--td);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.parallel-filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:4px}
 .footer{text-align:center;padding:32px 16px;color:var(--td);font-size:12px;border-top:1px solid var(--bdr)}
 
 @media(max-width:600px){
@@ -122,6 +131,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
   </div>
 
+  <div class="search-section">
+    <input type="text" class="search-bar" id="searchBar" placeholder="Search by set, parallel, or card name..." oninput="searchCards(this.value)">
+    <div class="set-label">Filter by Set</div>
+    <div class="set-filters" id="setFilters"></div>
+    <div class="set-label" id="parallelLabel" style="display:none;margin-top:6px">Parallels</div>
+    <div class="parallel-filters" id="parallelFilters"></div>
+  </div>
+
   
   
   <div class="tier-section" data-tier="1">
@@ -132,7 +149,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="cards">
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10">
+      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/prizm-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -157,7 +174,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw">
+      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw" data-set="Prizm" data-parallel="Silver">
         <div class="card-img">
           
           <img src="static/cards/prizm-silver.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -182,7 +199,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 9 / Raw">
+      <div class="card owned" data-tier="1" data-grade="PSA 9 / Raw" data-set="Prizm" data-parallel="Green">
         <div class="card-img">
           
           <img src="static/cards/prizm-green.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -207,7 +224,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw">
+      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw" data-set="Prizm" data-parallel="Red White Blue">
         <div class="card-img">
           
           <img src="static/cards/prizm-rwb.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -232,7 +249,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="Raw">
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Prizm" data-parallel="Blue">
         <div class="card-img">
           
           <img src="static/cards/prizm-blue.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -257,7 +274,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10">
+      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm" data-parallel="Purple">
         <div class="card-img">
           
           <img src="static/cards/prizm-purple.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -284,7 +301,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 9">
+      <div class="card owned" data-tier="1" data-grade="PSA 9" data-set="Prizm" data-parallel="Orange">
         <div class="card-img">
           
           <img src="static/cards/prizm-orange.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -311,7 +328,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw">
+      <div class="card owned" data-tier="1" data-grade="PSA 10 / Raw" data-set="Prizm" data-parallel="Ruby Wave">
         <div class="card-img">
           
           <img src="static/cards/prizm-ruby-wave.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -336,7 +353,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 9">
+      <div class="card owned" data-tier="1" data-grade="PSA 9" data-set="Prizm" data-parallel="Hyper">
         <div class="card-img">
           
           <img src="static/cards/prizm-hyper.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -361,7 +378,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10">
+      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm Fast Break" data-parallel="Disco Red">
         <div class="card-img">
           
           <img src="static/cards/fb-disco-red.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -388,7 +405,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="Raw">
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Prizm Fast Break" data-parallel="Disco Pink">
         <div class="card-img">
           
           <img src="static/cards/fb-disco-pink.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -413,7 +430,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10">
+      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Prizm Fast Break" data-parallel="Disco Bronze">
         <div class="card-img">
           
           <img src="static/cards/fb-disco-bronze.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -440,7 +457,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="PSA 10">
+      <div class="card owned" data-tier="1" data-grade="PSA 10" data-set="Donruss Optic" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/optic-base.webp" alt="Rated Rookie" loading="lazy">
@@ -465,7 +482,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="Raw">
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Donruss Optic" data-parallel="Shock">
         <div class="card-img">
           
           <img src="static/cards/optic-shock.webp" alt="Rated Rookie" loading="lazy">
@@ -488,7 +505,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="Raw">
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Donruss Optic" data-parallel="Red &amp; Yellow">
         <div class="card-img">
           
           <img src="static/cards/optic-red-yellow.webp" alt="Rated Rookie" loading="lazy">
@@ -511,7 +528,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="1" data-grade="Raw">
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Donruss Optic" data-parallel="Blue Velocity">
         <div class="card-img">
           
           <img src="static/cards/optic-blue-velocity.webp" alt="Rated Rookie" loading="lazy">
@@ -546,7 +563,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="cards">
       
-      <div class="card owned" data-tier="2" data-grade="Raw">
+      <div class="card owned" data-tier="2" data-grade="Raw" data-set="Prizm Mosaic" data-parallel="Silver">
         <div class="card-img">
           
           <img src="static/cards/mosaic-silver.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -569,7 +586,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="2" data-grade="PSA 10">
+      <div class="card owned" data-tier="2" data-grade="PSA 10" data-set="Prizm Mosaic" data-parallel="Orange">
         <div class="card-img">
           
           <img src="static/cards/mosaic-orange.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -594,7 +611,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="2" data-grade="Raw">
+      <div class="card owned" data-tier="2" data-grade="Raw" data-set="Revolution" data-parallel="Astro">
         <div class="card-img">
           
           <img src="static/cards/revolution-astro.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -617,7 +634,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="2" data-grade="Raw">
+      <div class="card owned" data-tier="2" data-grade="Raw" data-set="Donruss" data-parallel="Base (Paper)">
         <div class="card-img">
           
           <img src="static/cards/donruss-base.webp" alt="Rated Rookie" loading="lazy">
@@ -652,7 +669,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="cards">
       
-      <div class="card owned" data-tier="3" data-grade="PSA 10">
+      <div class="card owned" data-tier="3" data-grade="PSA 10" data-set="NBA Hoops" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/hoops-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -677,7 +694,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="NBA Hoops" data-parallel="Silver">
         <div class="card-img">
           
           <img src="static/cards/hoops-silver.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -702,7 +719,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="NBA Hoops" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/hoops-class2017.webp" alt="Class of 2017" loading="lazy">
@@ -725,7 +742,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Prestige" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/prestige-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -748,7 +765,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Prestige" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/prestige-rookie-class.webp" alt="Rookie Class" loading="lazy">
@@ -771,7 +788,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Status" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/status-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -794,7 +811,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Status" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/status-credentials.webp" alt="Rookie Credentials" loading="lazy">
@@ -817,7 +834,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Chronicles" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/chronicles-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -840,7 +857,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Essentials" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/essentials-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -863,7 +880,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Threads" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/threads-base.webp" alt="Bam Adebayo RC" loading="lazy">
@@ -886,7 +903,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Court Kings" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/court-kings-base.webp" alt="Rookies I" loading="lazy">
@@ -909,7 +926,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="3" data-grade="Raw">
+      <div class="card owned" data-tier="3" data-grade="Raw" data-set="Court Kings" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/court-kings-portraits.webp" alt="Portraits RC" loading="lazy">
@@ -946,7 +963,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="cards">
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/prizm-emergent.webp" alt="Emergent" loading="lazy">
@@ -969,7 +986,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Donruss Optic" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/optic-rookie-kings.webp" alt="Rookie Kings" loading="lazy">
@@ -992,7 +1009,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Contenders Draft Picks" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/contenders-gameday.webp" alt="Game Day Tickets" loading="lazy">
@@ -1015,7 +1032,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Player of the Day" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/player-of-day.webp" alt="Rookies" loading="lazy">
@@ -1038,7 +1055,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Black Friday" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/black-friday-jersey.webp" alt="Jersey Card" loading="lazy">
@@ -1061,7 +1078,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Totally Certified" data-parallel="Jersey">
         <div class="card-img">
           
           <img src="static/cards/totally-certified-jersey.webp" alt="Fabric of the Game" loading="lazy">
@@ -1086,7 +1103,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Chronicles" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/chronicles-swatches.webp" alt="Swatches Jersey" loading="lazy">
@@ -1111,7 +1128,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/prizm-2122-base.webp" alt="Bam Adebayo" loading="lazy">
@@ -1134,7 +1151,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Flux" data-parallel="Prism Silver Pulsar">
         <div class="card-img">
           
           <img src="static/cards/flux-2021-pulsar.webp" alt="Bam Adebayo" loading="lazy">
@@ -1157,7 +1174,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Illusions" data-parallel="Base">
         <div class="card-img">
           
           <img src="static/cards/illusions-2021-base.webp" alt="Bam Adebayo" loading="lazy">
@@ -1180,7 +1197,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Select" data-parallel="Blue Prizm (Concourse)">
         <div class="card-img">
           
           <img src="static/cards/select-2021-blue-concourse.webp" alt="Bam Adebayo" loading="lazy">
@@ -1203,7 +1220,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Hyper">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1229,7 +1246,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Prizm" data-parallel="Base">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1255,7 +1272,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Topps Chrome (Custom)" data-parallel="Art Card">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1283,7 +1300,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
-      <div class="card owned" data-tier="4" data-grade="Raw">
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Select" data-parallel="Various">
         <div class="card-img">
           
           <div class="placeholder">
@@ -1338,7 +1355,125 @@ document.addEventListener('click', () => {
   document.getElementById('slabWrap').classList.remove('open');
 });
 
+// Build set and parallel filter buttons dynamically
+let activeSet = null;
+const cards = document.querySelectorAll('.card');
+const sets = new Map();
+cards.forEach(c => {
+  const s = c.dataset.set;
+  const p = c.dataset.parallel;
+  if (!sets.has(s)) sets.set(s, new Set());
+  sets.get(s).add(p);
+});
+
+const setContainer = document.getElementById('setFilters');
+[...sets.keys()].sort().forEach(s => {
+  const btn = document.createElement('button');
+  btn.className = 'set-btn';
+  btn.textContent = s;
+  btn.onclick = () => filterBySet(s, btn);
+  setContainer.appendChild(btn);
+});
+
+function filterBySet(setName, btn) {
+  // Clear search
+  document.getElementById('searchBar').value = '';
+  // Reset top filters
+  document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filters > .fbtn').forEach(b => { if(b.textContent==='All') b.classList.add('active'); });
+
+  if (activeSet === setName) {
+    // Deselect
+    activeSet = null;
+    btn.classList.remove('active');
+    document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('parallelLabel').style.display = 'none';
+    document.getElementById('parallelFilters').innerHTML = '';
+    cards.forEach(c => c.style.display = '');
+    document.querySelectorAll('.tier-section').forEach(s => s.style.display = '');
+    return;
+  }
+
+  activeSet = setName;
+  document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Show parallels for this set
+  const parallels = [...sets.get(setName)].sort();
+  const pContainer = document.getElementById('parallelFilters');
+  pContainer.innerHTML = '';
+  document.getElementById('parallelLabel').style.display = '';
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'set-btn active';
+  allBtn.textContent = 'All';
+  allBtn.onclick = () => {
+    document.querySelectorAll('#parallelFilters .set-btn').forEach(b => b.classList.remove('active'));
+    allBtn.classList.add('active');
+    filterBySetAndParallel(setName, null);
+  };
+  pContainer.appendChild(allBtn);
+
+  parallels.forEach(p => {
+    const pb = document.createElement('button');
+    pb.className = 'set-btn';
+    pb.textContent = p;
+    pb.onclick = () => {
+      document.querySelectorAll('#parallelFilters .set-btn').forEach(b => b.classList.remove('active'));
+      pb.classList.add('active');
+      filterBySetAndParallel(setName, p);
+    };
+    pContainer.appendChild(pb);
+  });
+
+  filterBySetAndParallel(setName, null);
+}
+
+function filterBySetAndParallel(setName, parallel) {
+  cards.forEach(c => {
+    const match = c.dataset.set === setName && (!parallel || c.dataset.parallel === parallel);
+    c.style.display = match ? '' : 'none';
+  });
+  document.querySelectorAll('.tier-section').forEach(s => {
+    const visible = s.querySelectorAll('.card:not([style*="display: none"])').length;
+    s.style.display = visible ? '' : 'none';
+  });
+}
+
+function searchCards(q) {
+  // Clear set/parallel filters
+  activeSet = null;
+  document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('parallelLabel').style.display = 'none';
+  document.getElementById('parallelFilters').innerHTML = '';
+  // Reset top filters
+  document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filters > .fbtn').forEach(b => { if(b.textContent==='All') b.classList.add('active'); });
+
+  const term = q.toLowerCase().trim();
+  if (!term) {
+    cards.forEach(c => c.style.display = '');
+    document.querySelectorAll('.tier-section').forEach(s => s.style.display = '');
+    return;
+  }
+  cards.forEach(c => {
+    const text = (c.dataset.set + ' ' + c.dataset.parallel + ' ' + c.dataset.grade + ' ' + c.querySelector('.card-name').textContent).toLowerCase();
+    c.style.display = text.includes(term) ? '' : 'none';
+  });
+  document.querySelectorAll('.tier-section').forEach(s => {
+    const visible = s.querySelectorAll('.card:not([style*="display: none"])').length;
+    s.style.display = visible ? '' : 'none';
+  });
+}
+
 function filterCards(f) {
+  // Clear search and set filters
+  document.getElementById('searchBar').value = '';
+  activeSet = null;
+  document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('parallelLabel').style.display = 'none';
+  document.getElementById('parallelFilters').innerHTML = '';
+
   document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.slab-menu .fbtn').forEach(b => b.classList.remove('active'));
   document.getElementById('slabWrap').classList.remove('open');
@@ -1356,7 +1491,7 @@ function filterCards(f) {
     else s.style.display = s.dataset.tier === f.replace('tier-','') ? '' : 'none';
   });
   if (isGradeFilter) {
-    document.querySelectorAll('.card').forEach(c => {
+    cards.forEach(c => {
       const g = c.dataset.grade || '';
       if (f === 'slabs') c.style.display = (g.includes('PSA') || g.includes('SGC') || g.includes('BGS')) ? '' : 'none';
       else if (f === 'psa10') c.style.display = g.includes('PSA 10') ? '' : 'none';
@@ -1367,7 +1502,7 @@ function filterCards(f) {
       s.style.display = visible ? '' : 'none';
     });
   } else {
-    document.querySelectorAll('.card').forEach(c => c.style.display = '');
+    cards.forEach(c => c.style.display = '');
   }
 }
 </script>
