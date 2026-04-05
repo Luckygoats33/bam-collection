@@ -2783,9 +2783,26 @@ openModal = function(el) {
         ctx.beginPath(); ctx.arc(iconX, iconY, 10, 0, Math.PI*2); ctx.stroke();
         pxText('3-POINT CONTEST', W/2 + 10, btn2Y + btnH/2 + 5, '#ff1744', Math.min(W*0.025, 14));
 
+        // Button 3: NES BASKETBALL
+        const btn3Y = btn2Y + btnH + btnGap;
+        ctx.fillStyle = '#1a0a0a';
+        ctx.fillRect(btnX, btn3Y, btnW, btnH);
+        ctx.strokeStyle = '#ff8c42';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(btnX, btn3Y, btnW, btnH);
+        // Controller icon
+        const padX = btnX + 20;
+        const padY = btn3Y + btnH/2;
+        ctx.fillStyle = '#333'; ctx.fillRect(padX - 10, padY - 6, 20, 12);
+        ctx.fillStyle = '#ff8c42'; ctx.fillRect(padX - 3, padY - 8, 6, 4);
+        ctx.fillRect(padX + 5, padY - 2, 4, 4);
+        ctx.fillRect(padX - 1, padY - 2, 4, 4);
+        pxText('NES BASKETBALL', W/2 + 10, btn3Y + btnH/2 + 5, '#ff8c42', Math.min(W*0.025, 14));
+
         // Store button positions for click detection
         window._menuBtn1 = { x: btnX, y: btn1Y, w: btnW, h: btnH };
         window._menuBtn2 = { x: btnX, y: btn2Y, w: btnW, h: btnH };
+        window._menuBtn3 = { x: btnX, y: btn3Y, w: btnW, h: btnH };
         window._menuReady = true;
       }
 
@@ -2843,6 +2860,11 @@ openModal = function(el) {
         setTimeout(startGame, 600); // Then launch game
         return;
       }
+      const b3 = window._menuBtn3;
+      if (b3 && mx >= b3.x && mx <= b3.x + b3.w && my >= b3.y && my <= b3.y + b3.h) {
+        window.location.href = 'game.html';
+        return;
+      }
     }
     // During dunk phase, skip ahead to title
     if (phase === 'dunk') {
@@ -2854,6 +2876,7 @@ openModal = function(el) {
     else if (window._menuReady) {
       if (e.key === '1') skipIntro();
       if (e.key === '2') { skipIntro(); setTimeout(startGame, 600); }
+      if (e.key === '3') { window.location.href = 'game.html'; }
     }
   });
 })();
