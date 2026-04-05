@@ -220,6 +220,7 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
 <!-- BOUNCING BASKETBALL CTA -->
 <div id="gameBall" onclick="startGame()"><canvas id="ballCanvas" width="64" height="64"></canvas></div>
 <div id="gameLabel" onclick="startGame()">PLAY?</div>
+<a href="game.html" id="nesLink" style="position:fixed;bottom:24px;left:24px;z-index:900;display:none;padding:8px 14px;background:rgba(255,140,66,0.9);color:#fff;font-family:'Press Start 2P',monospace;font-size:8px;text-decoration:none;border-radius:4px;border:2px solid #ff8c42;animation:blink8 1.5s step-end infinite">NES GAME</a>
 
 <!-- 3-POINT CONTEST GAME -->
 <div id="gameOverlay"><canvas id="gameCanvas"></canvas></div>
@@ -2820,6 +2821,7 @@ openModal = function(el) {
       animateCounters();
       // Show bouncing ball CTA on collection page too
       document.getElementById('gameBall').style.display = 'block';
+    document.getElementById('nesLink').style.display = 'block';
       document.getElementById('gameLabel').style.display = 'block';
     }, 500);
   };
@@ -2878,6 +2880,7 @@ openModal = function(el) {
 function startGame() {
   document.getElementById('gameBall').style.display = 'none';
   document.getElementById('gameLabel').style.display = 'none';
+  document.getElementById('nesLink').style.display = 'none';
   document.getElementById('gameOverlay').style.display = 'block';
   document.body.style.overflow = 'hidden';
   initGame();
@@ -2896,7 +2899,7 @@ function initGame() {
   window.addEventListener('resize', resize);
 
   // Game constants
-  const GRAVITY = 0.35;
+  const GRAVITY = 0.55;
   const GAME_TIME = 60;
   const RACK_SIZE = 5;
   const TOTAL_RACKS = 5;
@@ -3232,10 +3235,10 @@ function initGame() {
 
     // Trajectory preview dots
     ctx.fillStyle = '#ffffff44';
-    const vx = Math.cos(angle) * power * 0.12;
-    const vy = Math.sin(angle) * power * 0.12;
+    const vx = Math.cos(angle) * power * 0.18;
+    const vy = Math.sin(angle) * power * 0.18;
     let px2 = ball.x, py2 = ball.y, pvx = vx, pvy = vy;
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 20; i++) {
       px2 += pvx;
       pvy += GRAVITY;
       py2 += pvy;
@@ -3315,12 +3318,25 @@ function initGame() {
         ball.y > hy - 4 && ball.y < hy + 12) {
       return 'swish';
     }
-    // Rim bounce — close but hits rim
-    if (ball.vy > 0 &&
-        Math.abs(ball.y - hy) < 12 &&
-        (Math.abs(ball.x - (hx - rimW / 2)) < 10 || Math.abs(ball.x - (hx + rimW / 2)) < 10)) {
-      // 40% chance of going in on rim hit
-      return Math.random() < 0.4 ? 'rimmed' : 'miss';
+    // Rim bounce — physics-based
+    const leftRimX = hx - rimW / 2, rightRimX = hx + rimW / 2;
+    const hitLeftRim = Math.abs(ball.x - leftRimX) < 10 && Math.abs(ball.y - hy) < 12;
+    const hitRightRim = Math.abs(ball.x - rightRimX) < 10 && Math.abs(ball.y - hy) < 12;
+    if (ball.vy > 0 && (hitLeftRim || hitRightRim)) {
+      const rimHitX = hitLeftRim ? leftRimX : rightRimX;
+      const dx = ball.x - rimHitX, dy = ball.y - hy;
+      const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      const nx = dx/dist, ny = dy/dist;
+      const dot = ball.vx*nx + ball.vy*ny;
+      ball.vx = (ball.vx - 1.6*dot*nx) * 0.65;
+      ball.vy = (ball.vy - 1.6*dot*ny) * 0.65;
+      ball.x += nx * 3;
+      ball.y += ny * 3;
+      const centerDist = Math.abs(ball.x - hx);
+      if (centerDist < rimW * 0.35 && ball.vy > 0) {
+        return 'rimmed';
+      }
+      return null;
     }
     return null;
   }
@@ -3333,8 +3349,8 @@ function initGame() {
     const power = Math.min(Math.sqrt(dx * dx + dy * dy), 200);
     const angle = Math.atan2(dy, dx);
 
-    ball.vx = Math.cos(angle) * power * 0.12;
-    ball.vy = Math.sin(angle) * power * 0.12;
+    ball.vx = Math.cos(angle) * power * 0.18;
+    ball.vy = Math.sin(angle) * power * 0.18;
     gameState = 'flight';
   }
 
@@ -3405,10 +3421,99 @@ function initGame() {
     return { x: e.clientX, y: e.clientY };
   }
 
+  function closeThisGame() {
+    if (timerInterval) clearInterval(timerInterval);
+    document.getElementById('gameOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+    document.getElementById('gameBall').style.display = 'block';
+    document.getElementById('nesLink').style.display = 'block';
+    document.getElementById('gameLabel').style.display = 'block';
+  }
+
+  function isCloseBtn(e) {
+    const p = getPos(e);
+    return p.x > W - 56 && p.y > 58 && p.y < 104;
+  }
+
+  // ESC key + tutorial advance
+  document.addEventListener('keydown', function(e) {
+    if (document.getElementById('gameOverlay').style.display !== 'block') return;
+    if (e.key === 'Escape') { closeThisGame(); return; }
+    if (tutorialStep >= 0 && tutorialStep < tutorialSteps.length) { tutorialStep++; }
+  });
+
+  // Interactive tutorial
+  const tutorialSteps = [
+    { title: 'STEP 1: AIM', text: 'Click & hold on the ball,\nthen DRAG AWAY from the hoop\nto set your aim direction.', icon: 'aim' },
+    { title: 'STEP 2: POWER', text: 'Drag FARTHER = more power.\nWatch the green/orange/red\npower meter under the ball.', icon: 'power' },
+    { title: 'STEP 3: RELEASE', text: 'Let go to shoot!\nDotted line shows where\nthe ball will go.', icon: 'release' },
+    { title: 'STEP 4: SCORE', text: '5 balls per rack, 5 racks.\nLast ball = MONEY BALL (2x).\n3 in a row = ON FIRE (2x)!', icon: 'score' },
+    { title: 'READY?', text: 'Tap anywhere to start!\n\nESC or X button to quit.', icon: 'go' },
+  ];
+  let tutorialStep = 0;
+
+  function drawTutorial() {
+    if (tutorialStep < 0 || tutorialStep >= tutorialSteps.length) {
+      if (tutorialStep >= tutorialSteps.length) tutorialStep = -1;
+      return false;
+    }
+    const step = tutorialSteps[tutorialStep];
+    ctx.fillStyle = 'rgba(0,0,0,0.82)';
+    ctx.fillRect(0, 0, W, H);
+    const cw = Math.min(440, W - 40), ch = 280;
+    const cx = (W - cw) / 2, cy = (H - ch) / 2;
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(cx, cy, cw, ch);
+    ctx.strokeStyle = '#ff1744';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(cx, cy, cw, ch);
+    ctx.fillStyle = '#ff174466';
+    for (let i = 0; i < tutorialSteps.length; i++) {
+      ctx.fillStyle = i === tutorialStep ? '#ff1744' : '#ff174444';
+      ctx.fillRect(cx + cw/2 - tutorialSteps.length * 12 + i * 24, cy + ch - 30, 16, 8);
+    }
+    ctx.textAlign = 'center';
+    ctx.font = '18px "Press Start 2P", monospace';
+    ctx.fillStyle = '#ff1744';
+    ctx.fillText(step.title, W / 2, cy + 44);
+    ctx.font = '11px "Press Start 2P", monospace';
+    ctx.fillStyle = '#ddd';
+    step.text.split('\n').forEach((line, i) => { ctx.fillText(line, W / 2, cy + 80 + i * 24); });
+    const ix = W / 2, iy = cy + 180;
+    if (step.icon === 'aim') {
+      ctx.fillStyle = '#e67e22'; ctx.beginPath(); ctx.arc(ix - 40, iy, 12, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(ix - 40, iy); ctx.lineTo(ix + 50, iy - 30); ctx.stroke();
+      ctx.fillStyle = '#fff'; ctx.font = '10px "Press Start 2P", monospace'; ctx.fillText('<-- drag', ix + 20, iy + 20);
+    } else if (step.icon === 'power') {
+      ctx.fillStyle = '#333'; ctx.fillRect(ix - 60, iy - 6, 120, 14);
+      ctx.fillStyle = '#00e5a0'; ctx.fillRect(ix - 60, iy - 6, 40, 14);
+      ctx.fillStyle = '#ff8c00'; ctx.fillRect(ix - 20, iy - 6, 40, 14);
+      ctx.fillStyle = '#ff1744'; ctx.fillRect(ix + 20, iy - 6, 40, 14);
+      ctx.fillStyle = '#fff'; ctx.font = '8px "Press Start 2P", monospace';
+      ctx.fillText('LOW', ix - 40, iy + 22); ctx.fillText('MED', ix, iy + 22); ctx.fillText('MAX', ix + 40, iy + 22);
+    } else if (step.icon === 'release') {
+      ctx.fillStyle = '#e67e22'; ctx.beginPath(); ctx.arc(ix - 50, iy + 10, 10, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ffffff66';
+      for (let d = 0; d < 6; d++) { ctx.beginPath(); ctx.arc(ix - 40 + d*18, iy + 5 - d*6 + (d>3?d*3:0), 3, 0, Math.PI*2); ctx.fill(); }
+    } else if (step.icon === 'score') {
+      ctx.font = '14px "Press Start 2P", monospace';
+      ctx.fillStyle = '#ffd700'; ctx.fillText('MONEY BALL = 2 PTS', ix, iy - 10);
+      ctx.fillStyle = '#ff8c00'; ctx.fillText('ON FIRE = 2x POINTS', ix, iy + 16);
+    } else {
+      ctx.font = '28px "Press Start 2P", monospace';
+      ctx.fillStyle = '#ff1744'; ctx.fillText("LET'S GO!", ix, iy + 8);
+    }
+    ctx.font = '9px "Press Start 2P", monospace';
+    ctx.fillStyle = '#888';
+    ctx.fillText('TAP / CLICK / PRESS ANY KEY TO CONTINUE', W / 2, cy + ch + 24);
+    return true;
+  }
+
   function onDown(e) {
     e.preventDefault();
+    if (isCloseBtn(e)) { closeThisGame(); return; }
+    if (tutorialStep >= 0 && tutorialStep < tutorialSteps.length) { tutorialStep++; return; }
     if (gameState === 'gameover') {
-      // Restart
       score = 0; timeLeft = GAME_TIME; streak = 0; rackIndex = 0; ballIndex = 0;
       gameState = 'countdown'; countdownNum = 3;
       resetBall();
@@ -3447,25 +3552,24 @@ function initGame() {
   canvas.addEventListener('touchmove', onMove, { passive: false });
   canvas.addEventListener('touchend', onUp, { passive: false });
 
-  // Close button
+  // Close button — big, obvious
   function drawClose() {
-    ctx.fillStyle = '#ff174488';
-    ctx.fillRect(W - 44, 64, 32, 32);
-    ctx.strokeStyle = '#ff1744';
+    ctx.fillStyle = 'rgba(255,23,68,0.7)';
+    ctx.fillRect(W - 52, 62, 40, 40);
+    ctx.strokeStyle = '#fff';
     ctx.lineWidth = 2;
-    ctx.strokeRect(W - 44, 64, 32, 32);
-    ctx.font = '14px "Press Start 2P", monospace';
+    ctx.strokeRect(W - 52, 62, 40, 40);
+    ctx.font = '18px "Press Start 2P", monospace';
     ctx.textAlign = 'center';
     ctx.fillStyle = '#fff';
-    ctx.fillText('X', W - 28, 86);
+    ctx.fillText('X', W - 32, 89);
+    ctx.font = '7px "Press Start 2P", monospace';
+    ctx.fillStyle = '#ffffff88';
+    ctx.fillText('ESC', W - 32, 112);
   }
-
-  canvas.addEventListener('click', (e) => {
-    if (e.clientX > W - 50 && e.clientY > 60 && e.clientY < 100) {
-      // Close game
-      document.getElementById('gameOverlay').style.display = 'none';
       document.body.style.overflow = '';
       document.getElementById('gameBall').style.display = 'block';
+    document.getElementById('nesLink').style.display = 'block';
       document.getElementById('gameLabel').style.display = 'block';
     }
   });
@@ -3600,41 +3704,37 @@ function initGame() {
 
     ctx.restore();
 
-    // Overlays
-    if (gameState === 'countdown') {
+    // Overlays — tutorial first
+    if (tutorialStep >= 0 && tutorialStep < tutorialSteps.length) {
+      drawTutorial();
+    } else if (gameState === 'countdown') {
       drawCountdown();
-    }
-    if (gameState === 'gameover') {
+    } else if (gameState === 'gameover') {
       drawGameOver();
-    }
-
-    // Instructions on first ready
-    if (gameState === 'ready' && score === 0 && timeLeft === GAME_TIME && countdownNum <= 0) {
-      ctx.textAlign = 'center';
-      ctx.font = '11px "Press Start 2P", monospace';
-      ctx.fillStyle = '#fff';
-      ctx.fillText('SWIPE / DRAG TO SHOOT', W / 2, H * 0.6);
-      ctx.font = '9px "Press Start 2P", monospace';
-      ctx.fillStyle = '#888';
-      ctx.fillText('AIM UP AND TOWARD THE HOOP', W / 2, H * 0.65);
     }
 
     requestAnimationFrame(gameLoop);
   }
 
-  // Start with countdown
+  // Start with tutorial, then countdown
   gameState = 'countdown';
   resetBall();
-  let cdInterval = setInterval(() => {
-    countdownNum--;
-    if (countdownNum <= 0) {
-      clearInterval(cdInterval);
-      gameState = 'ready';
-      startTimer();
+  function waitForTutorial() {
+    if (tutorialStep >= 0 && tutorialStep < tutorialSteps.length) {
+      requestAnimationFrame(waitForTutorial);
+      return;
+    }
+    let cdInterval = setInterval(() => {
+      countdownNum--;
+      if (countdownNum <= 0) {
+        clearInterval(cdInterval);
+        gameState = 'ready';
+        startTimer();
     }
   }, 800);
 
   gameLoop();
+  waitForTutorial();
 }
 </script>
 </body>

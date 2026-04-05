@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bam Basketball - NES Game</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0a0a;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+.top-bar {
+  width: 100%;
+  background: #111;
+  border-bottom: 2px solid #ff1744;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.top-bar a {
+  color: #ff1744;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border: 2px solid #ff1744;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.top-bar a:hover { background: #ff1744; color: #fff; }
+.top-bar h1 { font-size: 16px; color: #ff1744; }
+.nes-wrapper {
+  margin-top: 24px;
+  position: relative;
+  background: #1a1a1a;
+  border: 3px solid #333;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 0 40px rgba(255,23,68,0.15);
+}
+canvas#nes-canvas {
+  width: 512px;
+  height: 480px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  background: #000;
+}
+.controls {
+  margin-top: 20px;
+  max-width: 540px;
+  width: 100%;
+}
+.controls h2 { color: #ff1744; font-size: 14px; margin-bottom: 12px; text-align: center; }
+.key-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 13px;
+}
+.key-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+.key-label { color: #888; }
+.key-value { color: #ff1744; font-weight: bold; }
+.status {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 12px;
+  color: #666;
+}
+.status.loaded { color: #00e5a0; }
+.status.error { color: #ff1744; }
+@media (max-width: 560px) {
+  canvas#nes-canvas { width: 100%; height: auto; }
+  .nes-wrapper { margin: 12px; padding: 8px; }
+  .key-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="index.html">&larr; Back to Collection</a>
+  <h1>BAM BASKETBALL NES</h1>
+  <a href="index.html">Collection</a>
+</div>
+
+<div class="nes-wrapper">
+  <canvas id="nes-canvas" width="256" height="240"></canvas>
+</div>
+
+<div class="controls">
+  <h2>CONTROLS</h2>
+  <div class="key-grid">
+    <div class="key-row"><span class="key-label">Move Up</span><span class="key-value">W / &uarr;</span></div>
+    <div class="key-row"><span class="key-label">Move Down</span><span class="key-value">S / &darr;</span></div>
+    <div class="key-row"><span class="key-label">Move Left</span><span class="key-value">A / &larr;</span></div>
+    <div class="key-row"><span class="key-label">Move Right</span><span class="key-value">D / &rarr;</span></div>
+    <div class="key-row"><span class="key-label">A Button</span><span class="key-value">J / Z</span></div>
+    <div class="key-row"><span class="key-label">B Button</span><span class="key-value">K / X</span></div>
+    <div class="key-row"><span class="key-label">Start</span><span class="key-value">Enter</span></div>
+    <div class="key-row"><span class="key-label">Select</span><span class="key-value">Shift</span></div>
+  </div>
+</div>
+
+<div id="status" class="status">Loading ROM...</div>
+
+<script src="https://unpkg.com/jsnes@1.2.1/dist/jsnes.min.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('nes-canvas');
+  const ctx = canvas.getContext('2d');
+  const statusEl = document.getElementById('status');
+  const imageData = ctx.createImageData(256, 240);
+  const frameBuf = new Uint32Array(imageData.data.buffer);
+
+  // JSNES emulator
+  const nes = new jsnes.NES({
+    onFrame: function(buffer) {
+      for (let i = 0; i < 256 * 240; i++) {
+        // JSNES gives 0xRRGGBB, canvas needs AABBGGRR (little-endian RGBA)
+        const c = buffer[i];
+        const r = (c >> 16) & 0xFF;
+        const g = (c >> 8) & 0xFF;
+        const b = c & 0xFF;
+        frameBuf[i] = (0xFF << 24) | (b << 16) | (g << 8) | r;
+      }
+      ctx.putImageData(imageData, 0, 0);
+    },
+    onAudioSample: function(left, right) {
+      // Audio not implemented yet
+    }
+  });
+
+  // Key mapping: keyboard -> NES controller
+  const keyMap = {
+    // Arrow keys
+    'ArrowUp': jsnes.Controller.BUTTON_UP,
+    'ArrowDown': jsnes.Controller.BUTTON_DOWN,
+    'ArrowLeft': jsnes.Controller.BUTTON_LEFT,
+    'ArrowRight': jsnes.Controller.BUTTON_RIGHT,
+    // WASD
+    'w': jsnes.Controller.BUTTON_UP, 'W': jsnes.Controller.BUTTON_UP,
+    's': jsnes.Controller.BUTTON_DOWN, 'S': jsnes.Controller.BUTTON_DOWN,
+    'a': jsnes.Controller.BUTTON_LEFT, 'A': jsnes.Controller.BUTTON_LEFT,
+    'd': jsnes.Controller.BUTTON_RIGHT, 'D': jsnes.Controller.BUTTON_RIGHT,
+    // Buttons
+    'j': jsnes.Controller.BUTTON_A, 'J': jsnes.Controller.BUTTON_A,
+    'z': jsnes.Controller.BUTTON_A, 'Z': jsnes.Controller.BUTTON_A,
+    'k': jsnes.Controller.BUTTON_B, 'K': jsnes.Controller.BUTTON_B,
+    'x': jsnes.Controller.BUTTON_B, 'X': jsnes.Controller.BUTTON_B,
+    'Enter': jsnes.Controller.BUTTON_START,
+    'Shift': jsnes.Controller.BUTTON_SELECT,
+  };
+
+  document.addEventListener('keydown', function(e) {
+    const btn = keyMap[e.key];
+    if (btn !== undefined) {
+      nes.buttonDown(1, btn);
+      e.preventDefault();
+    }
+  });
+
+  document.addEventListener('keyup', function(e) {
+    const btn = keyMap[e.key];
+    if (btn !== undefined) {
+      nes.buttonUp(1, btn);
+      e.preventDefault();
+    }
+  });
+
+  // Load ROM
+  fetch('/static/game/basketball.nes')
+    .then(r => {
+      if (!r.ok) throw new Error('ROM not found');
+      return r.arrayBuffer();
+    })
+    .then(buf => {
+      const data = new Uint8Array(buf);
+      let romStr = '';
+      for (let i = 0; i < data.length; i++) {
+        romStr += String.fromCharCode(data[i]);
+      }
+      nes.loadROM(romStr);
+      statusEl.textContent = 'ROM loaded! Use keyboard to play.';
+      statusEl.className = 'status loaded';
+
+      // Run at ~60fps
+      function frame() {
+        nes.frame();
+        requestAnimationFrame(frame);
+      }
+      frame();
+    })
+    .catch(err => {
+      statusEl.textContent = 'Error: ' + err.message;
+      statusEl.className = 'status error';
+    });
+})();
+</script>
+</body>
+</html>
