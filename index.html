@@ -73,16 +73,22 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .slab-wrap.open .slab-menu{display:flex;gap:4px}
 .slab-menu .fbtn{font-size:11px;padding:4px 12px}
 
-.search-section{margin-bottom:20px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.search-section{margin-bottom:16px;display:flex;flex-direction:column;align-items:center;gap:8px}
 .search-bar{width:100%;max-width:400px;padding:8px 16px;border-radius:20px;border:1px solid var(--bdr);background:var(--s);color:var(--t);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
 .search-bar:focus{border-color:var(--ac)}
 .search-bar::placeholder{color:var(--td)}
+.adv-toggle{padding:6px 16px;border-radius:20px;border:1px solid var(--bdr);background:var(--s);color:var(--td);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.adv-toggle:hover,.adv-toggle.open{background:var(--ac);color:#fff;border-color:var(--ac)}
+.adv-panel{display:none;width:100%;max-width:600px;background:var(--s);border:1px solid var(--bdr2);border-radius:14px;padding:16px;margin-top:4px}
+.adv-panel.open{display:block}
+.adv-row{margin-bottom:12px}
+.adv-row:last-child{margin-bottom:0}
 .set-filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .set-btn{padding:4px 12px;border-radius:16px;border:1px solid var(--bdr);background:var(--s2);color:var(--td);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
 .set-btn:hover,.set-btn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
-.set-label{font-size:11px;color:var(--td);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.set-label{font-size:10px;color:var(--td);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px;text-align:center}
 .parallel-filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:4px}
-.color-filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.color-filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .color-btn{padding:4px 12px;border-radius:16px;border:2px solid transparent;background:var(--s2);color:var(--td);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
 .color-btn:hover{border-color:var(--bdr2);color:var(--t)}
 .color-btn.active{color:#fff;border-color:#fff3}
@@ -141,24 +147,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div class="wrap">
   <div class="summary">
     <div class="summary-item">
-      <div class="num">48</div>
+      <div class="num">49</div>
       <div class="lbl">Unique Cards</div>
     </div>
     <div class="summary-item">
-      <div class="num">78</div>
+      <div class="num">79</div>
       <div class="lbl">Total Pieces</div>
     </div>
   </div>
 
   <div class="filters">
     <button class="fbtn active" onclick="filterCards('all')">All</button>
-    
     <button class="fbtn" onclick="filterCards('tier-1')">Core</button>
-    
     <button class="fbtn" onclick="filterCards('tier-3')">Supplemental</button>
-    
     <button class="fbtn" onclick="filterCards('tier-4')">Inserts</button>
-    
     <div class="slab-wrap" id="slabWrap">
       <button class="fbtn" onclick="toggleSlabMenu(event)">Slabs</button>
       <div class="slab-menu">
@@ -167,16 +169,27 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <button class="fbtn" onclick="filterCards('psa9')">PSA 9</button>
       </div>
     </div>
+    <button class="fbtn" onclick="filterCards('raw')">Raw</button>
+    <button class="fbtn" onclick="filterCards('nonrookie')">Non-Rookie</button>
   </div>
 
   <div class="search-section">
     <input type="text" class="search-bar" id="searchBar" placeholder="Search by set, parallel, or card name..." oninput="searchCards(this.value)">
-    <div class="set-label">Filter by Set</div>
-    <div class="set-filters" id="setFilters"></div>
-    <div class="set-label" id="parallelLabel" style="display:none;margin-top:6px">Parallels</div>
-    <div class="parallel-filters" id="parallelFilters"></div>
-    <div class="set-label" style="margin-top:8px">Color / Parallel</div>
-    <div class="color-filters" id="colorFilters"></div>
+    <button class="adv-toggle" id="advToggle" onclick="toggleAdvanced()">Filters <span id="advArrow">&#9662;</span></button>
+    <div class="adv-panel" id="advPanel">
+      <div class="adv-row">
+        <div class="set-label">By Set</div>
+        <div class="set-filters" id="setFilters"></div>
+      </div>
+      <div class="adv-row" id="parallelRow" style="display:none">
+        <div class="set-label">Parallels</div>
+        <div class="parallel-filters" id="parallelFilters"></div>
+      </div>
+      <div class="adv-row">
+        <div class="set-label">By Color</div>
+        <div class="color-filters" id="colorFilters"></div>
+      </div>
+    </div>
   </div>
 
   
@@ -1330,7 +1343,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="tier-header">
       <div class="tier-badge" style="background:#9b59b6">4</div>
       <div class="tier-title">Inserts</div>
-      <div class="tier-count">15 cards</div>
+      <div class="tier-count">16 cards</div>
     </div>
     <div class="cards">
       
@@ -1832,6 +1845,41 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       
+      <div class="card owned" data-tier="4" data-grade="Raw" data-set="Topps NOW" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Bam Adebayo"
+           data-year="2025-26"
+           data-card-number="#201"
+           data-serial=""
+           data-qty="1"
+           data-image=""
+           data-notes="PR: 2741"
+           style="cursor:pointer">
+        <div class="card-img">
+          
+          <div class="placeholder">
+            <div class="set-name">Topps NOW</div>
+            Base<br>2025-26
+          </div>
+          
+          <div class="badge-tier" style="background:#9b59b6">4</div>
+          <span class="badge badge-qty">x1</span>
+          
+          
+        </div>
+        <div class="card-info">
+          <div class="card-set">2025-26 Topps NOW #201</div>
+          <div class="card-name">Bam Adebayo</div>
+          <div class="card-parallel">Base</div>
+          <div class="card-meta">
+            
+            <div class="card-grade">Raw</div>
+            
+            <div class="card-qty">Qty: 1</div>
+          </div>
+        </div>
+      </div>
+      
     </div>
   </div>
   
@@ -1897,6 +1945,15 @@ const COLOR_MAP = {
   'Mosaic':   {color:'#e67e22', keywords:['mosaic']},
 };
 
+function toggleAdvanced() {
+  const panel = document.getElementById('advPanel');
+  const toggle = document.getElementById('advToggle');
+  const arrow = document.getElementById('advArrow');
+  panel.classList.toggle('open');
+  toggle.classList.toggle('open');
+  arrow.innerHTML = panel.classList.contains('open') ? '&#9652;' : '&#9662;';
+}
+
 let activeColor = null;
 let activeSet = null;
 const cards = document.querySelectorAll('.card');
@@ -1937,7 +1994,7 @@ function filterByColor(colorName, btn) {
   document.getElementById('searchBar').value = '';
   activeSet = null;
   document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('parallelLabel').style.display = 'none';
+  document.getElementById('parallelRow').style.display = 'none';
   document.getElementById('parallelFilters').innerHTML = '';
   document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.filters > .fbtn').forEach(b => { if(b.textContent==='All') b.classList.add('active'); });
@@ -1979,7 +2036,7 @@ function filterBySet(setName, btn) {
     activeSet = null;
     btn.classList.remove('active');
     document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('parallelLabel').style.display = 'none';
+    document.getElementById('parallelRow').style.display = 'none';
     document.getElementById('parallelFilters').innerHTML = '';
     cards.forEach(c => c.style.display = '');
     document.querySelectorAll('.tier-section').forEach(s => s.style.display = '');
@@ -1994,7 +2051,7 @@ function filterBySet(setName, btn) {
   const parallels = [...sets.get(setName)].sort();
   const pContainer = document.getElementById('parallelFilters');
   pContainer.innerHTML = '';
-  document.getElementById('parallelLabel').style.display = '';
+  document.getElementById('parallelRow').style.display = '';
 
   const allBtn = document.createElement('button');
   allBtn.className = 'set-btn active';
@@ -2038,7 +2095,7 @@ function searchCards(q) {
   activeColor = null;
   document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('parallelLabel').style.display = 'none';
+  document.getElementById('parallelRow').style.display = 'none';
   document.getElementById('parallelFilters').innerHTML = '';
   // Reset top filters
   document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
@@ -2067,15 +2124,16 @@ function filterCards(f) {
   activeColor = null;
   document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('parallelLabel').style.display = 'none';
+  document.getElementById('parallelRow').style.display = 'none';
   document.getElementById('parallelFilters').innerHTML = '';
 
   document.querySelectorAll('.filters > .fbtn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.slab-menu .fbtn').forEach(b => b.classList.remove('active'));
   document.getElementById('slabWrap').classList.remove('open');
 
-  const isGradeFilter = ['slabs','psa10','psa9'].includes(f);
-  if (isGradeFilter) {
+  const isGradeFilter = ['slabs','psa10','psa9','raw'].includes(f);
+  const isSpecial = isGradeFilter || f === 'nonrookie';
+  if (isGradeFilter && f !== 'raw') {
     event.target.classList.add('active');
     document.querySelector('#slabWrap > .fbtn').classList.add('active');
   } else {
@@ -2083,15 +2141,18 @@ function filterCards(f) {
   }
 
   document.querySelectorAll('.tier-section').forEach(s => {
-    if (f === 'all' || isGradeFilter) s.style.display = '';
+    if (f === 'all' || isSpecial) s.style.display = '';
     else s.style.display = s.dataset.tier === f.replace('tier-','') ? '' : 'none';
   });
-  if (isGradeFilter) {
+  if (isSpecial) {
     cards.forEach(c => {
       const g = c.dataset.grade || '';
+      const yr = c.dataset.year || '';
       if (f === 'slabs') c.style.display = (g.includes('PSA') || g.includes('SGC') || g.includes('BGS')) ? '' : 'none';
       else if (f === 'psa10') c.style.display = g.includes('PSA 10') ? '' : 'none';
       else if (f === 'psa9') c.style.display = g.includes('PSA 9') ? '' : 'none';
+      else if (f === 'raw') c.style.display = (g === 'Raw' || !g) ? '' : 'none';
+      else if (f === 'nonrookie') c.style.display = yr !== '2017-18' ? '' : 'none';
     });
     document.querySelectorAll('.tier-section').forEach(s => {
       const visible = s.querySelectorAll('.card:not([style*="display: none"])').length;
