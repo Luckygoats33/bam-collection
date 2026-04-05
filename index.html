@@ -90,9 +90,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .modal-overlay.open{display:flex}
 .modal{background:var(--s);border:1px solid var(--bdr2);border-radius:16px;max-width:480px;width:90%;max-height:85vh;overflow-y:auto;padding:0;position:relative}
-.modal-img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:16px 16px 0 0}
-.modal-placeholder{width:100%;aspect-ratio:3/4;background:var(--s2);display:flex;align-items:center;justify-content:center;border-radius:16px 16px 0 0;color:var(--td);font-size:14px}
+.modal-img{width:100%;max-height:350px;object-fit:contain;border-radius:16px 16px 0 0;background:var(--bg)}
+.modal-placeholder{width:100%;height:200px;background:var(--s2);display:flex;align-items:center;justify-content:center;border-radius:16px 16px 0 0;color:var(--td);font-size:14px}
 .modal-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.modal-nav{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.5);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s}
+.modal-nav:hover{background:var(--ac)}
+.modal-nav.prev{left:-48px}
+.modal-nav.next{right:-48px}
+.modal-counter{position:absolute;top:12px;left:12px;font-size:11px;font-weight:600;color:#fff;background:rgba(0,0,0,.5);padding:3px 10px;border-radius:12px;z-index:2;font-family:'JetBrains Mono',monospace}
+@media(max-width:600px){
+  .modal{max-width:95%;border-radius:12px}
+  .modal-nav.prev{left:8px;top:auto;bottom:12px;transform:none}
+  .modal-nav.next{right:8px;top:auto;bottom:12px;transform:none}
+}
 .modal-body{padding:20px}
 .modal-title{font-size:18px;font-weight:800;margin-bottom:2px}
 .modal-set{font-size:13px;color:var(--td);margin-bottom:12px}
@@ -1840,7 +1850,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <div class="modal-overlay" id="cardModal" onclick="if(event.target===this)closeModal()">
+  <button class="modal-nav prev" onclick="event.stopPropagation();navigateCard(-1)">&#8249;</button>
   <div class="modal">
+    <span class="modal-counter" id="modalCounter"></span>
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <div id="modalImgWrap"></div>
     <div class="modal-body">
@@ -1850,6 +1862,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="modal-pop" id="modalPop"></div>
     </div>
   </div>
+  <button class="modal-nav next" onclick="event.stopPropagation();navigateCard(1)">&#8250;</button>
 </div>
 
 <div class="footer">Bam Adebayo Rookie Card Collection</div>
@@ -2198,6 +2211,11 @@ function openModal(el) {
     popDiv.style.display = 'none';
   }
 
+  // Update counter
+  const visible = getVisibleCards();
+  const idx = visible.indexOf(el);
+  document.getElementById('modalCounter').textContent = `${idx + 1} / ${visible.length}`;
+
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -2207,7 +2225,44 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'ArrowRight') navigateCard(1);
+  if (e.key === 'ArrowLeft') navigateCard(-1);
+});
+
+// Mobile swipe support
+let touchStartX = 0;
+let touchEndX = 0;
+const modalEl = document.getElementById('cardModal');
+modalEl.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+modalEl.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 50) {
+    navigateCard(diff > 0 ? 1 : -1);
+  }
+});
+
+let currentCardIndex = -1;
+function getVisibleCards() {
+  return [...document.querySelectorAll('.card')].filter(c => c.style.display !== 'none');
+}
+
+function navigateCard(dir) {
+  const visible = getVisibleCards();
+  if (visible.length === 0) return;
+  currentCardIndex = Math.max(0, Math.min(visible.length - 1, currentCardIndex + dir));
+  openModal(visible[currentCardIndex]);
+}
+
+// Override openModal to track index
+const _origOpen = openModal;
+openModal = function(el) {
+  const visible = getVisibleCards();
+  currentCardIndex = visible.indexOf(el);
+  _origOpen(el);
+};
 </script>
 </body>
 </html>
