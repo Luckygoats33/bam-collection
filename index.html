@@ -2359,36 +2359,64 @@ openModal = function(el) {
   const GOLD = '#ffd700';
   const WHITE = '#fff';
 
-  // Draw pixel player (bigger = more impressive)
+  // Draw detailed pixel Bam (#13 Heat jersey, headband, athletic build)
   function drawPlayer(cx, cy, scale, armUp) {
     const s = scale;
+    // Hair (flat top / short)
+    px(cx-2*s, cy-15*s, 5*s, 2*s, '#1a1a1a');
     // Head
-    px(cx-1*s, cy-12*s, 3*s, 4*s, '#c68642');
-    px(cx-1*s, cy-13*s, 3*s, 1*s, '#222');
-    // Body
-    px(cx-2*s, cy-8*s, 5*s, 5*s, HEAT);
+    px(cx-2*s, cy-13*s, 5*s, 5*s, '#8B6914');
+    px(cx-1*s, cy-14*s, 3*s, 1*s, '#8B6914');
+    // Headband (white Heat band)
+    px(cx-2*s, cy-13*s, 5*s, 1*s, WHITE);
+    // Eyes
+    px(cx-1*s, cy-11*s, 1*s, 1*s, '#222');
+    px(cx+1*s, cy-11*s, 1*s, 1*s, '#222');
+    // Neck
+    px(cx-1*s, cy-8*s, 3*s, 1*s, '#8B6914');
+    // Shoulders (wide = big man)
+    px(cx-4*s, cy-7*s, 9*s, 1*s, HEAT);
+    // Jersey body
+    px(cx-3*s, cy-6*s, 7*s, 5*s, HEAT);
+    // Jersey side stripes (Heat style)
+    px(cx-3*s, cy-6*s, 1*s, 5*s, '#111');
+    px(cx+3*s, cy-6*s, 1*s, 5*s, '#111');
     // #13 on jersey
-    px(cx-1*s, cy-7*s, 1*s, 1*s, WHITE);
-    px(cx+1*s, cy-7*s, 1*s, 2*s, WHITE);
-    // Arms
+    px(cx-1*s, cy-5*s, 1*s, 3*s, WHITE);
+    px(cx, cy-5*s, 1*s, 1*s, WHITE);
+    px(cx, cy-3*s, 1*s, 1*s, WHITE);
+    px(cx+1*s, cy-5*s, 1*s, 3*s, WHITE);
+    px(cx+1*s, cy-4*s, 1*s, 1*s, WHITE);
+    // Arms (muscular)
     if (armUp) {
-      px(cx+3*s, cy-12*s, 1*s, 5*s, '#c68642');
-      px(cx-3*s, cy-7*s, 1*s, 3*s, '#c68642');
+      // Right arm up with ball (dunking)
+      px(cx+4*s, cy-7*s, 2*s, 1*s, '#8B6914');
+      px(cx+5*s, cy-11*s, 2*s, 4*s, '#8B6914');
+      px(cx+4*s, cy-8*s, 1*s, 1*s, '#8B6914');
       // Ball in hand
-      px(cx+3*s, cy-14*s, 2*s, 2*s, '#e67e22');
-      px(cx+4*s, cy-13*s, 1*s, 1*s, '#c65800');
+      px(cx+5*s, cy-14*s, 3*s, 3*s, '#e67e22');
+      px(cx+6*s, cy-13*s, 1*s, 1*s, '#c65800');
+      px(cx+5*s, cy-12*s, 3*s, 1*s, '#c65800');
+      // Left arm down
+      px(cx-5*s, cy-6*s, 2*s, 4*s, '#8B6914');
     } else {
-      px(cx+3*s, cy-7*s, 1*s, 3*s, '#c68642');
-      px(cx-3*s, cy-7*s, 1*s, 3*s, '#c68642');
+      px(cx+4*s, cy-6*s, 2*s, 4*s, '#8B6914');
+      px(cx-5*s, cy-6*s, 2*s, 4*s, '#8B6914');
     }
-    // Shorts
-    px(cx-2*s, cy-3*s, 5*s, 3*s, '#111');
-    // Legs
-    px(cx-2*s, cy, 2*s, 4*s, '#c68642');
-    px(cx+1*s, cy, 2*s, 4*s, '#c68642');
-    // Shoes
-    px(cx-2*s, cy+4*s, 2*s, 1*s, WHITE);
-    px(cx+1*s, cy+4*s, 2*s, 1*s, WHITE);
+    // Shorts (black Heat shorts)
+    px(cx-3*s, cy-1*s, 7*s, 4*s, '#111');
+    // Heat logo stripe on shorts
+    px(cx-3*s, cy-1*s, 1*s, 4*s, HEAT);
+    px(cx+3*s, cy-1*s, 1*s, 4*s, HEAT);
+    // Legs (muscular)
+    px(cx-3*s, cy+3*s, 2*s, 5*s, '#8B6914');
+    px(cx+1*s, cy+3*s, 2*s, 5*s, '#8B6914');
+    // Socks
+    px(cx-3*s, cy+7*s, 2*s, 1*s, WHITE);
+    px(cx+1*s, cy+7*s, 2*s, 1*s, WHITE);
+    // Shoes (Nike style)
+    px(cx-3*s, cy+8*s, 3*s, 1*s, '#333');
+    px(cx+1*s, cy+8*s, 3*s, 1*s, '#333');
   }
 
   function drawCourt(courtY) {
