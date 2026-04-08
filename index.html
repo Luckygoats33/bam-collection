@@ -317,6 +317,29 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
 .rainbow-divider::before,.rainbow-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,71,87,.3),transparent)}
 .rainbow-divider span{color:#ff4757;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;white-space:nowrap}
 
+/* Missing card panel */
+.missing-panel-overlay{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;animation:showcaseFadeIn .3s ease;padding:20px}
+.missing-panel-overlay.active{display:flex}
+.missing-panel{background:#0c0c18;border:1.5px solid rgba(255,71,87,.25);border-radius:20px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.7),0 0 40px rgba(255,71,87,.08)}
+.missing-panel-img{position:relative;width:100%;aspect-ratio:2.5/3.5;overflow:hidden;border-radius:18px 18px 0 0;background:#080808}
+.missing-panel-img img{width:100%;height:100%;object-fit:cover;opacity:.5;filter:grayscale(.4)}
+.missing-panel-img::after{content:'WANTED';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);font-size:22px;font-weight:900;color:#ff4757;letter-spacing:5px;padding:10px 28px;border:3px solid #ff4757;border-radius:10px;background:rgba(0,0,0,.7);text-shadow:0 0 20px rgba(255,71,87,.5)}
+.missing-panel-body{padding:24px}
+.missing-panel-name{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:2px}
+.missing-panel-sub{font-size:13px;color:var(--td);margin-bottom:16px}
+.missing-panel-details{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.missing-panel-detail{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--bdr)}
+.missing-panel-detail .mp-label{font-size:10px;color:var(--td);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.missing-panel-detail .mp-value{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.missing-panel-links{display:flex;flex-direction:column;gap:8px}
+.missing-panel-link{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:12px;font-size:13px;font-weight:700;text-decoration:none;transition:all .3s;letter-spacing:.3px}
+.missing-panel-link:hover{transform:translateY(-2px);filter:brightness(1.2)}
+.missing-panel-link.mp-ebay{background:rgba(33,150,243,.1);border:1px solid rgba(33,150,243,.25);color:#2196f3}
+.missing-panel-link.mp-sold{background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.25);color:#00e5a0}
+.missing-panel-link.mp-psa{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.25);color:#ffd700}
+.missing-panel-close{position:absolute;top:12px;right:12px;z-index:2;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.6);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;backdrop-filter:blur(8px)}
+.missing-panel-close:hover{background:rgba(255,71,87,.2);border-color:rgba(255,71,87,.4)}
+
 /* Prizm Map category sections */
 .pm-category{margin-bottom:40px}
 .pm-cat-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid rgba(255,215,0,.1);position:relative;cursor:pointer;user-select:none}
@@ -367,6 +390,14 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
       <div class="rainbow-progress-bar"><div class="rainbow-progress-fill" id="rbProgressFill" style="width:64%"></div></div>
     </div>
     <div class="rainbow-grid" id="rainbowGrid"></div>
+  </div>
+</div>
+
+<!-- MISSING CARD PANEL -->
+<div class="missing-panel-overlay" id="missingPanelOverlay" onclick="if(event.target===this)closeMissingPanel()">
+  <div class="missing-panel" style="position:relative">
+    <button class="missing-panel-close" onclick="closeMissingPanel()">&times;</button>
+    <div id="missingPanelContent"></div>
   </div>
 </div>
 
@@ -2466,8 +2497,11 @@ function buildShowcaseCard(c, num) {
   if (c.owned) {
     el.onclick = () => {
       const match = document.querySelector(`.card[data-set="Prizm"][data-parallel="${c.parallel}"]`);
-      if (match) { closeRainbowShowcase(); openModal(match); }
+      if (match) { closeRainbowShowcase(); closePrizmMap(); openModal(match); }
     };
+  } else {
+    el.style.cursor = 'pointer';
+    el.onclick = () => openMissingCardPanel(c);
   }
   return el;
 }
@@ -2479,6 +2513,7 @@ function closeRainbowShowcase() {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (document.getElementById('rainbowShowcase').classList.contains('active')) closeRainbowShowcase();
+    if (document.getElementById('missingPanelOverlay').classList.contains('active')) { closeMissingPanel(); return; }
     if (document.getElementById('prizmMapOverlay').classList.contains('active')) closePrizmMap();
   }
 });
@@ -2609,6 +2644,47 @@ function openPrizmMap() {
 function closePrizmMap() {
   document.getElementById('prizmMapOverlay').classList.remove('active');
   document.body.style.overflow = '';
+}
+
+// ============ MISSING CARD PANEL ============
+function openMissingCardPanel(c) {
+  const setName = c.parallel.startsWith('FB ') ? 'Prizm Fast Break' : 'Prizm';
+  const parallelClean = c.parallel.replace(/^FB /, '').replace('Black Finite', 'Black').replace(' (Retail)', '').replace(' (Base)', '').replace(' (Hyper)', '');
+  const ebayQ = encodeURIComponent(`2017-18 ${setName} ${parallelClean} Bam Adebayo #51`);
+  const ebayActiveUrl = `https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&_sacat=212&LH_BIN=1`;
+  const ebaySoldUrl = `https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&_sacat=212&LH_Complete=1&LH_Sold=1`;
+  const psaQ = encodeURIComponent(`2017-18 ${setName} ${parallelClean} Bam Adebayo`);
+  const psaUrl = `https://www.psacard.com/pop/basketball-cards?q=${psaQ}`;
+  const comc = `https://www.comc.com/Cards/Basketball/2017-18/Panini_Prizm,sr,i100&search=${encodeURIComponent('Bam Adebayo ' + parallelClean)}`;
+
+  const priceHtml = c.price ? `<div class="missing-panel-detail"><div class="mp-label">Est. Value</div><div class="mp-value" style="color:#ffd700">~$${c.price.toLocaleString()}</div></div>` : '';
+  const serialHtml = c.serial ? `<div class="missing-panel-detail"><div class="mp-label">Print Run</div><div class="mp-value" style="color:#ff4757">${c.serial}</div></div>` : '';
+
+  document.getElementById('missingPanelContent').innerHTML = `
+    <div class="missing-panel-img">
+      <img src="${c.image}" alt="${c.parallel}">
+    </div>
+    <div class="missing-panel-body">
+      <div class="missing-panel-name" style="color:${c.color}">${c.parallel}</div>
+      <div class="missing-panel-sub">2017-18 Prizm &bull; Bam Adebayo RC #51</div>
+      <div class="missing-panel-details">
+        ${serialHtml}
+        ${priceHtml}
+        ${c.notes ? `<div class="missing-panel-detail" style="grid-column:1/-1"><div class="mp-label">Notes</div><div class="mp-value" style="font-size:12px;font-weight:400;color:var(--td)">${c.notes}</div></div>` : ''}
+      </div>
+      <div class="missing-panel-links">
+        <a href="${ebayActiveUrl}" target="_blank" rel="noopener" class="missing-panel-link mp-ebay">Buy on eBay &rarr;</a>
+        <a href="${ebaySoldUrl}" target="_blank" rel="noopener" class="missing-panel-link mp-sold">Sold Comps &rarr;</a>
+        <a href="${psaUrl}" target="_blank" rel="noopener" class="missing-panel-link mp-psa">PSA Pop Report &rarr;</a>
+        <a href="${comc}" target="_blank" rel="noopener" class="missing-panel-link" style="background:rgba(255,140,66,.1);border:1px solid rgba(255,140,66,.25);color:#ff8c42">COMC Marketplace &rarr;</a>
+      </div>
+    </div>`;
+
+  document.getElementById('missingPanelOverlay').classList.add('active');
+}
+
+function closeMissingPanel() {
+  document.getElementById('missingPanelOverlay').classList.remove('active');
 }
 document.addEventListener('click', () => {
   document.getElementById('slabWrap').classList.remove('open');
