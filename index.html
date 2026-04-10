@@ -240,14 +240,10 @@ body.intro-active{overflow:hidden}
 body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,body.intro-active .wrap,body.intro-active .footer{opacity:0}
 
 /* Bouncing basketball CTA — HIDDEN */
-#gameBall{display:none !important}
+
 #nesLink{display:none !important}
-#gameLabel{position:fixed;bottom:92px;right:8px;font-family:'Press Start 2P',monospace;font-size:8px;color:#ff1744;text-align:center;z-index:900;animation:blink8 1.5s step-end infinite;display:none;text-shadow:0 0 6px rgba(255,23,68,.5)}
 @keyframes ballBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
 
-/* Game overlay */
-#gameOverlay{position:fixed;inset:0;z-index:9998;background:#000;display:none;touch-action:none}
-#gameOverlay canvas{width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
 
 /* ======== RAINBOW SHOWCASE ======== */
 .rainbow-showcase-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);overflow-y:auto;display:none;animation:showcaseFadeIn .4s ease}
@@ -366,13 +362,7 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
   <div class="intro-skip" id="introSkipText" onclick="if(typeof phase!=='undefined'&&phase==='dunk'){goPhase('title');}">SKIP ></div>
 </div>
 
-<!-- BOUNCING BASKETBALL CTA -->
-<div id="gameBall" onclick="startGame()"><canvas id="ballCanvas" width="64" height="64"></canvas></div>
-<div id="gameLabel" onclick="startGame()">PLAY?</div>
-<a href="game.html" id="nesLink" style="position:fixed;bottom:24px;left:24px;z-index:900;display:none;padding:8px 14px;background:rgba(255,140,66,0.9);color:#fff;font-family:'Press Start 2P',monospace;font-size:8px;text-decoration:none;border-radius:4px;border:2px solid #ff8c42;animation:blink8 1.5s step-end infinite">NES GAME</a>
-
-<!-- 3-POINT CONTEST GAME -->
-<div id="gameOverlay"><canvas id="gameCanvas"></canvas></div>
+<!-- Games removed -->
 
 <!-- RAINBOW SHOWCASE OVERLAY -->
 <div class="rainbow-showcase-overlay" id="rainbowShowcase">
@@ -423,7 +413,22 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
 <div class="bg-mesh"></div>
 <div class="bg-noise"></div>
 
-<button class="missing-btn-fixed" id="missingToggle" onclick="toggleMissing()">MISSING <span class="count-badge" id="missingBtnCount">23</span></button>
+<button class="missing-btn-fixed" id="goatBtn" onclick="showGoatLogin()" title="Collector Access" style="font-size:24px;padding:8px 14px;border:1.5px solid #ffd700;background:rgba(255,215,0,.08);color:#ffd700">&#x1F410;</button>
+
+<!-- GOAT LOGIN MODAL -->
+<div id="goatLoginOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center">
+  <div style="background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:32px;width:320px;text-align:center;position:relative">
+    <button onclick="closeGoatLogin()" style="position:absolute;top:8px;right:12px;background:none;border:none;color:#888;font-size:20px;cursor:pointer">&times;</button>
+    <div style="font-size:48px;margin-bottom:12px">&#x1F410;</div>
+    <div style="font-family:'Press Start 2P',monospace;font-size:12px;color:#ffd700;margin-bottom:20px">COLLECTOR ACCESS</div>
+    <input id="goatUser" type="text" placeholder="Username" style="width:100%;padding:10px 14px;margin-bottom:10px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg);color:var(--fg);font-family:'Inter',sans-serif;font-size:14px;box-sizing:border-box">
+    <input id="goatPass" type="password" placeholder="Password" style="width:100%;padding:10px 14px;margin-bottom:16px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg);color:var(--fg);font-family:'Inter',sans-serif;font-size:14px;box-sizing:border-box" onkeydown="if(event.key==='Enter')goatLogin()">
+    <div id="goatError" style="color:var(--r);font-size:11px;margin-bottom:10px;display:none">Wrong credentials</div>
+    <button onclick="goatLogin()" style="width:100%;padding:10px;border-radius:8px;border:none;background:#ffd700;color:#000;font-weight:700;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif">Enter</button>
+  </div>
+</div>
+
+<button class="missing-btn-fixed" id="missingToggle" onclick="toggleMissing()" style="display:none">MISSING <span class="count-badge" id="missingBtnCount">23</span></button>
 
 <div class="hero">
   <h1><span>BAM ADEBAYO</span></h1>
@@ -434,13 +439,25 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
 <div class="wrap">
   <div class="stats">
     <div class="stat-card">
-      <div class="stat-num" data-count="56">0</div>
+      <div class="stat-num" data-count="58">0</div>
       <div class="stat-lbl">Unique Cards</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num" data-count="86">0</div>
+      <div class="stat-num" data-count="88">0</div>
       <div class="stat-lbl">Total Pieces</div>
     </div>
+  </div>
+
+  <!-- Download Buttons -->
+  <div style="display:flex;justify-content:center;gap:10px;margin-bottom:32px;flex-wrap:wrap">
+    <button onclick="downloadCSV('owned')" style="padding:8px 20px;border-radius:24px;border:1px solid var(--g);background:rgba(0,229,160,.1);color:var(--g);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s;backdrop-filter:blur(8px)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Owned Cards
+    </button>
+    <button id="downloadMissingBtn" onclick="if(typeof goatAuthenticated!=='undefined'&&goatAuthenticated){downloadCSV('missing')}else{showGoatLogin()}" style="padding:8px 20px;border-radius:24px;border:1px solid var(--r);background:rgba(255,71,87,.1);color:var(--r);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s;backdrop-filter:blur(8px)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Missing Cards &#x1F512;
+    </button>
   </div>
 
   <div class="filter-bar">
@@ -1276,6 +1293,41 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
 
             <div class="card-grade">PSA 10</div>
 
+
+          </div>
+        </div>
+      </div>
+
+      <div class="card owned" data-tier="1" data-grade="Raw" data-set="Donruss Optic Fast Break" data-parallel="Purple"
+           onclick="openModal(this)"
+           data-name="Rated Rookie"
+           data-year="2017-18"
+           data-card-number="#187"
+           data-serial="/155"
+           data-qty="1"
+           data-image="static/cards/optic-purple.webp"
+           data-notes="Purple Fast Break /155">
+        <div class="card-img">
+
+          <img src="static/cards/optic-purple.webp" alt="Rated Rookie" loading="lazy">
+
+          <div class="badge-tier" style="background:#e74c3c">1</div>
+
+
+          <span class="badge-grade">Raw</span>
+
+          <span class="badge badge-serial">/155</span>
+
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Donruss Optic Fast Break #187</div>
+          <div class="card-name">Rated Rookie</div>
+          <div class="card-parallel">Purple</div>
+          <div class="card-meta">
+
+            <div class="card-grade">Raw</div>
+
+            <div class="card-serial">/155</div>
 
           </div>
         </div>
@@ -2439,9 +2491,36 @@ body.intro-active .bg-mesh,body.intro-active .bg-noise,body.intro-active .hero,b
     <div class="tier-header">
       <div class="tier-badge" style="background:#e67e22">5</div>
       <div class="tier-title">Autos / High End</div>
-      <div class="tier-count">0 cards</div>
+      <div class="tier-count">1 card</div>
     </div>
     <div class="cards">
+
+      <div class="card owned" data-tier="5" data-grade="Raw" data-set="Panini Noir" data-parallel="Base"
+           onclick="openModal(this)"
+           data-name="Rookie Patch Auto"
+           data-year="2017-18"
+           data-card-number="#314"
+           data-serial="/99"
+           data-qty="1"
+           data-image=""
+           data-notes="RPA /99 - purchased Apr 9 from eBay. $74.">
+        <div class="card-img">
+          <div style="width:100%;padding-top:140%;background:linear-gradient(135deg,#1a1a2e,#0d0d1a);display:flex;align-items:center;justify-content:center;position:relative">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--td);font-size:11px;font-weight:600">NOIR RPA<br>/99</div>
+          </div>
+          <div class="badge-tier" style="background:#e67e22">5</div>
+          <span class="badge badge-serial">/99</span>
+        </div>
+        <div class="card-info">
+          <div class="card-set">2017-18 Panini Noir #314</div>
+          <div class="card-name">Rookie Patch Auto</div>
+          <div class="card-parallel">Base /99</div>
+          <div class="card-meta">
+            <div class="card-grade">Raw</div>
+            <div class="card-qty">x1</div>
+          </div>
+        </div>
+      </div>
 
     </div>
   </div>
@@ -3509,7 +3588,7 @@ openModal = function(el) {
       }
       if (p > 0.25) {
         ctx.globalAlpha = Math.min((p-0.25)/0.15, 1);
-        pxText('51 CARDS', W/2, H*0.54, GOLD, Math.min(W*0.025, 16));
+        pxText('58 UNIQUE CARDS | 88 TOTAL', W/2, H*0.54, GOLD, Math.min(W*0.025, 16));
       }
 
       // Menu buttons appear after text
@@ -3529,42 +3608,9 @@ openModal = function(el) {
         ctx.strokeRect(btnX, btn1Y, btnW, btnH);
         pxText('VIEW COLLECTION', W/2, btn1Y + btnH/2 + 5, '#fff', Math.min(W*0.025, 14));
 
-        // Button 2: 3-POINT CONTEST
-        const btn2Y = btn1Y + btnH + btnGap;
-        ctx.fillStyle = '#1a0a0a';
-        ctx.fillRect(btnX, btn2Y, btnW, btnH);
-        ctx.strokeStyle = '#ff1744';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(btnX, btn2Y, btnW, btnH);
-        // Basketball icon
-        const iconX = btnX + 20;
-        const iconY = btn2Y + btnH/2;
-        ctx.fillStyle = '#e67e22';
-        ctx.beginPath(); ctx.arc(iconX, iconY, 10, 0, Math.PI*2); ctx.fill();
-        ctx.strokeStyle = '#c65800'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(iconX, iconY, 10, 0, Math.PI*2); ctx.stroke();
-        pxText('3-POINT CONTEST', W/2 + 10, btn2Y + btnH/2 + 5, '#ff1744', Math.min(W*0.025, 14));
-
-        // Button 3: NES BASKETBALL
-        const btn3Y = btn2Y + btnH + btnGap;
-        ctx.fillStyle = '#1a0a0a';
-        ctx.fillRect(btnX, btn3Y, btnW, btnH);
-        ctx.strokeStyle = '#ff8c42';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(btnX, btn3Y, btnW, btnH);
-        // Controller icon
-        const padX = btnX + 20;
-        const padY = btn3Y + btnH/2;
-        ctx.fillStyle = '#333'; ctx.fillRect(padX - 10, padY - 6, 20, 12);
-        ctx.fillStyle = '#ff8c42'; ctx.fillRect(padX - 3, padY - 8, 6, 4);
-        ctx.fillRect(padX + 5, padY - 2, 4, 4);
-        ctx.fillRect(padX - 1, padY - 2, 4, 4);
-        pxText('NES BASKETBALL', W/2 + 10, btn3Y + btnH/2 + 5, '#ff8c42', Math.min(W*0.025, 14));
-
         // Store button positions for click detection
         window._menuBtn1 = { x: btnX, y: btn1Y, w: btnW, h: btnH };
-        window._menuBtn2 = { x: btnX, y: btn2Y, w: btnW, h: btnH };
-        window._menuBtn3 = { x: btnX, y: btn3Y, w: btnW, h: btnH };
+        window._menuBtn2 = { x: btnX, y: btn1Y, w: btnW, h: btnH };
         window._menuReady = true;
       }
 
@@ -3599,9 +3645,7 @@ openModal = function(el) {
       overlay.style.display = 'none';
       animateCounters();
       // Show bouncing ball CTA on collection page too
-      /* gameBall removed */
-      /* nesLink removed */
-      document.getElementById('gameLabel').style.display = 'block';
+      /* games removed */
     }, 500);
   };
 
@@ -3618,13 +3662,7 @@ openModal = function(el) {
         return;
       }
       if (b2 && mx >= b2.x && mx <= b2.x + b2.w && my >= b2.y && my <= b2.y + b2.h) {
-        skipIntro(); // Close intro first
-        setTimeout(startGame, 600); // Then launch game
-        return;
-      }
-      const b3 = window._menuBtn3;
-      if (b3 && mx >= b3.x && mx <= b3.x + b3.w && my >= b3.y && my <= b3.y + b3.h) {
-        window.location.href = 'game.html';
+        skipIntro(); // View Collection
         return;
       }
     }
@@ -3637,886 +3675,85 @@ openModal = function(el) {
     if (phase === 'dunk') { goPhase('title'); }
     else if (window._menuReady) {
       if (e.key === '1') skipIntro();
-      if (e.key === '2') { skipIntro(); setTimeout(startGame, 600); }
-      if (e.key === '3') { window.location.href = 'game.html'; }
+      if (e.key === '2') skipIntro();
     }
   });
 })();
 
-// ============ BOUNCING BASKETBALL CTA ============
-(function(){
-  // Draw pixel basketball on the small canvas
-  const bc = document.getElementById('ballCanvas');
-  if (!bc) return;
-  const bx = bc.getContext('2d');
-  bx.fillStyle = '#e67e22';
-  bx.beginPath(); bx.arc(32,32,28,0,Math.PI*2); bx.fill();
-  bx.strokeStyle = '#c65800'; bx.lineWidth = 3;
-  bx.beginPath(); bx.arc(32,32,28,0,Math.PI*2); bx.stroke();
-  bx.beginPath(); bx.moveTo(32,4); bx.lineTo(32,60); bx.stroke();
-  bx.beginPath(); bx.moveTo(4,32); bx.lineTo(60,32); bx.stroke();
-  bx.beginPath(); bx.arc(32,32,16,0.3,2.8); bx.stroke();
-  bx.beginPath(); bx.arc(32,32,16,3.5,6); bx.stroke();
+// Games removed
 
-  // Ball CTA is shown after skipIntro() runs — see skipIntro function
-})();
+// ============ GOAT LOGIN ============
+let goatAuthenticated = false;
 
-// ============ 3-POINT CONTEST GAME ============
-function startGame() {
-  document.getElementById('gameBall').style.display = 'none';
-  document.getElementById('gameLabel').style.display = 'none';
-  document.getElementById('nesLink').style.display = 'none';
-  document.getElementById('gameOverlay').style.display = 'block';
-  document.body.style.overflow = 'hidden';
-  initGame();
+function showGoatLogin() {
+  if (goatAuthenticated) {
+    toggleMissing();
+    return;
+  }
+  const overlay = document.getElementById('goatLoginOverlay');
+  overlay.style.display = 'flex';
+  document.getElementById('goatUser').value = '';
+  document.getElementById('goatPass').value = '';
+  document.getElementById('goatError').style.display = 'none';
+  setTimeout(() => document.getElementById('goatUser').focus(), 100);
 }
 
-function initGame() {
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-  let W, H;
+function closeGoatLogin() {
+  document.getElementById('goatLoginOverlay').style.display = 'none';
+}
 
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
+function goatLogin() {
+  const user = document.getElementById('goatUser').value.trim().toLowerCase();
+  const pass = document.getElementById('goatPass').value;
+  if (user === 'goat' && pass === 'goatgoat') {
+    goatAuthenticated = true;
+    closeGoatLogin();
+    // Show the MISSING button and swap goat icon style
+    const btn = document.getElementById('goatBtn');
+    btn.style.borderColor = '#00e5a0';
+    btn.style.background = 'rgba(0,229,160,.1)';
+    btn.style.color = '#00e5a0';
+    document.getElementById('missingToggle').style.display = '';
+    toggleMissing();
+  } else {
+    const err = document.getElementById('goatError');
+    err.style.display = 'block';
+    document.getElementById('goatPass').value = '';
+    document.getElementById('goatPass').focus();
   }
-  resize();
-  window.addEventListener('resize', resize);
+}
 
-  // Game constants
-  const GRAVITY = 0.55;
-  const GAME_TIME = 60;
-  const RACK_SIZE = 5;
-  const TOTAL_RACKS = 5;
-
-  // Game state
-  let gameState = 'ready'; // ready, aiming, flight, scored, missed, gameover, countdown
-  let score = 0;
-  let timeLeft = GAME_TIME;
-  let streak = 0;
-  let bestStreak = 0;
-  let rackIndex = 0;
-  let ballIndex = 0;
-  let highScore = parseInt(localStorage.getItem('bam3ptHigh') || '0');
-  let lastTime = 0;
-  let countdownNum = 3;
-  let shakeFrames = 0;
-  let shakeIntensity = 0;
-
-  // Ball
-  let ball = { x: 0, y: 0, vx: 0, vy: 0, r: 14 };
-  let aimStart = null;
-  let aimCurrent = null;
-
-  // Hoop position
-  const hoopX = () => W * 0.78;
-  const hoopY = () => H * 0.32;
-  const rimW = 44;
-  const backboardH = 80;
-
-  // Rack positions (X positions for shooter, from left to right arc)
-  const rackPositions = [0.12, 0.2, 0.3, 0.2, 0.12];
-  const rackLabels = ['LEFT\nCORNER', 'LEFT\nWING', 'TOP\nKEY', 'RIGHT\nWING', 'RIGHT\nCORNER'];
-
-  // Particles
-  let particles = [];
-  let flashTexts = [];
-
-  // Player position
-  let playerX = 0;
-  let playerY = 0;
-
-  function getShooterPos() {
-    const rx = rackPositions[rackIndex];
-    playerX = W * rx;
-    playerY = H * 0.72;
-    return { x: playerX, y: playerY };
-  }
-
-  function resetBall() {
-    const pos = getShooterPos();
-    ball.x = pos.x + 20;
-    ball.y = pos.y - 60;
-    ball.vx = 0;
-    ball.vy = 0;
-    gameState = 'ready';
-    aimStart = null;
-    aimCurrent = null;
-  }
-
-  // Pixel art functions
-  function px(x, y, w, h, c) {
-    ctx.fillStyle = c;
-    ctx.fillRect(Math.floor(x), Math.floor(y), w, h);
-  }
-
-  // Draw 8-bit Bam (bigger, facing right, detailed)
-  function drawBam(cx, cy, scale, shooting) {
-    const s = scale;
-    // Hair
-    px(cx-8*s, cy-52*s, 18*s, 5*s, '#1a1a1a');
-    px(cx-6*s, cy-54*s, 14*s, 3*s, '#1a1a1a');
-    // Head
-    px(cx-8*s, cy-47*s, 18*s, 16*s, '#8B6914');
-    px(cx-6*s, cy-49*s, 14*s, 3*s, '#8B6914');
-    // Headband (white)
-    px(cx-9*s, cy-47*s, 20*s, 3*s, '#fff');
-    px(cx-9*s, cy-47*s, 20*s, 1*s, '#ddd');
-    // Eyes
-    px(cx-4*s, cy-41*s, 3*s, 3*s, '#fff');
-    px(cx+3*s, cy-41*s, 3*s, 3*s, '#fff');
-    px(cx-3*s, cy-40*s, 2*s, 2*s, '#111');
-    px(cx+4*s, cy-40*s, 2*s, 2*s, '#111');
-    // Eyebrows (intense)
-    px(cx-5*s, cy-44*s, 5*s, 1*s, '#111');
-    px(cx+2*s, cy-44*s, 5*s, 1*s, '#111');
-    // Nose
-    px(cx, cy-38*s, 2*s, 3*s, '#7a5c10');
-    // Mouth (determined grin)
-    px(cx-3*s, cy-34*s, 8*s, 2*s, '#5a2d0c');
-    px(cx-2*s, cy-34*s, 6*s, 1*s, '#fff');
-    // Beard/jawline
-    px(cx-8*s, cy-33*s, 18*s, 2*s, '#4a3800');
-    px(cx-9*s, cy-36*s, 1*s, 5*s, '#4a3800');
-    px(cx+9*s, cy-36*s, 1*s, 5*s, '#4a3800');
-    // Neck
-    px(cx-3*s, cy-31*s, 8*s, 4*s, '#8B6914');
-    // Shoulders
-    px(cx-16*s, cy-27*s, 34*s, 4*s, '#98002e');
-    // Jersey body
-    px(cx-14*s, cy-23*s, 30*s, 18*s, '#98002e');
-    // Jersey side stripes
-    px(cx-14*s, cy-23*s, 3*s, 18*s, '#111');
-    px(cx+13*s, cy-23*s, 3*s, 18*s, '#111');
-    // #13
-    px(cx-4*s, cy-19*s, 2*s, 10*s, '#fff');
-    px(cx-2*s, cy-19*s, 2*s, 2*s, '#fff');
-    px(cx-2*s, cy-13*s, 2*s, 2*s, '#fff');
-    px(cx+2*s, cy-19*s, 2*s, 10*s, '#fff');
-    px(cx+4*s, cy-19*s, 2*s, 2*s, '#fff');
-    px(cx+4*s, cy-15*s, 2*s, 2*s, '#fff');
-    px(cx+4*s, cy-11*s, 2*s, 2*s, '#fff');
-
-    // Arms
-    if (shooting) {
-      // Right arm up (shooting form)
-      px(cx+16*s, cy-27*s, 4*s, 4*s, '#8B6914');
-      px(cx+18*s, cy-40*s, 4*s, 16*s, '#8B6914');
-      px(cx+16*s, cy-30*s, 4*s, 4*s, '#8B6914');
-      // Left arm support
-      px(cx-18*s, cy-24*s, 4*s, 10*s, '#8B6914');
-      px(cx-20*s, cy-27*s, 4*s, 4*s, '#8B6914');
-    } else {
-      // Arms at sides holding ball
-      px(cx+16*s, cy-24*s, 4*s, 14*s, '#8B6914');
-      px(cx-18*s, cy-24*s, 4*s, 14*s, '#8B6914');
-    }
-
-    // Shorts
-    px(cx-12*s, cy-5*s, 26*s, 14*s, '#111');
-    px(cx-12*s, cy-5*s, 3*s, 14*s, '#98002e');
-    px(cx+11*s, cy-5*s, 3*s, 14*s, '#98002e');
-    // Legs
-    px(cx-10*s, cy+9*s, 8*s, 18*s, '#8B6914');
-    px(cx+4*s, cy+9*s, 8*s, 18*s, '#8B6914');
-    // Socks
-    px(cx-10*s, cy+25*s, 8*s, 3*s, '#fff');
-    px(cx+4*s, cy+25*s, 8*s, 3*s, '#fff');
-    // Shoes
-    px(cx-11*s, cy+28*s, 10*s, 4*s, '#222');
-    px(cx+3*s, cy+28*s, 10*s, 4*s, '#222');
-    px(cx-11*s, cy+28*s, 2*s, 4*s, '#ff1744');
-    px(cx+11*s, cy+28*s, 2*s, 4*s, '#ff1744');
-  }
-
-  // Draw basketball
-  function drawBall(x, y, r, onFire) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = '#e67e22';
-    ctx.fill();
-    ctx.strokeStyle = '#c65800';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    // Lines
-    ctx.beginPath(); ctx.moveTo(x, y - r); ctx.lineTo(x, y + r); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x - r, y); ctx.lineTo(x + r, y); ctx.stroke();
-
-    if (onFire) {
-      // Fire trail
-      for (let i = 0; i < 6; i++) {
-        const fx = x + (Math.random() - 0.5) * r * 1.5;
-        const fy = y + r * 0.5 + Math.random() * r;
-        const fs = 3 + Math.random() * 6;
-        ctx.fillStyle = Math.random() > 0.5 ? '#ff1744' : '#ff8c00';
-        ctx.fillRect(fx - fs / 2, fy - fs / 2, fs, fs);
-      }
-      // Glow
-      ctx.shadowColor = '#ff1744';
-      ctx.shadowBlur = 20;
-      ctx.beginPath();
-      ctx.arc(x, y, r + 2, 0, Math.PI * 2);
-      ctx.strokeStyle = '#ff174466';
-      ctx.lineWidth = 4;
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-
-  // Draw hoop and backboard
-  function drawHoop() {
-    const hx = hoopX(), hy = hoopY();
-    // Backboard
-    px(hx + rimW / 2 + 4, hy - 40, 8, backboardH, '#ddd');
-    px(hx + rimW / 2 + 5, hy - 38, 6, backboardH - 4, '#fff');
-    // Backboard square
-    px(hx + rimW / 2 - 2, hy - 12, 10, 24, 'transparent');
-    ctx.strokeStyle = '#ff1744';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(hx + rimW / 2 - 4, hy - 12, 12, 24);
-    // Pole
-    px(hx + rimW / 2 + 6, hy + 40, 4, H - hy - 40, '#888');
-    // Rim
-    ctx.strokeStyle = '#ff4444';
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(hx - rimW / 2, hy);
-    ctx.lineTo(hx + rimW / 2, hy);
-    ctx.stroke();
-    // Rim caps
-    ctx.fillStyle = '#ff4444';
-    ctx.beginPath(); ctx.arc(hx - rimW / 2, hy, 4, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(hx + rimW / 2, hy, 4, 0, Math.PI * 2); ctx.fill();
-    // Net
-    ctx.strokeStyle = '#ffffff44';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < 6; i++) {
-      const nx = hx - rimW / 2 + 4 + i * (rimW - 8) / 5;
-      ctx.beginPath();
-      ctx.moveTo(nx, hy + 2);
-      const sway = Math.sin(Date.now() / 300 + i) * 2;
-      ctx.lineTo(nx + sway, hy + 35);
-      ctx.stroke();
-    }
-    // Cross net lines
-    for (let j = 0; j < 3; j++) {
-      const ny = hy + 8 + j * 10;
-      ctx.beginPath();
-      ctx.moveTo(hx - rimW / 2 + 6, ny);
-      ctx.lineTo(hx + rimW / 2 - 6, ny);
-      ctx.stroke();
-    }
-  }
-
-  // Draw court
-  function drawCourt() {
-    // Floor
-    const floorY = H * 0.82;
-    ctx.fillStyle = '#1a0505';
-    ctx.fillRect(0, 0, W, H);
-    // Court surface
-    ctx.fillStyle = '#c67e38';
-    ctx.fillRect(0, floorY, W, H - floorY);
-    // Court line
-    ctx.strokeStyle = '#fff3';
-    ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(0, floorY); ctx.lineTo(W, floorY); ctx.stroke();
-    // 3-point arc (decorative)
-    ctx.strokeStyle = '#ffffff22';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(hoopX(), floorY, W * 0.45, Math.PI * 0.65, Math.PI * 0.98);
-    ctx.stroke();
-    // Court markings
-    ctx.strokeStyle = '#a8642033';
-    for (let x = 0; x < W; x += 80) {
-      ctx.beginPath(); ctx.moveTo(x, floorY); ctx.lineTo(x, H); ctx.stroke();
-    }
-  }
-
-  // Draw scoreboard HUD
-  function drawHUD() {
-    // Top bar
-    ctx.fillStyle = 'rgba(0,0,0,0.7)';
-    ctx.fillRect(0, 0, W, 56);
-    ctx.strokeStyle = '#ff1744';
-    ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(0, 56); ctx.lineTo(W, 56); ctx.stroke();
-
-    ctx.font = '14px "Press Start 2P", monospace';
-    ctx.textAlign = 'left';
-
-    // Score
-    ctx.fillStyle = '#ff1744';
-    ctx.fillText('SCORE', 16, 22);
-    ctx.fillStyle = '#fff';
-    ctx.font = '20px "Press Start 2P", monospace';
-    ctx.fillText(String(score), 16, 46);
-
-    // Timer
-    ctx.textAlign = 'center';
-    ctx.fillStyle = timeLeft <= 10 ? '#ff1744' : '#fff';
-    ctx.font = '12px "Press Start 2P", monospace';
-    ctx.fillText('TIME', W / 2, 18);
-    ctx.font = '24px "Press Start 2P", monospace';
-    ctx.fillText(String(Math.ceil(timeLeft)), W / 2, 46);
-
-    // Streak
-    ctx.textAlign = 'right';
-    ctx.font = '12px "Press Start 2P", monospace';
-    ctx.fillStyle = streak >= 3 ? '#ff8c00' : '#888';
-    ctx.fillText(streak >= 3 ? 'ON FIRE!' : 'STREAK', W - 16, 18);
-    ctx.font = '18px "Press Start 2P", monospace';
-    ctx.fillStyle = streak >= 3 ? '#ff8c00' : '#fff';
-    ctx.fillText(String(streak), W - 16, 44);
-
-    // Rack indicator
-    ctx.textAlign = 'center';
-    ctx.font = '10px "Press Start 2P", monospace';
-    const rackY = 74;
-    for (let i = 0; i < TOTAL_RACKS; i++) {
-      const rx = W / 2 - 80 + i * 40;
-      ctx.fillStyle = i < rackIndex ? '#ff174488' : i === rackIndex ? '#ff1744' : '#333';
-      ctx.fillRect(rx - 8, rackY - 6, 16, 16);
-      ctx.fillStyle = '#fff';
-      ctx.fillText(String(i + 1), rx, rackY + 5);
-    }
-
-    // Ball counter in current rack
-    ctx.font = '9px "Press Start 2P", monospace';
-    ctx.fillStyle = '#888';
-    const ballsLeft = `BALL ${ballIndex + 1}/${RACK_SIZE}`;
-    ctx.fillText(ballsLeft, W / 2, rackY + 24);
-
-    // Money ball indicator
-    if (ballIndex === RACK_SIZE - 1) {
-      ctx.fillStyle = '#ff8c00';
-      ctx.fillText('MONEY BALL!', W / 2, rackY + 38);
-    }
-
-    // High score
-    ctx.textAlign = 'right';
-    ctx.font = '8px "Press Start 2P", monospace';
-    ctx.fillStyle = '#666';
-    ctx.fillText(`HI: ${highScore}`, W - 16, rackY + 5);
-  }
-
-  // Aim line
-  function drawAim() {
-    if (!aimStart || !aimCurrent || gameState !== 'aiming') return;
-    const dx = aimStart.x - aimCurrent.x;
-    const dy = aimStart.y - aimCurrent.y;
-    const power = Math.min(Math.sqrt(dx * dx + dy * dy), 200);
-    const angle = Math.atan2(dy, dx);
-
-    // Power meter
-    const maxP = 200;
-    const pct = power / maxP;
-    ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.fillRect(ball.x - 30, ball.y + 30, 60, 8);
-    ctx.fillStyle = pct > 0.8 ? '#ff1744' : pct > 0.5 ? '#ff8c00' : '#00e5a0';
-    ctx.fillRect(ball.x - 30, ball.y + 30, 60 * pct, 8);
-
-    // Trajectory preview dots
-    ctx.fillStyle = '#ffffff44';
-    const vx = Math.cos(angle) * power * 0.18;
-    const vy = Math.sin(angle) * power * 0.18;
-    let px2 = ball.x, py2 = ball.y, pvx = vx, pvy = vy;
-    for (let i = 0; i < 20; i++) {
-      px2 += pvx;
-      pvy += GRAVITY;
-      py2 += pvy;
-      if (i % 2 === 0) {
-        ctx.beginPath();
-        ctx.arc(px2, py2, 2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    // Direction arrow
-    ctx.strokeStyle = '#ff174488';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(ball.x, ball.y);
-    ctx.lineTo(ball.x + Math.cos(angle) * power * 0.5, ball.y + Math.sin(angle) * power * 0.5);
-    ctx.stroke();
-  }
-
-  // Particles
-  function addParticles(x, y, color, count) {
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x, y,
-        vx: (Math.random() - 0.5) * 8,
-        vy: -Math.random() * 6 - 2,
-        life: 1,
-        color,
-        size: 3 + Math.random() * 5,
-      });
-    }
-  }
-
-  function addFlashText(x, y, text, color, size) {
-    flashTexts.push({ x, y, text, color, size, life: 1, vy: -1.5 });
-  }
-
-  function updateParticles() {
-    particles = particles.filter(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.15;
-      p.life -= 0.025;
-      return p.life > 0;
-    });
-    flashTexts = flashTexts.filter(f => {
-      f.y += f.vy;
-      f.life -= 0.02;
-      return f.life > 0;
-    });
-  }
-
-  function drawParticles() {
-    particles.forEach(p => {
-      ctx.globalAlpha = p.life;
-      ctx.fillStyle = p.color;
-      ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
-    });
-    ctx.globalAlpha = 1;
-    flashTexts.forEach(f => {
-      ctx.globalAlpha = f.life;
-      ctx.font = `${f.size}px "Press Start 2P", monospace`;
-      ctx.textAlign = 'center';
-      ctx.fillStyle = f.color;
-      ctx.fillText(f.text, f.x, f.y);
-    });
-    ctx.globalAlpha = 1;
-  }
-
-  // Check if ball goes through hoop
-  function checkScore() {
-    const hx = hoopX(), hy = hoopY();
-    // Ball must be descending and pass through rim
-    if (ball.vy > 0 &&
-        ball.x > hx - rimW / 2 + 6 &&
-        ball.x < hx + rimW / 2 - 6 &&
-        ball.y > hy - 4 && ball.y < hy + 12) {
-      return 'swish';
-    }
-    // Rim bounce — physics-based
-    const leftRimX = hx - rimW / 2, rightRimX = hx + rimW / 2;
-    const hitLeftRim = Math.abs(ball.x - leftRimX) < 10 && Math.abs(ball.y - hy) < 12;
-    const hitRightRim = Math.abs(ball.x - rightRimX) < 10 && Math.abs(ball.y - hy) < 12;
-    if (ball.vy > 0 && (hitLeftRim || hitRightRim)) {
-      const rimHitX = hitLeftRim ? leftRimX : rightRimX;
-      const dx = ball.x - rimHitX, dy = ball.y - hy;
-      const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-      const nx = dx/dist, ny = dy/dist;
-      const dot = ball.vx*nx + ball.vy*ny;
-      ball.vx = (ball.vx - 1.6*dot*nx) * 0.65;
-      ball.vy = (ball.vy - 1.6*dot*ny) * 0.65;
-      ball.x += nx * 3;
-      ball.y += ny * 3;
-      const centerDist = Math.abs(ball.x - hx);
-      if (centerDist < rimW * 0.35 && ball.vy > 0) {
-        return 'rimmed';
-      }
-      return null;
-    }
-    return null;
-  }
-
-  // Shoot ball
-  function shoot() {
-    if (!aimStart || !aimCurrent) return;
-    const dx = aimStart.x - aimCurrent.x;
-    const dy = aimStart.y - aimCurrent.y;
-    const power = Math.min(Math.sqrt(dx * dx + dy * dy), 200);
-    const angle = Math.atan2(dy, dx);
-
-    ball.vx = Math.cos(angle) * power * 0.18;
-    ball.vy = Math.sin(angle) * power * 0.18;
-    gameState = 'flight';
-  }
-
-  // Next ball
-  function nextBall() {
-    ballIndex++;
-    if (ballIndex >= RACK_SIZE) {
-      ballIndex = 0;
-      rackIndex++;
-      if (rackIndex >= TOTAL_RACKS) {
-        rackIndex = 0; // Loop back
-      }
-    }
-    resetBall();
-  }
-
-  // Score a basket
-  function onScore(type) {
-    const isMoneyBall = ballIndex === RACK_SIZE - 1;
-    let pts = isMoneyBall ? 2 : 1;
-    if (streak >= 3) pts *= 2; // On fire = double
-    score += pts;
-    streak++;
-    if (streak > bestStreak) bestStreak = streak;
-
-    shakeFrames = 8;
-    shakeIntensity = type === 'swish' ? 6 : 3;
-
-    addParticles(ball.x, ball.y, '#ff1744', 12);
-    addParticles(ball.x, ball.y, '#ff8c00', 8);
-    if (streak >= 3) addParticles(ball.x, ball.y, '#ffd700', 10);
-
-    if (type === 'swish') {
-      addFlashText(ball.x, ball.y - 30, 'SWISH!', '#ff1744', 22);
-    } else {
-      addFlashText(ball.x, ball.y - 30, 'GOOD!', '#ff8c00', 18);
-    }
-    if (isMoneyBall) {
-      addFlashText(ball.x, ball.y - 60, 'MONEY BALL!', '#ffd700', 16);
-    }
-    if (streak === 3) addFlashText(W / 2, H / 2, 'ON FIRE!', '#ff8c00', 32);
-    if (streak === 5) addFlashText(W / 2, H / 2, 'UNSTOPPABLE!', '#ff1744', 28);
-    if (streak === 8) addFlashText(W / 2, H / 2, 'LEGENDARY!', '#ffd700', 32);
-
-    gameState = 'scored';
-    setTimeout(nextBall, 600);
-  }
-
-  function onMiss() {
-    streak = 0;
-    addFlashText(ball.x, ball.y - 20, 'MISS', '#666', 14);
-    gameState = 'missed';
-    setTimeout(nextBall, 400);
-  }
-
-  // Game over
-  function endGame() {
-    gameState = 'gameover';
-    if (score > highScore) {
-      highScore = score;
-      localStorage.setItem('bam3ptHigh', String(highScore));
-    }
-  }
-
-  // Input handling
-  function getPos(e) {
-    if (e.touches) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    return { x: e.clientX, y: e.clientY };
-  }
-
-  function closeThisGame() {
-    if (timerInterval) clearInterval(timerInterval);
-    document.getElementById('gameOverlay').style.display = 'none';
-    document.body.style.overflow = '';
-    /* gameBall removed */
-    /* nesLink removed */
-    document.getElementById('gameLabel').style.display = 'block';
-  }
-
-  function isCloseBtn(e) {
-    const p = getPos(e);
-    return p.x > W - 56 && p.y > 58 && p.y < 104;
-  }
-
-  // ESC key + tutorial advance
-  document.addEventListener('keydown', function(e) {
-    if (document.getElementById('gameOverlay').style.display !== 'block') return;
-    if (e.key === 'Escape') { closeThisGame(); return; }
-    if (tutorialStep >= 0 && tutorialStep < tutorialSteps.length) { tutorialStep++; }
+// ============ DOWNLOAD CSV ============
+function downloadCSV(type) {
+  const cards = document.querySelectorAll('.card');
+  const rows = [['Set','Parallel','Year','Card #','Name','Serial','Grade','Qty','Notes']];
+  cards.forEach(card => {
+    const isOwned = card.classList.contains('owned');
+    if ((type === 'owned' && !isOwned) || (type === 'missing' && isOwned)) return;
+    rows.push([
+      card.dataset.set || '',
+      card.dataset.parallel || '',
+      card.dataset.year || '',
+      card.dataset.cardNumber || '',
+      card.dataset.name || '',
+      card.dataset.serial || '',
+      card.dataset.grade || '',
+      card.dataset.qty || '1',
+      card.dataset.notes || ''
+    ]);
   });
-
-  // Interactive tutorial
-  const tutorialSteps = [
-    { title: 'STEP 1: AIM', text: 'Click & hold on the ball,\nthen DRAG AWAY from the hoop\nto set your aim direction.', icon: 'aim' },
-    { title: 'STEP 2: POWER', text: 'Drag FARTHER = more power.\nWatch the green/orange/red\npower meter under the ball.', icon: 'power' },
-    { title: 'STEP 3: RELEASE', text: 'Let go to shoot!\nDotted line shows where\nthe ball will go.', icon: 'release' },
-    { title: 'STEP 4: SCORE', text: '5 balls per rack, 5 racks.\nLast ball = MONEY BALL (2x).\n3 in a row = ON FIRE (2x)!', icon: 'score' },
-    { title: 'READY?', text: 'Tap anywhere to start!\n\nESC or X button to quit.', icon: 'go' },
-  ];
-  let tutorialStep = 0;
-
-  function drawTutorial() {
-    if (tutorialStep < 0 || tutorialStep >= tutorialSteps.length) {
-      if (tutorialStep >= tutorialSteps.length) tutorialStep = -1;
-      return false;
-    }
-    const step = tutorialSteps[tutorialStep];
-    ctx.fillStyle = 'rgba(0,0,0,0.82)';
-    ctx.fillRect(0, 0, W, H);
-    const cw = Math.min(440, W - 40), ch = 280;
-    const cx = (W - cw) / 2, cy = (H - ch) / 2;
-    ctx.fillStyle = '#1a1a2e';
-    ctx.fillRect(cx, cy, cw, ch);
-    ctx.strokeStyle = '#ff1744';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(cx, cy, cw, ch);
-    ctx.fillStyle = '#ff174466';
-    for (let i = 0; i < tutorialSteps.length; i++) {
-      ctx.fillStyle = i === tutorialStep ? '#ff1744' : '#ff174444';
-      ctx.fillRect(cx + cw/2 - tutorialSteps.length * 12 + i * 24, cy + ch - 30, 16, 8);
-    }
-    ctx.textAlign = 'center';
-    ctx.font = '18px "Press Start 2P", monospace';
-    ctx.fillStyle = '#ff1744';
-    ctx.fillText(step.title, W / 2, cy + 44);
-    ctx.font = '11px "Press Start 2P", monospace';
-    ctx.fillStyle = '#ddd';
-    step.text.split('\n').forEach((line, i) => { ctx.fillText(line, W / 2, cy + 80 + i * 24); });
-    const ix = W / 2, iy = cy + 180;
-    if (step.icon === 'aim') {
-      ctx.fillStyle = '#e67e22'; ctx.beginPath(); ctx.arc(ix - 40, iy, 12, 0, Math.PI*2); ctx.fill();
-      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(ix - 40, iy); ctx.lineTo(ix + 50, iy - 30); ctx.stroke();
-      ctx.fillStyle = '#fff'; ctx.font = '10px "Press Start 2P", monospace'; ctx.fillText('<-- drag', ix + 20, iy + 20);
-    } else if (step.icon === 'power') {
-      ctx.fillStyle = '#333'; ctx.fillRect(ix - 60, iy - 6, 120, 14);
-      ctx.fillStyle = '#00e5a0'; ctx.fillRect(ix - 60, iy - 6, 40, 14);
-      ctx.fillStyle = '#ff8c00'; ctx.fillRect(ix - 20, iy - 6, 40, 14);
-      ctx.fillStyle = '#ff1744'; ctx.fillRect(ix + 20, iy - 6, 40, 14);
-      ctx.fillStyle = '#fff'; ctx.font = '8px "Press Start 2P", monospace';
-      ctx.fillText('LOW', ix - 40, iy + 22); ctx.fillText('MED', ix, iy + 22); ctx.fillText('MAX', ix + 40, iy + 22);
-    } else if (step.icon === 'release') {
-      ctx.fillStyle = '#e67e22'; ctx.beginPath(); ctx.arc(ix - 50, iy + 10, 10, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ffffff66';
-      for (let d = 0; d < 6; d++) { ctx.beginPath(); ctx.arc(ix - 40 + d*18, iy + 5 - d*6 + (d>3?d*3:0), 3, 0, Math.PI*2); ctx.fill(); }
-    } else if (step.icon === 'score') {
-      ctx.font = '14px "Press Start 2P", monospace';
-      ctx.fillStyle = '#ffd700'; ctx.fillText('MONEY BALL = 2 PTS', ix, iy - 10);
-      ctx.fillStyle = '#ff8c00'; ctx.fillText('ON FIRE = 2x POINTS', ix, iy + 16);
-    } else {
-      ctx.font = '28px "Press Start 2P", monospace';
-      ctx.fillStyle = '#ff1744'; ctx.fillText("LET'S GO!", ix, iy + 8);
-    }
-    ctx.font = '9px "Press Start 2P", monospace';
-    ctx.fillStyle = '#888';
-    ctx.fillText('TAP / CLICK / PRESS ANY KEY TO CONTINUE', W / 2, cy + ch + 24);
-    return true;
-  }
-
-  function onDown(e) {
-    e.preventDefault();
-    if (isCloseBtn(e)) { closeThisGame(); return; }
-    if (tutorialStep >= 0 && tutorialStep < tutorialSteps.length) { tutorialStep++; return; }
-    if (gameState === 'gameover') {
-      score = 0; timeLeft = GAME_TIME; streak = 0; rackIndex = 0; ballIndex = 0;
-      gameState = 'countdown'; countdownNum = 3;
-      resetBall();
-      return;
-    }
-    if (gameState !== 'ready') return;
-    aimStart = getPos(e);
-    aimCurrent = aimStart;
-    gameState = 'aiming';
-  }
-
-  function onMove(e) {
-    e.preventDefault();
-    if (gameState !== 'aiming') return;
-    aimCurrent = getPos(e);
-  }
-
-  function onUp(e) {
-    e.preventDefault();
-    if (gameState !== 'aiming') return;
-    if (aimStart && aimCurrent) {
-      const dx = aimStart.x - aimCurrent.x;
-      const dy = aimStart.y - aimCurrent.y;
-      if (Math.sqrt(dx * dx + dy * dy) > 15) {
-        shoot();
-      } else {
-        gameState = 'ready';
-      }
-    }
-  }
-
-  canvas.addEventListener('mousedown', onDown);
-  canvas.addEventListener('mousemove', onMove);
-  canvas.addEventListener('mouseup', onUp);
-  canvas.addEventListener('touchstart', onDown, { passive: false });
-  canvas.addEventListener('touchmove', onMove, { passive: false });
-  canvas.addEventListener('touchend', onUp, { passive: false });
-
-  // Close button — big, obvious
-  function drawClose() {
-    ctx.fillStyle = 'rgba(255,23,68,0.7)';
-    ctx.fillRect(W - 52, 62, 40, 40);
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(W - 52, 62, 40, 40);
-    ctx.font = '18px "Press Start 2P", monospace';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#fff';
-    ctx.fillText('X', W - 32, 89);
-    ctx.font = '7px "Press Start 2P", monospace';
-    ctx.fillStyle = '#ffffff88';
-    ctx.fillText('ESC', W - 32, 112);
-  }
-
-  // Draw game over screen
-  function drawGameOver() {
-    ctx.fillStyle = 'rgba(0,0,0,0.85)';
-    ctx.fillRect(0, 0, W, H);
-
-    ctx.textAlign = 'center';
-    ctx.font = '32px "Press Start 2P", monospace';
-    ctx.fillStyle = '#ff1744';
-    ctx.fillText('GAME OVER', W / 2, H * 0.25);
-
-    ctx.font = '14px "Press Start 2P", monospace';
-    ctx.fillStyle = '#fff';
-    ctx.fillText(`FINAL SCORE`, W / 2, H * 0.38);
-    ctx.font = '48px "Press Start 2P", monospace';
-    ctx.fillStyle = '#ff1744';
-    ctx.fillText(String(score), W / 2, H * 0.48);
-
-    ctx.font = '12px "Press Start 2P", monospace';
-    ctx.fillStyle = '#888';
-    ctx.fillText(`BEST STREAK: ${bestStreak}`, W / 2, H * 0.56);
-    ctx.fillText(`HIGH SCORE: ${highScore}`, W / 2, H * 0.62);
-
-    if (score >= highScore && score > 0) {
-      ctx.font = '16px "Press Start 2P", monospace';
-      ctx.fillStyle = '#ffd700';
-      ctx.fillText('NEW HIGH SCORE!', W / 2, H * 0.7);
-    }
-
-    // Rating
-    let rating = 'BENCHWARMER';
-    let rColor = '#666';
-    if (score >= 10) { rating = 'ROLE PLAYER'; rColor = '#888'; }
-    if (score >= 18) { rating = 'STARTER'; rColor = '#fff'; }
-    if (score >= 25) { rating = 'ALL-STAR'; rColor = '#ff8c00'; }
-    if (score >= 30) { rating = 'SUPERSTAR'; rColor = '#ff1744'; }
-    if (score >= 35) { rating = 'BAM MODE!'; rColor = '#ffd700'; }
-    ctx.font = '18px "Press Start 2P", monospace';
-    ctx.fillStyle = rColor;
-    ctx.fillText(rating, W / 2, H * 0.78);
-
-    ctx.font = '10px "Press Start 2P", monospace';
-    ctx.fillStyle = '#ff1744';
-    ctx.fillText('TAP TO PLAY AGAIN', W / 2, H * 0.88);
-  }
-
-  // Draw countdown
-  function drawCountdown() {
-    ctx.fillStyle = 'rgba(0,0,0,0.7)';
-    ctx.fillRect(0, 0, W, H);
-    ctx.textAlign = 'center';
-    ctx.font = '80px "Press Start 2P", monospace';
-    ctx.fillStyle = '#ff1744';
-    ctx.fillText(String(countdownNum), W / 2, H / 2 + 20);
-    ctx.font = '14px "Press Start 2P", monospace';
-    ctx.fillStyle = '#fff';
-    ctx.fillText('GET READY', W / 2, H / 2 - 60);
-  }
-
-  // Main game loop
-  let timerInterval = null;
-  function startTimer() {
-    lastTime = Date.now();
-    timerInterval = setInterval(() => {
-      if (gameState === 'gameover' || gameState === 'countdown') return;
-      timeLeft -= 0.1;
-      if (timeLeft <= 0) {
-        timeLeft = 0;
-        endGame();
-      }
-    }, 100);
-  }
-
-  function gameLoop() {
-    // Screen shake
-    ctx.save();
-    if (shakeFrames > 0) {
-      ctx.translate((Math.random() - 0.5) * shakeIntensity, (Math.random() - 0.5) * shakeIntensity);
-      shakeFrames--;
-    }
-
-    // Draw scene
-    drawCourt();
-    drawHoop();
-
-    // Draw Bam
-    const pos = getShooterPos();
-    drawBam(pos.x, pos.y, 1.8, gameState === 'aiming' || gameState === 'flight');
-
-    // Ball physics
-    if (gameState === 'flight') {
-      ball.vy += GRAVITY;
-      ball.x += ball.vx;
-      ball.y += ball.vy;
-
-      const result = checkScore();
-      if (result === 'swish' || result === 'rimmed') {
-        onScore(result);
-      } else if (ball.y > H + 50 || ball.x > W + 50 || ball.x < -50) {
-        onMiss();
-      }
-
-      // Backboard collision
-      const hx = hoopX(), hy = hoopY();
-      if (ball.x > hx + rimW / 2 && ball.x < hx + rimW / 2 + 14 &&
-          ball.y > hy - 40 && ball.y < hy + 40) {
-        ball.vx = -ball.vx * 0.6;
-        ball.x = hx + rimW / 2 - 2;
-      }
-    }
-
-    // Draw ball
-    if (gameState !== 'gameover') {
-      drawBall(ball.x, ball.y, ball.r, streak >= 3);
-    }
-
-    drawAim();
-    drawParticles();
-    updateParticles();
-
-    // Scanlines (retro feel)
-    for (let y = 0; y < H; y += 4) {
-      ctx.fillStyle = 'rgba(0,0,0,0.08)';
-      ctx.fillRect(0, y, W, 2);
-    }
-
-    drawHUD();
-    drawClose();
-
-    ctx.restore();
-
-    // Overlays — tutorial first
-    if (tutorialStep >= 0 && tutorialStep < tutorialSteps.length) {
-      drawTutorial();
-    } else if (gameState === 'countdown') {
-      drawCountdown();
-    } else if (gameState === 'gameover') {
-      drawGameOver();
-    }
-
-    requestAnimationFrame(gameLoop);
-  }
-
-  // Start with tutorial, then countdown
-  gameState = 'countdown';
-  resetBall();
-  function waitForTutorial() {
-    if (tutorialStep >= 0 && tutorialStep < tutorialSteps.length) {
-      requestAnimationFrame(waitForTutorial);
-      return;
-    }
-    let cdInterval = setInterval(() => {
-      countdownNum--;
-      if (countdownNum <= 0) {
-        clearInterval(cdInterval);
-        gameState = 'ready';
-        startTimer();
-      }
-    }, 800);
-  }
-
-  gameLoop();
-  waitForTutorial();
+  const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'bam-cards-' + type + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
+/* Game code removed - start */
+/* initGame removed */
 // ============ ADVANCED FILTERS ============
 (function setupAdvFilters() {
   // Price uses log scale: 0-1 maps to $0-$25000
