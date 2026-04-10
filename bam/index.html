@@ -475,6 +475,8 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
     <div style="font-size:11px;text-transform:uppercase;letter-spacing:3px;color:#ffd700;font-weight:600;margin-bottom:16px">Collection Inquiry</div>
     <form id="inquiryForm" onsubmit="submitInquiry(event)">
       <input type="hidden" name="_subject" value="Bam Adebayo Collection Inquiry - OneCallToday.com">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
       <input id="inqName" name="name" type="text" placeholder="Your Name" required style="width:100%;padding:10px 14px;margin-bottom:10px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-family:'Inter',sans-serif;font-size:14px;box-sizing:border-box">
       <input id="inqEmail" name="email" type="email" placeholder="Your Email" required style="width:100%;padding:10px 14px;margin-bottom:10px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-family:'Inter',sans-serif;font-size:14px;box-sizing:border-box">
       <input id="inqOffer" name="offer" type="text" placeholder="Your Offer (optional)" style="width:100%;padding:10px 14px;margin-bottom:10px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-family:'Inter',sans-serif;font-size:14px;box-sizing:border-box">
@@ -3426,7 +3428,7 @@ async function submitInquiry(e) {
   const btn = e.target.querySelector('button[type=submit]');
   btn.disabled = true; btn.textContent = 'Sending...';
   try {
-    const res = await fetch('https://formspree.io/f/FORM_ID_HERE', {
+    const res = await fetch('https://formsubmit.co/ajax/will.wiedenmann@gmail.com', {
       method: 'POST', headers: { 'Accept': 'application/json' },
       body: new FormData(e.target)
     });

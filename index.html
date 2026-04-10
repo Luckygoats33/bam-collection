@@ -355,6 +355,8 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
     <div style="font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--accent);font-weight:700;margin-bottom:16px">Collection Inquiry</div>
     <form id="inquiryForm" onsubmit="submitInquiry(event)">
       <input type="hidden" name="_subject" value="Collection Inquiry - OneCallToday.com">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
       <input class="modal-input" name="name" type="text" placeholder="Your Name" required>
       <input class="modal-input" name="email" type="email" placeholder="Your Email" required>
       <input class="modal-input" name="offer" type="text" placeholder="Your Offer (optional)">
@@ -372,6 +374,8 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
     <div style="font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--gold);font-weight:700;margin-bottom:16px">Sell Your Collection</div>
     <form id="sellForm" onsubmit="submitSell(event)">
       <input type="hidden" name="_subject" value="Sell Collection Request - OneCallToday.com">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
       <input class="modal-input" name="name" type="text" placeholder="Your Name" required>
       <input class="modal-input" name="email" type="email" placeholder="Your Email" required>
       <input class="modal-input" name="collection" type="text" placeholder="What are you selling? (e.g., 50-card Luka Doncic lot)">
@@ -416,7 +420,7 @@ async function submitInquiry(e) {
   const btn = e.target.querySelector('button[type=submit]');
   btn.disabled = true; btn.textContent = 'Sending...';
   try {
-    const res = await fetch('https://formspree.io/f/FORM_ID_HERE', {
+    const res = await fetch('https://formsubmit.co/ajax/will.wiedenmann@gmail.com', {
       method: 'POST', headers: { 'Accept': 'application/json' },
       body: new FormData(e.target)
     });
@@ -435,7 +439,7 @@ async function submitSell(e) {
   const btn = e.target.querySelector('button[type=submit]');
   btn.disabled = true; btn.textContent = 'Sending...';
   try {
-    const res = await fetch('https://formspree.io/f/FORM_ID_HERE', {
+    const res = await fetch('https://formsubmit.co/ajax/will.wiedenmann@gmail.com', {
       method: 'POST', headers: { 'Accept': 'application/json' },
       body: new FormData(e.target)
     });
