@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" fill="none">
+  <!-- Phone hand gesture icon -->
+  <g transform="translate(10,12)">
+    <!-- Phone receiver shape - bold street style -->
+    <rect x="8" y="8" width="60" height="60" rx="14" fill="#00e5a0" opacity="0.15"/>
+    <path d="M24 28c0-2 1.5-3.5 3.5-3.5S31 26 31 28v6c0 1-0.5 2-1.5 2.5l-3 1.5c2 4 5 7.5 9 9.5l1.5-3c0.5-1 1.5-1.5 2.5-1.5h6c2 0 3.5 1.5 3.5 3.5s-1.5 3.5-3.5 3.5H42c-11 0-18-7-18-18v-4z" fill="#00e5a0" stroke="#00e5a0" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Signal waves -->
+    <path d="M50 24c3 3 5 7 5 12" stroke="#00e5a0" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+    <path d="M44 20c5 5 8 11 8 18" stroke="#00e5a0" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+  </g>
+  <!-- ONE CALL - bold block letters -->
+  <text x="85" y="42" font-family="'Inter','Arial Black',sans-serif" font-weight="900" font-size="32" fill="white" letter-spacing="-1">ONE CALL</text>
+  <!-- TODAY - accent color -->
+  <text x="85" y="74" font-family="'Inter','Arial Black',sans-serif" font-weight="900" font-size="32" fill="#00e5a0" letter-spacing="-1">TODAY</text>
+  <!-- Tagline -->
+  <text x="280" y="74" font-family="'Inter',sans-serif" font-weight="400" font-size="10" fill="rgba(255,255,255,0.3)" letter-spacing="2">EST. 2026</text>
+</svg>
