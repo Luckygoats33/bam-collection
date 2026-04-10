@@ -3591,37 +3591,13 @@ openModal = function(el) {
         pxText('58 UNIQUE CARDS | 88 TOTAL', W/2, H*0.54, GOLD, Math.min(W*0.025, 16));
       }
 
-      // Menu buttons appear after text
-      if (p > 0.5) {
-        ctx.globalAlpha = Math.min((p-0.5)/0.2, 1);
-        const btnW = Math.min(W*0.7, 340);
-        const btnH = 50;
-        const btnX = W/2 - btnW/2;
-        const btnGap = 16;
-
-        // Button 1: VIEW COLLECTION
-        const btn1Y = H*0.64;
-        ctx.fillStyle = '#ff1744';
-        ctx.fillRect(btnX, btn1Y, btnW, btnH);
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(btnX, btn1Y, btnW, btnH);
-        pxText('VIEW COLLECTION', W/2, btn1Y + btnH/2 + 5, '#fff', Math.min(W*0.025, 14));
-
-        // Store button positions for click detection
-        window._menuBtn1 = { x: btnX, y: btn1Y, w: btnW, h: btnH };
-        window._menuBtn2 = { x: btnX, y: btn1Y, w: btnW, h: btnH };
-        window._menuReady = true;
-      }
-
       ctx.globalAlpha = 1;
       // Scanlines
       for (let y = 0; y < H; y += 3) { ctx.fillStyle = 'rgba(0,0,0,0.06)'; ctx.fillRect(0, y, W, 1); }
 
-      // Pause on title — do NOT auto-skip. Wait for user to click a button.
+      // Auto-skip to collection after title displays
       if (p >= 1) {
-        // Clamp phase so it keeps rendering the title screen
-        phaseStart = frame - DURATIONS[phase];
+        skipIntro();
       }
     }
 
@@ -3649,34 +3625,14 @@ openModal = function(el) {
     }, 500);
   };
 
-  // Menu click detection on title screen
-  document.getElementById('introOverlay').addEventListener('click', function(e) {
-    if (window._menuReady) {
-      const rect = canvas.getBoundingClientRect();
-      const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
-      const my = (e.clientY - rect.top) * (canvas.height / rect.height);
-      const b1 = window._menuBtn1;
-      const b2 = window._menuBtn2;
-      if (b1 && mx >= b1.x && mx <= b1.x + b1.w && my >= b1.y && my <= b1.y + b1.h) {
-        skipIntro(); // View Collection
-        return;
-      }
-      if (b2 && mx >= b2.x && mx <= b2.x + b2.w && my >= b2.y && my <= b2.y + b2.h) {
-        skipIntro(); // View Collection
-        return;
-      }
-    }
-    // During dunk phase, skip ahead to title
-    if (phase === 'dunk') {
-      goPhase('title');
-    }
-  });
-  document.addEventListener('keydown', function ik(e) {
+  // Click or key anywhere to skip intro
+  document.getElementById('introOverlay').addEventListener('click', function() {
     if (phase === 'dunk') { goPhase('title'); }
-    else if (window._menuReady) {
-      if (e.key === '1') skipIntro();
-      if (e.key === '2') skipIntro();
-    }
+    else { skipIntro(); }
+  });
+  document.addEventListener('keydown', function ik() {
+    if (phase === 'dunk') { goPhase('title'); }
+    else { skipIntro(); }
   });
 })();
 
